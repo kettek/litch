@@ -1,0 +1,85 @@
+<script type="ts">
+	import { onMount } from 'svelte'
+	import { fly } from 'svelte/transition';
+	import { _ } from 'svelte-i18n'
+	import { quintInOut } from 'svelte/easing';
+	import { createEventDispatcher } from 'svelte'
+	import { v4 } from 'uuid';
+	import type { OverlayInterface } from './interfaces/Overlay'
+	import type { BoxInterface } from './interfaces/Box'
+	const { ipcRenderer } = require('electron')
+
+	export let shown: boolean
+	let title: string
+	let width: number
+	let height: number
+	const dispatch = createEventDispatcher<OverlayInterface>()
+
+	onMount(async () => {
+		const dimensions = await ipcRenderer.invoke('getDisplaySize') as BoxInterface
+		width = dimensions.width
+		height = dimensions.height
+	})
+</script>
+
+<main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
+	<nav>
+		<button on:click={()=>shown=false}>back</button>
+		<header>{$_('overlays.titleCreateOverlay')}</header>
+	</nav>
+	<section>
+		<label>
+			<input type='text' placeholder='title' bind:value={title}>
+			<span>Title</span>
+		</label>
+		<label>
+			<input type='number' placeholder='1920' bind:value={width}>
+			<span>Width</span>
+		</label>
+		<label>
+			<input type='number' placeholder='1080' bind:value={height}>
+			<span>Height</span>
+		</label>
+		<button on:click={() => dispatch('create', {title: title||'unnamed', uuid: v4(), canvas: {width: width||1920, height: height||1080}, activeModules: [] })}>
+			create
+		</button>
+	</section>
+</main>
+
+<style>
+	main {
+		background: red;
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: auto minmax(0, 1fr);
+	}
+	nav {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: stretch;
+		justify-content: stretch;
+	}
+	header {
+		font-size: 150%;
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		padding-left: .5em;
+	}
+	section {
+	}
+	label {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+	label span {
+		font-weight: 500;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0 .5em;
+	}
+</style>
