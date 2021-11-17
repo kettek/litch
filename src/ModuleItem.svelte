@@ -10,8 +10,33 @@
 
 <main>
 	<header>{module.title}({realModule.title})</header>
-	<svelte:component this={realModule.settingsComponent} bind:settings={module.settings}/>
+	<section>
+		<label>
+			<input type="number" bind:value={module.box.x}>
+			X
+		</label>
+		<label>
+			<input type="number" bind:value={module.box.y}>
+			Y
+		</label>
+		<label>
+			<input type="number" bind:value={module.box.width}>
+			Width
+		</label>
+		<label>
+			<input type="number" bind:value={module.box.height}>
+			Height
+		</label>
+	</section>
+	<section>
+		<svelte:component this={realModule.settingsComponent} bind:settings={module.settings}/>
+	</section>
 </main>
 
 <style>
+	main {
+		display: grid;
+		grid-template-rows: auto auto minmax(0, 1fr);
+	}
+
 </style>
