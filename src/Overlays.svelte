@@ -59,7 +59,7 @@
 					{$_('overlays.createOverlay')}
 				{/if}
 			{:else}
-				<Overlay bind:overlay={displayedOverlay} modules={modules} on:refresh />
+				<Overlay bind:overlay={displayedOverlay} modules={modules} on:refresh active={displayedOverlay === activeOverlay} />
 			{/if}
 		</section>
 	</SplitPane>
