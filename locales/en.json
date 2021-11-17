@@ -1,6 +1,7 @@
 {
     "test": "Test!",
     "overlays": {
+        "activateOverlay": "Activate an overlay!",
         "createOverlay": "Create an overlay",
         "selectOverlay": "Select an overlay",
         "titleCreateOverlay": "New Overlay"
