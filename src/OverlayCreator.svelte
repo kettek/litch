@@ -40,7 +40,7 @@
 			<input type='number' placeholder='1080' bind:value={height}>
 			<span>Height</span>
 		</label>
-		<button on:click={() => dispatch('create', {title: title||'unnamed', uuid: v4(), canvas: {width: width||1920, height: height||1080}, modules: [] })}>
+		<button on:click={() => dispatch('create', {title: title||'unnamed', uuid: v4(), canvas: {x: 0, y: 0, width: width||1920, height: height||1080}, modules: [] })}>
 			create
 		</button>
 	</section>

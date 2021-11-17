@@ -13,6 +13,10 @@
 	let y: number = 0
 	let movingCanvas: boolean = false
 	let movingModule: string = ''
+	let resizingModule: string = ''
+	let resizingModuleDir: string = ''
+	let resizingX: number = 0
+	let resizingY: number = 0
 	let movingX: number = 0
 	let movingY: number = 0
 
@@ -76,6 +80,7 @@
 			y = containerHeight - overlay.canvas.height / 4
 		}
 		[overlay.canvas.x, overlay.canvas.y] = getCoordinates(x, y)
+		dispatch('refresh', '')
 	}
 
 	function handleWheel(e: WheelEvent) {
@@ -124,6 +129,76 @@
 		[m.box.x, m.box.y] = getCoordinates(m.box.x + movingX, m.box.y + movingY)
 		dispatch('refresh', uuid)
 	}
+	// Module resize
+	function resizeModule(node: HTMLElement, params: {uuid: string, act: string}) {
+		const mousedown = (e: MouseEvent) => {
+			if (e.button !== 0) return
+			e.preventDefault()
+			e.stopPropagation()
+
+			resizingModule = params.uuid
+			resizingModuleDir = params.act
+			resizingX = resizingY = 0
+
+			movingModule = params.uuid
+			movingX = movingY = 0
+
+			const addResize = (e: MouseEvent) => {
+				// TODO: Don't apply lock to resizingX/resizingY when resizing to the left/top.
+				if (resizingModuleDir === 'nw-resize') {
+					movingX += e.movementX / zoom
+					movingY += e.movementY / zoom
+					resizingX -= e.movementX / zoom
+					resizingY -= e.movementY / zoom
+				} else if (resizingModuleDir === 'ne-resize') {
+					resizingX += e.movementX / zoom
+					movingY += e.movementY / zoom
+					resizingY -= e.movementY / zoom
+				} else if (resizingModuleDir === 'sw-resize') {
+					resizingY += e.movementY / zoom
+					movingX += e.movementX / zoom
+					resizingX -= e.movementX / zoom
+				} else if (resizingModuleDir === 'se-resize') {
+					resizingX += e.movementX / zoom
+					resizingY += e.movementY / zoom
+				}
+			}
+
+			const mousemove = (e: MouseEvent) => {
+				addResize(e)
+			}
+
+			const mouseup = () => {
+				addResize(e)
+
+				let m = overlay.modules.find(v=>v.uuid===resizingModule)
+				if (m) {
+					[m.box.x, m.box.y, m.box.width, m.box.height] = [
+						...getCoordinates(m.box.x + movingX, m.box.y + movingY),
+						...getCoordinates(m.box.width + resizingX, m.box.height + resizingY)
+					]
+					dispatch('refresh', resizingModule)
+				}
+
+				resizingModule = ''
+				movingModule = ''
+
+				window.removeEventListener('mousemove', mousemove, false)
+				window.removeEventListener('mouseup', mouseup, false)
+			}
+
+			window.addEventListener('mousemove', mousemove, false)
+			window.addEventListener('mouseup', mouseup, false)
+		}
+		node.addEventListener('mousedown', mousedown, false)
+
+		return {
+			destroy() {
+				node.removeEventListener('mousedown', mousedown, false)
+			}
+		}
+	}
+
 	const dispatch = createEventDispatcher<string>()
 
 	let canvas: HTMLCanvasElement
@@ -184,11 +259,19 @@
 
 <svelte:window on:keydown={keydown} on:keyup={keyup}/>
 <main bind:clientWidth={containerWidth} bind:clientHeight={containerHeight} on:wheel={handleWheel} use:move>
-	<section style="--x: {movingCanvas?getX(x+movingX):x}px; --y: {movingCanvas?getY(y+movingY):y}px; --width: {width}px; --height: {height}px">
+	<section style="--x: {movingCanvas?getX(overlay.canvas.x+movingX):overlay.canvas.x}px; --y: {movingCanvas?getY(overlay.canvas.y+movingY):overlay.canvas.y}px; --width: {width}px; --height: {height}px; --zoom: {zoom}">
 		<canvas bind:this={canvas}></canvas>
 		{#each overlay.modules as module (module.uuid)}
-			<article style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {module.box.width*zoom}px; --height: {module.box.height*zoom}px" use:moveModule={module.uuid}>
-				<footer>{module.uuid}</footer>
+			<article style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px" use:moveModule={module.uuid}>
+				<footer>
+					<span>
+						{module.box.width}x{module.box.height} ({Math.round(module.box.width*zoom)}x{Math.round(module.box.height*zoom)})
+					</span>
+				</footer>
+				<nav use:resizeModule={{uuid: module.uuid, act: 'nw-resize'}} class='top-left'></nav>
+				<nav use:resizeModule={{uuid: module.uuid, act: 'ne-resize'}} class='top-right'></nav>
+				<nav use:resizeModule={{uuid: module.uuid, act: 'sw-resize'}} class='bottom-left'></nav>
+				<nav use:resizeModule={{uuid: module.uuid, act: 'se-resize'}} class='bottom-right'></nav>
 			</article>
 		{/each}
 		<footer>
@@ -202,8 +285,8 @@
 	</section>
 </main>
 
-{#if movingModule||movingCanvas}
-	<div class="catcher"></div>
+{#if movingModule||movingCanvas||resizingModule}
+	<div style="--cursor: {resizingModule?resizingModuleDir:'move'}" class="catcher"></div>
 {/if}
 
 <style>
@@ -230,6 +313,32 @@
 		height: var(--height);
 		border: 1px dashed gray;
 	}
+	article nav {
+		position: absolute;
+		width: calc(2em * var(--zoom));
+		height: calc(2em * var(--zoom));
+		border: 1px solid red;
+	}
+	article nav.top-left {
+		left: calc(-1em * var(--zoom));
+		top: calc(-1em * var(--zoom));
+		cursor: nw-resize;
+	}
+	article nav.top-right {
+		right: calc(-1em * var(--zoom));
+		top: calc(-1em * var(--zoom));
+		cursor: ne-resize;
+	}
+	article nav.bottom-left {
+		left: calc(-1em * var(--zoom));
+		bottom: calc(-1em * var(--zoom));
+		cursor: sw-resize;
+	}
+	article nav.bottom-right {
+		right: calc(-1em * var(--zoom));
+		bottom: calc(-1em * var(--zoom));
+		cursor: se-resize;
+	}
 	.active {
 		color: #eeee22;
 	}
@@ -240,6 +349,7 @@
 		position: absolute;
 		right: 0;
 		top: 101%;
+		font-size: calc(1.5em * var(--zoom));
 		font-family: overpass-mono, monospace;
 		color: #999;
 	}
@@ -250,7 +360,7 @@
 		width: 100%;
 		height: 100%;
 		background: rgba(255,255,255,.01);
-		cursor: move;
+		cursor: var(--cursor);
 	}
 
 </style>
