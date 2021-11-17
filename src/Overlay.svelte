@@ -20,8 +20,8 @@
 	let movingX: number = 0
 	let movingY: number = 0
 
-	let gridWidth: number = 32
-	let gridHeight: number = 32
+	let gridWidth: number = 30
+	let gridHeight: number = 30
 	let gridLock: boolean = true
 	$: width = Math.round(overlay.canvas.width * zoom)
 	$: height = Math.round(overlay.canvas.height * zoom)
@@ -212,8 +212,8 @@
 		ctx.fillStyle = '#ffffff44'
 		let cw: number = Math.round(gridWidth * zoom)
 		let ch: number = Math.round(gridHeight * zoom)
-		for (let i = 0; i < width/cw; i++) {
-			for (let j = 0; j < height/ch; j++) {
+		for (let i = 0; i < Math.round(width/cw); i++) {
+			for (let j = 0; j < Math.round(height/ch); j++) {
 				ctx.fillRect(Math.round(i*cw), Math.round(j*ch), 1, 1)
 			}
 		}
@@ -224,19 +224,19 @@
 			x = Math.round(x / gridWidth) * gridWidth
 			y = Math.round(y / gridHeight) * gridHeight
 		}
-		return [x, y]
+		return [Math.round(x), Math.round(y)]
 	}
 	function getX(x: number): number {
 		if (gridLock) {
 			x = Math.round(x / gridWidth) * gridWidth
 		}
-		return x
+		return Math.round(x)
 	}
-	function getY(x: number): number {
+	function getY(y: number): number {
 		if (gridLock) {
-			x = Math.round(x / gridWidth) * gridWidth
+			y = Math.round(y / gridHeight) * gridHeight
 		}
-		return x
+		return Math.round(y)
 	}
 
 	onMount(() => {
@@ -265,7 +265,7 @@
 			<article style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px" use:moveModule={module.uuid}>
 				<footer>
 					<span>
-						{module.box.width}x{module.box.height} ({Math.round(module.box.width*zoom)}x{Math.round(module.box.height*zoom)})
+						{module.box.width}x{module.box.height}
 					</span>
 				</footer>
 				<nav use:resizeModule={{uuid: module.uuid, act: 'nw-resize'}} class='top-left'></nav>
