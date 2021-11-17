@@ -67,8 +67,7 @@
 		}
 	}
 	function setCanvasPos() {
-		let x = overlay.canvas.x + movingY
-		let y = overlay.canvas.y + movingY
+		let [x, y] = getCoordinates(overlay.canvas.x + movingX, overlay.canvas.y + movingY)
 		if (x < -overlay.canvas.width / 2) {
 			x = -overlay.canvas.width / 2
 		} else if (x > containerWidth - overlay.canvas.width / 4) {
