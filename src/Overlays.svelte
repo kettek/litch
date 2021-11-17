@@ -7,6 +7,8 @@
 	import OverlayItem from './OverlayItem.svelte'
 	import type { OverlayInterface } from './interfaces/Overlay'
 
+	import SplitPane from './components/SplitPane.svelte'
+
 	export let overlays: Record<string, OverlayInterface> = {}
 	export let currentOverlayUUID: string = ''
 	let showOverlaySelection: boolean = false
@@ -26,32 +28,34 @@
 </script>
 
 <main>
-	<nav>
-		{#if showOverlayCreator}
-			<OverlayCreator bind:shown={showOverlayCreator} on:create={handleCreate} />
-		{:else if currentOverlay === undefined}
-			<OverlayList bind:showOverlayCreator={showOverlayCreator} bind:overlays={overlays} bind:currentOverlayUUID={currentOverlayUUID}/>
-		{:else}
-			<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID}/>
-		{/if}
-	</nav>
-	<section>
-		{#if currentOverlay === undefined}
-			{#if Object.entries(overlays).length > 0}
-				{$_('overlays.selectOverlay')}
+	<SplitPane type="horizontal" pos=20>
+		<nav slot=a>
+			{#if showOverlayCreator}
+				<OverlayCreator bind:shown={showOverlayCreator} on:create={handleCreate} />
+			{:else if currentOverlay === undefined}
+				<OverlayList bind:showOverlayCreator={showOverlayCreator} bind:overlays={overlays} bind:currentOverlayUUID={currentOverlayUUID}/>
 			{:else}
-				{$_('overlays.createOverlay')}
+				<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID}/>
 			{/if}
-		{:else}
-			show it!
-		{/if}
-	</section>
+		</nav>
+		<section slot=b style='width: 100%;'>
+			{#if currentOverlay === undefined}
+				{#if Object.entries(overlays).length > 0}
+					{$_('overlays.selectOverlay')}
+				{:else}
+					{$_('overlays.createOverlay')}
+				{/if}
+			{:else}
+				show it!
+			{/if}
+		</section>
+	</SplitPane>
 </main>
 
 <style>
 	main {
 		display: grid;
-		grid-template-columns: minmax(0, 20em) minmax(0, 1fr);
+		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr);
 		width: 100%;
 		height: 100%;
