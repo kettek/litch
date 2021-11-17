@@ -3,9 +3,50 @@
 	import { _ } from 'svelte-i18n'
 	import { quintInOut } from 'svelte/easing'
 	import type { OverlayInterface } from './interfaces/Overlay'
+	import { createEventDispatcher } from 'svelte'
+	import ModuleItem from './ModuleItem.svelte'
+
+	import type { ModuleInterface } from './interfaces/Module'
+	import ModuleList from './ModuleList.svelte'
+	import { v4 } from 'uuid'
+	export let modules: Record<string, ModuleInterface> = {}
 
 	export let overlay: OverlayInterface
 	export let uuid: string
+	let title: string = overlay.title
+	let width: number = overlay.canvas.width
+	let height: number = overlay.canvas.height
+
+	function hasChanges(width: number, height: number, title: string): boolean {
+		return width !== overlay.canvas.width || height !== overlay.canvas.height || title !== overlay.title
+	}
+	$: changed = hasChanges(width, height, title)
+
+	function handleApply() {
+		overlay.canvas.width = width
+		overlay.canvas.height = height
+		overlay.title = title
+		width = width
+		dispatch('refresh', uuid)
+	}
+
+	function handleAddModule(evt: CustomEvent<string>) {
+		let module = modules[evt.detail]
+		if (!module) return // TODO: show error
+		// TODO: We need module.defaults.{} that contains box, settings, and title.
+		overlay.modules.push({
+			title: module.defaults.title,
+			uuid: v4(),
+			box: {...module.defaults.box},
+			moduleUUID: evt.detail,
+			settings: {...module.defaults.settings},
+		})
+		dispatch('refresh', uuid)
+	}
+
+	let showDangerous: boolean
+
+	const dispatch = createEventDispatcher<string>()
 </script>
 
 <main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
@@ -14,18 +55,37 @@
 		<header>{overlay.title}</header>
 	</nav>
 	<section>
-		<label>
-			<input type='text' placeholder='title' bind:value={overlay.title}>
-			<span>Title</span>
-		</label>
-		<label>
-			<input type='number' placeholder='1920' bind:value={overlay.canvas.width}>
-			<span>Width</span>
-		</label>
-		<label>
-			<input type='number' placeholder='1080' bind:value={overlay.canvas.height}>
-			<span>Height</span>
-		</label>
+		<header>Settings</header>
+		<article>
+			{#if !showDangerous}
+				<label>
+					<input type='text' placeholder='title' bind:value={title}>
+					<span>Title</span>
+				</label>
+				<label>
+					<input type='number' placeholder='1920' bind:value={width}>
+					<span>Width</span>
+				</label>
+				<label>
+					<input type='number' placeholder='1080' bind:value={height}>
+					<span>Height</span>
+				</label>
+				<button disabled={!changed} on:click={handleApply}>apply</button>
+				<button on:click={()=>showDangerous=true}>dangerous mode</button>
+			{:else}
+				<button on:click={()=>showDangerous=false}>back</button>
+				<button on:click={()=>dispatch('delete', uuid)}>delete</button>
+			{/if}
+		</article>
+	</section>
+	<section>
+		<header>Modules</header>
+		<article>
+			<ModuleList modules={modules} on:add={handleAddModule}/>
+			{#each overlay.modules as module}
+				<ModuleItem bind:module={module} modules={modules}/>
+			{/each}
+		</article>
 	</section>
 </main>
 
@@ -36,7 +96,7 @@
         width: 100%; height: 100%;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
-		grid-template-rows: auto minmax(0, 1fr);
+		grid-template-rows: auto auto minmax(0, 1fr);
 	}
 	nav {
 		display: grid;
@@ -44,11 +104,25 @@
 		align-items: stretch;
 		justify-content: stretch;
 	}
-	header {
+	nav header {
 		font-size: 150%;
 		font-weight: 600;
 		display: flex;
 		align-items: center;
 		padding-left: .5em;
+	}
+	section {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: auto minmax(0, 1fr);
+	}
+	section header {
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		padding-left: .5em;
+	}
+	article {
+		overflow-y: auto;
 	}
 </style>

@@ -7,5 +7,5 @@ export interface OverlayInterface {
     title: string
     uuid: string
     canvas: BoxInterface
-    activeModules: ModuleInstanceInterface
+    modules: ModuleInstanceInterface[]
 }

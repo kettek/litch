@@ -5,12 +5,15 @@
 	import { onMount } from 'svelte'
 	import { register, init, isLoading, _ } from 'svelte-i18n'
 	import YAML from 'yaml'
-	import type { OverlayInterface } from './interfaces/Overlay';
+	import type { OverlayInterface } from './interfaces/Overlay'
+	import type { ModuleInterface } from './interfaces/Module'
 </script>
 
 <script lang="ts">
 	let overlays: Record<string, OverlayInterface> = {}
+	let modules: Record<string, ModuleInterface> = {}
 	let currentOverlayUUID: string = ''
+	let activeOverlayUUID: string = ''
 	function getCurrentOverlay(uuid: string): OverlayInterface | undefined {
 		return overlays[uuid]
 	}
@@ -41,6 +44,19 @@
 		loadingMessage = "Populating structures"
 		overlays = await eap.promises.get('overlays') || {}
 		currentOverlayUUID = await eap.promises.get('currentOverlayUUID') || ''
+		activeOverlayUUID = await eap.promises.get('activeOverlayUUID') || ''
+
+		// Load modules (this should be a separate model)
+		loadingMessage = "Loading modules"
+		modules['00000000-0000-0000-0000-000000000000'] = {
+			uuid: '00000000-0000-0000-0000-000000000000',
+			title: 'dummy module',
+			defaults: {
+				title: 'A dummy module',
+				box: {x: 0, y: 0, width: 128, height: 128},
+				settings: {},
+			}
+		}
 
 		loading = false
 	})
@@ -51,6 +67,15 @@
 	function toggleSettings() {
 		showSettings = !showSettings
 	}
+
+	function handleRefresh(evt: CustomEvent<string>) {
+		overlays = {
+			...overlays
+		}
+		currentOverlayUUID = currentOverlayUUID
+		activeOverlayUUID = activeOverlayUUID
+	}
+
 </script>
 
 <nav>
@@ -62,7 +87,7 @@
 		{#if showSettings}
 			<Settings/>
 		{/if}
-		<Overlays bind:overlays={overlays} bind:currentOverlayUUID={currentOverlayUUID} />
+		<Overlays bind:overlays={overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} on:refresh={handleRefresh} modules={modules}/>
 	{:else}
 		{loadingMessage}
 	{/if}

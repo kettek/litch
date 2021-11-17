@@ -5,26 +5,39 @@
 	import OverlayCreator from './OverlayCreator.svelte'
 	import OverlayList from './OverlayList.svelte'
 	import OverlayItem from './OverlayItem.svelte'
+	import Overlay from './Overlay.svelte'
 	import type { OverlayInterface } from './interfaces/Overlay'
 
 	import SplitPane from './components/SplitPane.svelte'
 
+	import type { ModuleInterface } from './interfaces/Module'
+	export let modules: Record<string, ModuleInterface> = {}
+
 	export let overlays: Record<string, OverlayInterface> = {}
 	export let currentOverlayUUID: string = ''
+	export let activeOverlayUUID: string = ''
+	export let focusedOverlayUUID: string = ''
 	let showOverlaySelection: boolean = false
 	let showOverlayCreator: boolean = false
 
-	function getCurrentOverlay(uuid: string): OverlayInterface | undefined {
-		return overlays[uuid]
-	}
-	$: currentOverlay = getCurrentOverlay(currentOverlayUUID)
+	$: currentOverlay = overlays[currentOverlayUUID]
+	$: activeOverlay = overlays[activeOverlayUUID]
+	$: focusedOverlay = overlays[focusedOverlayUUID]
+	$: displayedOverlay = focusedOverlay || activeOverlay
 	
 	function handleCreate(evt: CustomEvent<OverlayInterface>) {
 		overlays[evt.detail.uuid] = evt.detail
 		showOverlayCreator = false
-		//console.log('okay, make', evt.detail)
 	}
-
+	function handleDelete(evt: CustomEvent<string>) {
+		delete overlays[evt.detail]
+		if (activeOverlayUUID === evt.detail) {
+			activeOverlayUUID = ''
+		}
+		if (currentOverlayUUID === evt.detail) {
+			currentOverlayUUID = ''
+		}
+	}
 </script>
 
 <main>
@@ -33,20 +46,20 @@
 			{#if showOverlayCreator}
 				<OverlayCreator bind:shown={showOverlayCreator} on:create={handleCreate} />
 			{:else if currentOverlay === undefined}
-				<OverlayList bind:showOverlayCreator={showOverlayCreator} bind:overlays={overlays} bind:currentOverlayUUID={currentOverlayUUID}/>
+				<OverlayList bind:showOverlayCreator={showOverlayCreator} bind:overlays={overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} bind:focusedOverlayUUID={focusedOverlayUUID}/>
 			{:else}
-				<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID}/>
+				<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID} on:delete={handleDelete} on:refresh modules={modules}/>
 			{/if}
 		</nav>
 		<section slot=b style='width: 100%;'>
-			{#if currentOverlay === undefined}
+			{#if displayedOverlay === undefined}
 				{#if Object.entries(overlays).length > 0}
-					{$_('overlays.selectOverlay')}
+					{$_('overlays.activateOverlay')}
 				{:else}
 					{$_('overlays.createOverlay')}
 				{/if}
 			{:else}
-				show it!
+				<Overlay bind:overlay={displayedOverlay} modules={modules} on:refresh />
 			{/if}
 		</section>
 	</SplitPane>
@@ -67,6 +80,8 @@
 		overflow-y: auto;
 	}
 	section {
-		border: 1px solid blue;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr);
 	}
 </style>

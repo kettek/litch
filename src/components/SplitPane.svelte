@@ -48,7 +48,7 @@ The software is provided "as is", without warranty of any kind, including but no
 	}
 
 	function drag(node, callback) {
-		const mousedown = event => {
+		const onmousedown = event => {
 			if (event.which !== 1) return;
 
 			event.preventDefault();
@@ -66,7 +66,7 @@ The software is provided "as is", without warranty of any kind, including but no
 			window.addEventListener('mouseup', onmouseup, false);
 		}
 
-		node.addEventListener('mousedown', mousedown, false);
+		node.addEventListener('mousedown', onmousedown, false);
 
 		return {
 			destroy() {
