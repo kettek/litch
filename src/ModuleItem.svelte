@@ -10,6 +10,7 @@
 
 <main>
 	<header>{module.title}({realModule.title})</header>
+	<svelte:component this={realModule.settingsComponent} bind:settings={module.settings}/>
 </main>
 
 <style>

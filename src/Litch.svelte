@@ -48,15 +48,8 @@
 
 		// Load modules (this should be a separate model)
 		loadingMessage = "Loading modules"
-		modules['00000000-0000-0000-0000-000000000000'] = {
-			uuid: '00000000-0000-0000-0000-000000000000',
-			title: 'dummy module',
-			defaults: {
-				title: 'A dummy module',
-				box: {x: 0, y: 0, width: 128, height: 128},
-				settings: {},
-			}
-		}
+		let m: ModuleInterface = (await import('./modules/dummy/index.js')).default as unknown as ModuleInterface
+		modules[m.uuid] = m
 
 		loading = false
 	})
