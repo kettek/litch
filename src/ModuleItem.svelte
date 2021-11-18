@@ -1,6 +1,7 @@
 <script type="ts">
 	import type { ModuleInstanceInterface } from "./interfaces/ModuleInstance";
 	import type { ModuleInterface } from './interfaces/Module'
+	import ModuleWrapper from "./ModuleWrapper.svelte"
 
 	export let modules: Record<string, ModuleInterface> = {}
 	export let module: ModuleInstanceInterface
@@ -29,7 +30,7 @@
 		</label>
 	</section>
 	<section>
-		<svelte:component this={realModule.settingsComponent} bind:settings={module.settings}/>
+		<ModuleWrapper this={realModule.settingsComponent} bind:settings={module.settings} bind:box={module.box}/>
 	</section>
 </main>
 

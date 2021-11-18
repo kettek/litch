@@ -1,0 +1,116 @@
+// FIXME: Ideally we could just import express and use it, but Typescript + Svelte + Rollup + Electron + Node is causing issues. Mainly, afaik, it is that rollup cannot figure out how to bundle node(or electron) commonjs modules.
+import type { Express, NextFunction, Request } from 'express'
+import type { Server } from 'http'
+const express = require('express')
+const expressWs = require('express-ws')
+import type { Application } from 'express-ws'
+import type { MessageEvent, WebSocket, CloseEvent } from 'ws'
+import { v4 } from 'uuid'
+
+const httpTerminator = require('http-terminator')
+
+import type { OverlayInterface } from './interfaces/Overlay'
+
+const path = require('path')
+
+import { isHello, Hello, LitchMessage } from '../api'
+
+export class LitchServer {
+	#express : Application | null = null
+	#httpServer: Server | null = null
+	#httpTerminator: any
+
+	#filesPath : string = path.resolve('client/public')
+	#modulesPath : string = path.resolve('modules')
+
+	#clients : Record<string, WebSocket> = {}
+
+	#running : boolean
+	port : number = 8090
+	
+	onclose : (value: void) => void = () => {}
+
+	//
+	#activeOverlayUUID : string = ''
+	#overlays : Record<string, OverlayInterface> = {}
+	#modules : Record<string, string> = {} // UUID -> compiled module .js path
+
+	get running(): boolean {
+		return this.#running
+	}
+
+	constructor() {
+		this.#running = false
+	}
+
+	updateOverlays(overlays: Record<string, OverlayInterface>) {
+		console.log('update Overlays')
+		this.#overlays = overlays
+	}
+	updateModules(modules: Record<string, string>) {
+		console.log('update modules')
+		this.#modules = modules
+	}
+	updateActiveOverlay(uuid: string) {
+		console.log('update active')
+		this.#activeOverlayUUID = uuid
+	}
+
+	async start(): Promise<boolean> {
+		this.#express = expressWs((express() as Express)).app as Application
+
+		await new Promise((resolve: (value: void) => void, reject: (reason: any) => void) => {
+			try {
+				if (!this.#express) {
+					return reject(null)
+				}
+				this.#httpServer = this.#express.listen(this.port, () => {
+					console.log(`server listening on port ${this.port}`)
+					resolve()
+				})
+				this.#httpTerminator = httpTerminator.createHttpTerminator({server: this.#httpServer})
+			} catch(err: any) {
+				reject(err)
+			}
+		})
+
+		this.#express.use('/modules', (express as any).static(this.#modulesPath))
+		console.log(`serving modules from ${this.#modulesPath}`)
+
+		this.#express.use('/', (express as any).static(this.#filesPath))
+		console.log(`serving files from ${this.#filesPath}`)
+
+		this.#express.ws('/', (ws: WebSocket, req: Request, next: NextFunction) => {
+			const uuid = v4()
+			this.#clients[uuid] = ws
+			var h : Hello = {event: 'hello', uuid}
+			ws.send(JSON.stringify(h))
+			ws.on('message', (data: string) => {
+				let msg = JSON.parse(data)
+				if (isHello(msg)) {
+					console.log(`hello from ${msg.uuid}`)
+				} else {
+					console.log('got unhandled :(')
+				}
+			})
+			ws.onclose = (event: CloseEvent) => {
+				delete this.#clients[uuid]
+			}
+		})
+
+		this.#express.on('close', () => {
+			this.onclose()
+		})
+
+		this.#running = true
+		return this.#running
+	}
+	async stop(): Promise<boolean> {
+		if (this.#httpTerminator) {
+			await this.#httpTerminator.terminate()
+		}
+
+		this.#running = false
+		return this.#running
+	}
+}

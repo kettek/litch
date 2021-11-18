@@ -1,6 +1,7 @@
 <script type="ts">
 	import type { OverlayInterface } from './interfaces/Overlay'
 	import type { ModuleInterface } from './interfaces/Module'
+	import ModuleWrapper from "./ModuleWrapper.svelte"
 	import { onMount } from 'svelte'
 	import { createEventDispatcher } from 'svelte'
 
@@ -262,7 +263,7 @@
 		<canvas bind:this={canvas}></canvas>
 		{#each overlay.modules as module (module.uuid)}
 			<article style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px" use:moveModule={module.uuid}>
-				<svelte:component this={modules[module.moduleUUID].instanceComponent} bind:settings={module.settings}/>
+				<ModuleWrapper this={modules[module.moduleUUID].instanceComponent} bind:settings={module.settings}/>
 				<footer>
 					<span>
 						{module.box.width}x{module.box.height}

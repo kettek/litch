@@ -2,9 +2,9 @@
 	const eap = require('electron-app-settings')
 	const { ipcRenderer } = require('electron')
 
+	import { LitchServer } from './LitchServer'
 	import { onMount } from 'svelte'
 	import { register, init, isLoading, _ } from 'svelte-i18n'
-	import YAML from 'yaml'
 	import type { OverlayInterface } from './interfaces/Overlay'
 	import type { ModuleInterface } from './interfaces/Module'
 </script>
@@ -14,14 +14,33 @@
 	let modules: Record<string, ModuleInterface> = {}
 	let currentOverlayUUID: string = ''
 	let activeOverlayUUID: string = ''
+	let litchServer: LitchServer = new LitchServer()
+	let serverStatus: string = 'off'
 	function getCurrentOverlay(uuid: string): OverlayInterface | undefined {
 		return overlays[uuid]
 	}
 
 	$: currentOverlay = getCurrentOverlay(currentOverlayUUID)
 
+	$: activeOverlayUUID ? litchServer.updateActiveOverlay(activeOverlayUUID) : null
+	$: overlays ? litchServer.updateOverlays(overlays) : null
+	$: modules ? litchServer.updateModules(
+		((r: Record<string, ModuleInterface>): Record<string, string> => {
+			let o: Record<string, string> = {}
+			for (let k in Object.keys(r)) {
+				o[k] = ''
+			}
+			return o
+		})(modules)
+	) : null
+
 	$: loading = true
 	$: loadingMessage = ""
+
+	litchServer.onclose = () => {
+		console.log('got on close')
+		serverStatus = 'off'
+	}
 
 	onMount(async () => {
 		loadingMessage = "Gathering basic information"
@@ -48,7 +67,12 @@
 
 		// Load modules (this should be a separate model)
 		loadingMessage = "Loading modules"
-		let m: ModuleInterface = (await import('./modules/dummy/index.js')).default as unknown as ModuleInterface
+		const mod = 'dummy'
+		const url = `../../modules/${mod}/dist/index.js`
+		let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
+		//let m: ModuleInterface = (await import('./modules/dummy/index.js')).default as unknown as ModuleInterface
+		//let m: ModuleInterface = (await import('../modules/dummy/dist/index.js')).default as unknown as ModuleInterface
+		console.log('oh', m)
 		modules[m.uuid] = m
 
 		loading = false
@@ -59,6 +83,25 @@
 	let showSettings = false
 	function toggleSettings() {
 		showSettings = !showSettings
+	}
+
+	async function toggleServer() {
+		console.log('pending')
+		if (serverStatus === 'off') {
+			serverStatus = 'pending'
+			if (await litchServer.start()) {
+				serverStatus = 'on'
+			} else {
+				serverStatus = 'off'
+			}
+		} else if (serverStatus === 'on') {
+			serverStatus = 'pending'
+			if (!await litchServer.stop()) {
+				serverStatus = 'off'
+			} else {
+				serverStatus = 'on'
+			}
+		}
 	}
 
 	function handleRefresh(evt: CustomEvent<string>) {
@@ -73,7 +116,10 @@
 
 <nav>
 	<h1>litch</h1>
-	<button on:click={toggleSettings}>settings</button>
+	<menu>
+		<button disabled={serverStatus==='pending'} on:click={toggleServer}>{serverStatus==='on'?'stop':'start'}</button>
+		<button on:click={toggleSettings}>settings</button>
+	</menu>
 </nav>
 <main>
 	{#if !loading}
