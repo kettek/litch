@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
+  "compilerOptions": {
+    "types": ["svelte", "node"],
+    "target": "ES2021",
+    "strict": true,
+    "module": "ESNext",
+    /*"moduleResolution": "classic",*/
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    /*"resolveJsonModule": true,*/
+    "allowSyntheticDefaultImports": true
+  },
+}
