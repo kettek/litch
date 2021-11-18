@@ -35,7 +35,7 @@ export default {
 	input: 'src/main.ts',
 	output: {
 		sourcemap: true,
-		format: 'es',
+		format: 'esm',
 		name: 'litch',
 		dir: 'public/build',
 	},
@@ -51,6 +51,8 @@ export default {
 		// a separate file - better for performance
 		css({ output: 'bundle.css' }),
 
+		json(),
+
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In
 		// some cases you'll need additional configuration -
@@ -58,14 +60,16 @@ export default {
 		// https://github.com/rollup/plugins/tree/master/packages/commonjs
 		resolve({
 			browser: true,
-			dedupe: ['svelte']
+			dedupe: ['svelte'],
+			//preferBuiltins: false,
 		}),
-		commonjs(),
 		typescript({
 			sourceMap: !production,
 			inlineSources: !production
 		}),
-		json(),
+		commonjs({
+			/*transformMixedEsModules: true,*/
+		}),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
