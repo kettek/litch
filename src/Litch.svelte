@@ -12,6 +12,7 @@
 <script lang="ts">
 	let overlays: Record<string, OverlayInterface> = {}
 	let modules: Record<string, ModuleInterface> = {}
+	let modulesMap: Record<string, string> = {}
 	let currentOverlayUUID: string = ''
 	let activeOverlayUUID: string = ''
 	let litchServer: LitchServer = new LitchServer()
@@ -24,15 +25,7 @@
 
 	$: activeOverlayUUID ? litchServer.updateActiveOverlay(activeOverlayUUID) : null
 	$: overlays ? litchServer.updateOverlays(overlays) : null
-	$: modules ? litchServer.updateModules(
-		((r: Record<string, ModuleInterface>): Record<string, string> => {
-			let o: Record<string, string> = {}
-			for (let k in Object.keys(r)) {
-				o[k] = ''
-			}
-			return o
-		})(modules)
-	) : null
+	$: modulesMap ? litchServer.updateModules(modulesMap) : null
 
 	$: loading = true
 	$: loadingMessage = ""
@@ -68,12 +61,14 @@
 		// Load modules (this should be a separate model)
 		loadingMessage = "Loading modules"
 		const mod = 'dummy'
-		const url = `../../modules/${mod}/dist/index.js`
+		let fullmod = `/modules/${mod}/dist/index.js`
+		const url = `../..${fullmod}`
 		let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
 		//let m: ModuleInterface = (await import('./modules/dummy/index.js')).default as unknown as ModuleInterface
 		//let m: ModuleInterface = (await import('../modules/dummy/dist/index.js')).default as unknown as ModuleInterface
 		console.log('oh', m)
 		modules[m.uuid] = m
+		modulesMap[m.uuid] = fullmod
 
 		loading = false
 	})

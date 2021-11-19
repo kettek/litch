@@ -13,7 +13,7 @@ import type { OverlayInterface } from './interfaces/Overlay'
 
 const path = require('path')
 
-import { isHello, Hello, LitchMessage, LazyUpdate, isLazyUpdate} from '../api'
+import { isHello, Hello, LitchMessage, LazyUpdate, isLazyUpdate, isModuleTypeRequest, ModuleTypeResponse} from './api'
 
 export class LitchServer {
 	#express : Application | null = null
@@ -119,6 +119,17 @@ export class LitchServer {
 				let msg = JSON.parse(data)
 				if (isHello(msg)) {
 					console.log(`hello from ${msg.uuid}`)
+				} else if (isModuleTypeRequest(msg)) {
+					let r : ModuleTypeResponse = {
+						event: 'module-response',
+						uuid: '',
+						file: ''
+					}
+					if (this.#modules[msg.uuid]) {
+						r.uuid = msg.uuid
+						r.file = this.#modules[msg.uuid]
+					}
+					ws.send(JSON.stringify(r))
 				} else {
 					console.log('got unhandled :(')
 				}

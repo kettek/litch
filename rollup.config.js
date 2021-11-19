@@ -65,7 +65,8 @@ export default {
 		}),
 		typescript({
 			sourceMap: !production,
-			inlineSources: !production
+			inlineSources: !production,
+			tsconfig: 'src/tsconfig.json'
 		}),
 		commonjs({
 			/*transformMixedEsModules: true,*/

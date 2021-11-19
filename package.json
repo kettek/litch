@@ -8,7 +8,7 @@
     "dev": "rollup -c -w",
     "start": "electron .",
     "old-start": "sirv public --no-clear",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./src/tsconfig.json"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
