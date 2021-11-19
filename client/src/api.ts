@@ -151,6 +151,22 @@ export function isStop(object: any): object is Stop {
 	return object.event === 'stop'
 }
 
+export interface LazyUpdate {
+	event: 'lazy-update'
+	overlayUUID: string
+	box: Box
+	modules: {
+		title: string
+		uuid: string
+		box: Box
+		moduleUUID: string
+		settings: any
+	}[]
+}
+export function isLazyUpdate(object: any): object is LazyUpdate {
+	return object.event === 'lazy-update'
+}
+
 export type LitchMessage = Stop |
 		OverlayAdd | OverlayRemove |
 		OverlayHide | OverlayShow |

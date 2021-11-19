@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
-	import { isHello, LitchMessage } from './api'
+	import { isHello, isLazyUpdate, LitchMessage } from './api'
 
 	let webSocket: WebSocket | undefined
 	let connected: boolean = false
@@ -31,6 +31,8 @@
 						uuid = msg.uuid
 						webSocket?.send(JSON.stringify({event: 'hello', uuid: uuid}))
 						console.log(`hello ${msg.uuid}`)
+					} else if (isLazyUpdate(msg)) {
+						console.log('got update', msg)
 					} else {
 						console.log('got unhandled :(')
 					}

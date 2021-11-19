@@ -13,7 +13,7 @@ import type { OverlayInterface } from './interfaces/Overlay'
 
 const path = require('path')
 
-import { isHello, Hello, LitchMessage } from '../api'
+import { isHello, Hello, LitchMessage, LazyUpdate, isLazyUpdate} from '../api'
 
 export class LitchServer {
 	#express : Application | null = null
@@ -46,6 +46,8 @@ export class LitchServer {
 	updateOverlays(overlays: Record<string, OverlayInterface>) {
 		console.log('update Overlays')
 		this.#overlays = overlays
+		// Eh... let's just do a lazy update for now that sends the entire overlay state.
+		this.sendActiveOverlay()
 	}
 	updateModules(modules: Record<string, string>) {
 		console.log('update modules')
@@ -54,6 +56,33 @@ export class LitchServer {
 	updateActiveOverlay(uuid: string) {
 		console.log('update active')
 		this.#activeOverlayUUID = uuid
+		this.sendActiveOverlay()
+	}
+	
+	sendActiveOverlay() {
+		for (let clientSocket of Object.values(this.#clients)) {
+			this.sendActiveOverlayTo(clientSocket)
+		}
+	}
+	sendActiveOverlayTo(s: WebSocket) {
+		let active = this.#overlays[this.#activeOverlayUUID]
+		if (active === undefined) {
+			let u : LazyUpdate = {
+				event: 'lazy-update',
+				overlayUUID: '',
+				box: {x: 0, y: 0, width: 0, height: 0},
+				modules: [],
+			}
+			s.send(JSON.stringify(u))
+			return
+		}
+		let u : LazyUpdate = {
+			event: 'lazy-update',
+			overlayUUID: this.#activeOverlayUUID,
+			box: active.canvas,
+			modules: active.modules
+		}
+		s.send(JSON.stringify(u))
 	}
 
 	async start(): Promise<boolean> {
@@ -85,6 +114,7 @@ export class LitchServer {
 			this.#clients[uuid] = ws
 			var h : Hello = {event: 'hello', uuid}
 			ws.send(JSON.stringify(h))
+			this.sendActiveOverlayTo(ws)
 			ws.on('message', (data: string) => {
 				let msg = JSON.parse(data)
 				if (isHello(msg)) {
