@@ -155,6 +155,9 @@
 		top: var(--y);
 		width: var(--width);
 		height: var(--height);
-		background: rgba(128, 128, 128, 0.5);
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr);
+		overflow: hidden;
 	}
 </style>
