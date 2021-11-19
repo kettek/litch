@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
+	import ModuleWrapper from './ModuleWrapper.svelte'
+
 	import { isHello, isLazyUpdate, isModuleTypeResponse, LitchMessage, ModuleTypeRequest } from '../../src/api'
 
 	import type { OverlayInterface } from '../../src/interfaces/Overlay'
@@ -99,6 +101,13 @@
 			modulesStore[uuid] = err
 		}
 	}
+	function getModule(uuid: string): ModuleInterface | null {
+		let m = modulesStore[uuid]
+		if (m === null || m instanceof Error) {
+			return null
+		}
+		return m
+	}
 
 	let t: NodeJS.Timeout
 
@@ -124,7 +133,9 @@
 	{#if connected}
 		{#each overlay.modules as module (module.uuid)}
 			<article style="--x: {module.box.x}px; --y: {module.box.y}px; --width: {module.box.width}px; --height: {module.box.height}px">
-				module
+				{#if modulesStore[module.moduleUUID]}
+					<ModuleWrapper this={modulesStore[module.moduleUUID].liveComponent} bind:settings={module.settings} bind:box={module.box} />
+				{/if}
 			</article>
 		{/each}
 	{:else}

@@ -1,8 +1,11 @@
 <script type="ts">
+    export let box: any = {}
 	export let settings: any = {}
 </script>
 
-<div>Dummy!</div>
+<div>
+    Dummy!
+</div>
 
 <style>
 	div {

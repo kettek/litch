@@ -1,6 +1,6 @@
 import SettingsComponent from './settings.svelte'
-import InstanceComponent from './instance.svelte'
-import ItemComponent from './item.svelte'
+import LiveComponent from './live.svelte'
+import PreviewComponent from './preview.svelte'
 
 export default {
 	title: "Dummy Module",
@@ -13,6 +13,6 @@ export default {
 		settings: {},
 	},
 	settingsComponent: SettingsComponent,
-	instanceComponent: InstanceComponent,
-	itemComponent: ItemComponent,
+	liveComponent: LiveComponent,
+	previewComponent: PreviewComponent,
 }
