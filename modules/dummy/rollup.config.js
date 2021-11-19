@@ -41,7 +41,11 @@ export default {
 		commonjs(),
 		typescript({
 			sourceMap: !production,
-			inlineSources: !production
+			inlineSources: !production,
+			include: [
+				'src/**',
+				'../../src/interfaces/**/*'
+			]
 		}),
 
 		// If we're building for production (npm run build

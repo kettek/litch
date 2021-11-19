@@ -1,6 +1,8 @@
 <script type="ts">
-    export let box: any = {}
+	/*import type { BoxInterface } from '../../../src/interfaces/Box'
+
 	export let settings: any = {}
+	export let box: BoxInterface*/
 </script>
 
 <div>

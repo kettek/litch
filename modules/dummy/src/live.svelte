@@ -1,6 +1,8 @@
 <script type="ts">
-	export let settings: any = {}
-	export let box: any = {}
+	import type { BoxInterface } from '../../../src/interfaces/Box'
+
+	//export let settings: any = {}
+	export let box: BoxInterface
 </script>
 
 <div>
@@ -10,5 +12,6 @@
 <style>
 	div {
 		color: red;
+		background: rgba(0,0,0,0.5);
 	}
 </style>
