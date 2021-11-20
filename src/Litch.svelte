@@ -60,15 +60,17 @@
 
 		// Load modules (this should be a separate model)
 		loadingMessage = "Loading modules"
-		const mod = 'dummy'
-		let fullmod = `/modules/${mod}/dist/index.js`
-		const url = `../..${fullmod}`
-		let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
-		//let m: ModuleInterface = (await import('./modules/dummy/index.js')).default as unknown as ModuleInterface
-		//let m: ModuleInterface = (await import('../modules/dummy/dist/index.js')).default as unknown as ModuleInterface
-		console.log('oh', m)
-		modules[m.uuid] = m
-		modulesMap[m.uuid] = fullmod
+		let mods = ['dummy', 'youtube']
+		for (let mod of mods) {
+			let fullmod = `/modules/${mod}/dist/index.js`
+			let url = `../..${fullmod}`
+			let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
+			//let m: ModuleInterface = (await import('./modules/dummy/index.js')).default as unknown as ModuleInterface
+			//let m: ModuleInterface = (await import('../modules/dummy/dist/index.js')).default as unknown as ModuleInterface
+			console.log('oh', m)
+			modules[m.uuid] = m
+			modulesMap[m.uuid] = fullmod
+		}
 
 		loading = false
 	})
