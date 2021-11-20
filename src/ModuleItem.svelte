@@ -6,6 +6,10 @@
 	export let modules: Record<string, ModuleInterface> = {}
 	export let module: ModuleInstanceInterface
 
+	let update: (value: any) => void = (value: any) => {
+		module.settings = value
+	}
+
 	$: realModule = modules[module.moduleUUID]
 </script>
 
@@ -30,7 +34,7 @@
 		</label>
 	</section>
 	<section>
-		<ModuleWrapper this={realModule.settingsComponent} bind:settings={module.settings} bind:box={module.box}/>
+		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} />
 	</section>
 </main>
 
