@@ -1,8 +1,8 @@
 <script type="ts">
-	/*import type { BoxInterface } from '../../../src/interfaces/Box'
+	import type { Settings } from './common'
 
-	export let box: BoxInterface*/
-	export let settings: any = {}
+	export let settings: Settings
+	export let update: (value: any) => void
 </script>
 
 <div>
@@ -14,6 +14,7 @@
 		<input type='checkbox' bind:checked={settings.autoplay}/>
 		autoplay
 	</label>
+	<button on:click={()=>update(settings)}>apply</button>
 </div>
 
 <style>

@@ -1,9 +1,8 @@
 <script type="ts">
-	import type { BoxInterface } from '../../../src/interfaces/Box'
 	import { getVideoId } from './common'
+	import type { Settings } from './common'
 
-	export let settings: any = {}
-	export let box: BoxInterface
+	export let settings: Settings
 
 	let lastURL: string = ''
 	let embedURL: string = ''
