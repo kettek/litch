@@ -14,12 +14,12 @@
 	}
 
 	const cleanup = () => {
-	if (!cmp) return
+		if (!cmp) return
 		cmp.$destroy()
 		cmp = null
 	}
 
-	$: if (component && target) {
+	$: if (component && target && !cmp) {
 		cleanup()
 		create()
 	}
