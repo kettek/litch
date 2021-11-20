@@ -313,6 +313,10 @@
 		width: var(--width);
 		height: var(--height);
 		border: 1px dashed gray;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr);
+		overflow: hidden;
 	}
 	article nav {
 		position: absolute;
