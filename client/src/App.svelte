@@ -42,9 +42,7 @@
 					if (isHello(msg)) {
 						uuid = msg.uuid
 						webSocket?.send(JSON.stringify({event: 'hello', uuid: uuid}))
-						console.log(`hello ${msg.uuid}`)
 					} else if (isLazyUpdate(msg)) {
-						console.log('got Lazyupdate', msg)
 						overlay = {
 							...overlay,
 							canvas: msg.box,
@@ -53,11 +51,7 @@
 						}
 						checkOverlayModules()
 					} else if (isModuleTypeResponse(msg)) {
-						if (msg.file === '') {
-							modulesStore[msg.uuid] = new Error('no module')
-						} else {
-							addModule(msg.uuid, msg.file)
-						}
+						addModule(msg.uuid, msg.file)
 					} else {
 						console.log('got unhandled :(')
 					}
@@ -70,19 +64,20 @@
 		}
 	}
 
-	let modulesStore: Record<string, ModuleInterface|null|Error> = {} // null signifies pending, Error is when it fails.
+	let modulesStore: Record<string, ModuleInterface> = {} // null signifies pending, Error is when it fails.
+	let modulesState: Record<string, 'requesting'|'done'|'missing'|'error'> = {}
 	function checkOverlayModules() {
 		for (let m of overlay.modules) {
-			if (modulesStore[m.moduleUUID] === undefined) {
+			if (modulesState[m.moduleUUID] === undefined) {
 				// Request, as we have not yet heard of it.
 				requestModule(m.moduleUUID)
 			} else {
-				// Either null or error, oh well.
+				// Failed, loading, or missing.
 			}
 		}
 	}
 	function requestModule(uuid: string) {
-		console.log('requested module', uuid)
+		modulesState[uuid] = 'requesting'
 		let m: ModuleTypeRequest = {
 			event: 'module-request',
 			uuid,
@@ -90,23 +85,18 @@
 		webSocket?.send(JSON.stringify(m))
 	}
 	async function addModule(uuid: string, path: string) {
+		if (path === '') {
+			modulesState[uuid] = 'missing'
+			return
+		}
 		const url = `${path}`
-		console.log('import', path)
 		try {
 			let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
 			modulesStore[uuid] = m
-			console.log('added module', uuid, 'from', path, 'result', m)
+			modulesState[uuid] = 'done'
 		} catch(err: any) { // FIXME: Does await import failure have an error type?
-			console.log('oops', err)
-			modulesStore[uuid] = err
+			modulesState[uuid] = 'error'
 		}
-	}
-	function getModule(uuid: string): ModuleInterface | null {
-		let m = modulesStore[uuid]
-		if (m === null || m instanceof Error) {
-			return null
-		}
-		return m
 	}
 
 	let t: NodeJS.Timeout
@@ -133,7 +123,7 @@
 	{#if connected}
 		{#each overlay.modules as module (module.uuid)}
 			<article style="--x: {module.box.x}px; --y: {module.box.y}px; --width: {module.box.width}px; --height: {module.box.height}px">
-				{#if modulesStore[module.moduleUUID]}
+				{#if modulesState[module.moduleUUID] === 'done'}
 					<ModuleWrapper this={modulesStore[module.moduleUUID].liveComponent} bind:settings={module.settings} bind:box={module.box} />
 				{/if}
 			</article>
