@@ -7,3 +7,8 @@ export function getVideoId(url: string) {
 	}
 	return ''
 }
+
+export interface Settings {
+	url: string
+	autoplay: boolean
+}
