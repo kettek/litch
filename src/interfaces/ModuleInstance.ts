@@ -9,4 +9,6 @@ export interface ModuleInstanceInterface {
     box: BoxInterface // used to size module instance component
     moduleUUID: string // UUID Reference to the associated module
     settings: {[key: string]: any} // Passed to module
+    openDimensions: boolean
+    openSettings: boolean
 }

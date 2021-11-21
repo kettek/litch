@@ -68,3 +68,8 @@ button:not(:disabled):active {
 button:focus {
 	border-color: #666;
 }
+
+details > summary {
+	user-select: none;
+	cursor: pointer;
+}

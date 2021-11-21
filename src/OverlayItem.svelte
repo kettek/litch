@@ -40,6 +40,8 @@
 			box: {...module.defaults.box},
 			moduleUUID: evt.detail,
 			settings: {...module.defaults.settings},
+			openDimensions: false,
+			openSettings: true,
 		})
 		dispatch('refresh', uuid)
 	}
@@ -54,8 +56,8 @@
 		<button on:click={()=>uuid=''}>back</button>
 		<header>{overlay.title}</header>
 	</nav>
-	<section>
-		<header>Settings</header>
+	<details bind:open={overlay.openSettings}>
+		<summary>Settings</summary>
 		<article>
 			{#if !showDangerous}
 				<label>
@@ -77,16 +79,16 @@
 				<button on:click={()=>dispatch('delete', uuid)}>delete</button>
 			{/if}
 		</article>
-	</section>
-	<section>
-		<header>Modules</header>
+	</details>
+	<details bind:open={overlay.openModules}>
+		<summary>Modules</summary>
 		<article>
 			<ModuleList modules={modules} on:add={handleAddModule}/>
 			{#each overlay.modules as module}
 				<ModuleItem bind:module={module} modules={modules}/>
 			{/each}
 		</article>
-	</section>
+	</details>
 </main>
 
 <style>

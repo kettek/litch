@@ -15,27 +15,31 @@
 
 <main>
 	<header>{module.title}({realModule.title})</header>
-	<section>
-		<label>
-			<input type="number" bind:value={module.box.x}>
-			X
-		</label>
-		<label>
-			<input type="number" bind:value={module.box.y}>
-			Y
-		</label>
-		<label>
-			<input type="number" bind:value={module.box.width}>
-			Width
-		</label>
-		<label>
-			<input type="number" bind:value={module.box.height}>
-			Height
-		</label>
-	</section>
-	<section>
+	<details bind:open={module.openDimensions}>
+		<summary>Dimensions</summary>
+		<article>
+			<label>
+				<input type="number" bind:value={module.box.x}>
+				X
+			</label>
+			<label>
+				<input type="number" bind:value={module.box.y}>
+				Y
+			</label>
+			<label>
+				<input type="number" bind:value={module.box.width}>
+				Width
+			</label>
+			<label>
+				<input type="number" bind:value={module.box.height}>
+				Height
+			</label>
+		</article>
+	</details>
+	<details bind:open={module.openSettings}>
+		<summary>Settings</summary>
 		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} />
-	</section>
+	</details>
 </main>
 
 <style>

@@ -8,4 +8,6 @@ export interface OverlayInterface {
     uuid: string
     canvas: BoxInterface
     modules: ModuleInstanceInterface[]
+    openModules: boolean
+    openSettings: boolean
 }

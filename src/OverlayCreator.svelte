@@ -20,6 +20,23 @@
 		width = dimensions.width
 		height = dimensions.height
 	})
+
+	function createOverlay() {
+		dispatch('create', {
+			title: title||'unnamed',
+			uuid: v4(),
+			canvas:
+			{
+				x: 0,
+				y: 0,
+				width: width||1920,
+				height: height||1080
+			},
+			modules: [],
+			openModules: true,
+			openSettings: true,
+		} as OverlayInterface)
+	}
 </script>
 
 <main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
@@ -40,7 +57,7 @@
 			<input type='number' placeholder='1080' bind:value={height}>
 			<span>Height</span>
 		</label>
-		<button on:click={() => dispatch('create', {title: title||'unnamed', uuid: v4(), canvas: {x: 0, y: 0, width: width||1920, height: height||1080}, modules: [] })}>
+		<button on:click={createOverlay}>
 			create
 		</button>
 	</section>
