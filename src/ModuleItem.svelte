@@ -16,7 +16,7 @@
 <main>
 	<header>{module.title}({realModule.title})</header>
 	<details bind:open={module.openDimensions}>
-		<summary>Dimensions</summary>
+		<summary class='nav__heading'>Dimensions</summary>
 		<article>
 			<label>
 				<input type="number" bind:value={module.box.x}>
@@ -37,7 +37,7 @@
 		</article>
 	</details>
 	<details bind:open={module.openSettings}>
-		<summary>Settings</summary>
+		<summary class='nav__heading'>Settings</summary>
 		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} />
 	</details>
 </main>

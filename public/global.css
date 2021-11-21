@@ -73,3 +73,25 @@ details > summary {
 	user-select: none;
 	cursor: pointer;
 }
+
+details > article {
+	padding: .5em;
+}
+
+.nav__heading {
+	height: 2em;
+	line-height: 2em;
+	background: #333;
+	color: #ccc;
+	font-weight: 600;
+	padding: 0 0.5em;
+}
+
+.nav__subheading {
+	height: 1.5em;
+	line-height: 1.5em;
+	background: #111;
+	color: #ccc;
+	font-weight: 600;
+	padding: 0 0.5em;
+}

@@ -12,7 +12,7 @@
 </script>
 
 <main transition:fly="{{delay: 0, duration: 200, x: -500, y: 0, easing: quintInOut}}">
-	<button on:click={() => showOverlayCreator = true}>{$_('overlays.buttonNewOverlay')}</button>
+	<button on:click={() => showOverlayCreator = true} class='nav__heading' >{$_('overlays.buttonNewOverlay')}</button>
 	{#each Object.entries(overlays) as [uuid, overlay] }
 		<li class:focused={focusedOverlayUUID===uuid} class:active={activeOverlayUUID===uuid} title="{uuid}">
             <span on:click={() => focusedOverlayUUID=uuid} on:dblclick={() => currentOverlayUUID=uuid}>

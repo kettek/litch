@@ -75,7 +75,8 @@
 	}
 	nav {
 		position: relative;
-		border: 1px solid red;
+		background: #ccc;
+		color: #333;
 		overflow-x: hidden;
 		overflow-y: auto;
 	}

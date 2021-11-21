@@ -57,7 +57,7 @@
 		<header>{overlay.title}</header>
 	</nav>
 	<details bind:open={overlay.openSettings}>
-		<summary>Settings</summary>
+		<summary class='nav__heading'>Settings</summary>
 		<article>
 			{#if !showDangerous}
 				<label>
@@ -81,8 +81,8 @@
 		</article>
 	</details>
 	<details bind:open={overlay.openModules}>
-		<summary>Modules</summary>
-		<article>
+		<summary class='nav__heading'>Modules</summary>
+		<article style="padding: 0; height:100%;">
 			<ModuleList modules={modules} on:add={handleAddModule}/>
 			{#each overlay.modules as module}
 				<ModuleItem bind:module={module} modules={modules}/>
@@ -99,6 +99,7 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: auto auto minmax(0, 1fr);
+		overflow: hidden;
 	}
 	nav {
 		display: grid;
