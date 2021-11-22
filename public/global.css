@@ -95,3 +95,13 @@ details > article {
 	font-weight: 600;
 	padding: 0 0.5em;
 }
+
+:root {
+	--primary: rgb(157, 0, 255);
+	--secondary: rgb(0, 161, 255);
+	--tertiary: rgb(45, 192, 122);
+	--text: rgb(1, 13, 22);
+	--overlay-bg: rgb(1, 3, 22);
+	--nav-bg: rgb(39, 42, 61);
+	--bar-bg: rgb(21, 23, 35);
+}

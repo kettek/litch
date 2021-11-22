@@ -137,7 +137,7 @@
 	}
 
 	nav {
-		background: #000000;
+		background: var(--bar-bg);
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
 		grid-template-rows: minmax(0, 1fr);
@@ -154,6 +154,11 @@
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		text-shadow: 0 0 .1em #d70fff;
+	}
+
+	nav > menu > button {
+		background: var(--primary);
+		border: 0;
 	}
 
 	@media (min-width: 640px) {

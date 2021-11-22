@@ -106,6 +106,8 @@
 		grid-template-columns: auto minmax(0, 1fr);
 		align-items: stretch;
 		justify-content: stretch;
+		background: var(--secondary);
+		color: var(--text);
 	}
 	nav header {
 		font-size: 150%;
@@ -127,5 +129,10 @@
 	}
 	article {
 		overflow-y: auto;
+		color: var(--tertiary);
+	}
+	summary {
+		background: var(--tertiary);
+		color: var(--text);
 	}
 </style>

@@ -75,7 +75,7 @@
 	}
 	nav {
 		position: relative;
-		background: #ccc;
+		background: var(--nav-bg);
 		color: #333;
 		overflow-x: hidden;
 		overflow-y: auto;
