@@ -144,21 +144,23 @@
 	}
 
 	nav > h1 {
-		color: #ff003e;
-		font-size: 2em;
+		color: var(--primary);
+		font-size: 200%;
 		font-weight: 900;
 		margin: 0;
 		padding: 0;
-		background: #22FF00;
-		background: linear-gradient(to bottom, #22FF00 0%, #D70FFF 40%, #22ff00 90%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		text-shadow: 0 0 .1em #d70fff;
 	}
 
-	nav > menu > button {
+	menu {
+		margin: 0;
+	}
+
+	menu > button {
+		height: 100%;
 		background: var(--primary);
 		border: 0;
+		border-radius: 0;
+		padding: 0 1em;
 	}
 
 	@media (min-width: 640px) {
