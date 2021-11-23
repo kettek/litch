@@ -87,12 +87,13 @@
 	</details>
 	<details bind:open={overlay.openModules}>
 		<summary class='nav__heading'>Active Modules</summary>
-		<article>
+		<ul>
 			{#each overlay.modules as module}
-				<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
-				<!--<ModuleItem bind:module={module} modules={modules}/>-->
+				<li>
+					<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
+				</li>
 			{/each}
-		</article>
+		</ul>
 	</details>
 	{#if focusedModule}
 		<ModuleItem bind:module={focusedModule} modules={modules} bind:focusedUUID={focusedModuleUUID}/>
@@ -145,5 +146,18 @@
 	summary {
 		background: var(--tertiary);
 		color: var(--text);
+	}
+	ul {
+		margin: 0; padding: 0;
+	}
+	li {
+		list-style: none;
+		min-height: 2em;
+		display: grid;
+		grid-template-rows: minmax(0, 1fr);
+		grid-template-columns: minmax(0, 1fr);
+	}
+	button {
+		cursor: pointer;
 	}
 </style>
