@@ -92,16 +92,16 @@
 	<article class:secondary={true}>
 		{#if !showDangerous}
 			<label>
-	<input type='text' placeholder='title' bind:value={title}>
-	<span>Title</span>
+				<input type='text' placeholder='title' bind:value={title}>
+				<span>Title</span>
 			</label>
 			<label>
-	<input type='number' placeholder='1920' bind:value={width}>
-	<span>Width</span>
+				<input type='number' placeholder='1920' bind:value={width}>
+				<span>Width</span>
 			</label>
 			<label>
-	<input type='number' placeholder='1080' bind:value={height}>
-	<span>Height</span>
+				<input type='number' placeholder='1080' bind:value={height}>
+				<span>Height</span>
 			</label>
 			<button disabled={!changed} on:click={handleApply}>apply</button>
 			<button on:click={()=>showDangerous=true}>dangerous mode</button>
