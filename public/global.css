@@ -61,6 +61,25 @@ details > article {
 	padding: .5em;
 }
 
+button {
+	border: 0;
+	border-radius: 0;
+	background: none;
+}
+
+.primary button {
+	background: var(--primary);
+	color: var(--text);
+}
+.secondary button {
+	background: var(--secondary);
+	color: var(--text);
+}
+.tertiary button {
+	background: var(--tertiary);
+	color: var(--text);
+}
+
 .nav__heading {
 	height: 2em;
 	line-height: 2em;

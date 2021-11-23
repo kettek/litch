@@ -6,7 +6,7 @@
 	const dispatch = createEventDispatcher<string>()
 </script>
 
-<main>
+<main class:tertiary={true}>
 	{#each Object.entries(modules) as [uuid, module]}
 		<li title={uuid}>
 			<span>{module.title}</span>

@@ -40,7 +40,7 @@
 	}
 </script>
 
-<main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
+<main class:secondary={true} transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
 	<nav>
 		<button on:click={()=>shown=false}>back</button>
 		<header>{$_('overlays.titleCreateOverlay')}</header>
