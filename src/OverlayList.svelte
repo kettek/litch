@@ -41,7 +41,6 @@
 	<ul>
 	{#each Object.entries(overlays) as [uuid, overlay] (uuid)}
 		<li
-			class:focused={focusedOverlayUUID===uuid}
 			class:active={activeOverlayUUID===uuid} title="{uuid}"
 			animate:flip="{{duration: 200}}"
 			draggable={true}
@@ -54,7 +53,7 @@
 			<button class='activator' class:active={activeOverlayUUID===uuid} on:click={() => activeOverlayUUID=uuid}>
 		⭐
 			</button>
-			<span on:click={() => focusedOverlayUUID=uuid} on:dblclick={() => currentOverlayUUID=uuid}>
+			<span on:click={() => {currentOverlayUUID=uuid;focusedOverlayUUID=uuid}}>
 		{overlay.title}
 			</span>
 		</li>
@@ -110,7 +109,7 @@
 		display: grid;
 		grid-template-columns: 3em minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr);
-		align-items: center;
+		align-items: stretch;
 		border: 1px solid transparent;
 		color: var(--secondary);
 	}
@@ -119,5 +118,9 @@
 	}
 	li.focused {
 		background: rgba(128, 128, 128, 0.5);
+	}
+	li > span {
+		display: flex;
+		align-items: center;
 	}
 </style>

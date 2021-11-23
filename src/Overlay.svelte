@@ -365,7 +365,7 @@
 		top: 0;
 		width: 100%;
 		height: 100%;
-		background: rgba(255,255,255,.01);
+		/*background: rgba(255,255,255,.01);*/
 		cursor: var(--cursor);
 	}
 
