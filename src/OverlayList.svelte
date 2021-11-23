@@ -1,6 +1,7 @@
 <script type="ts">
 	import { _ } from 'svelte-i18n'
 	import { fly } from 'svelte/transition';
+	import { flip } from 'svelte/animate'
 	import { quintInOut } from 'svelte/easing';
 
 	import type { OverlayInterface } from './interfaces/Overlay'
@@ -9,6 +10,28 @@
 	export let focusedOverlayUUID: string
 	export let overlays: Record<string, OverlayInterface> = {}
 	export let showOverlayCreator: boolean
+
+	// Drag and drop support.
+	let hoveringOverlayUUID: string
+	let fromOverlayUUID: string
+	function handleOverlayDragStart(e: DragEvent, uuid: string) {
+		if (!e.dataTransfer) return
+		e.dataTransfer.effectAllowed = 'move'
+		e.dataTransfer.dropEffect = 'move'
+		fromOverlayUUID = uuid
+	}
+	function handleOverlayDrop(e: DragEvent, targetUUID: string) {
+		if (!e.dataTransfer) return
+		e.dataTransfer.dropEffect = 'move'
+
+		const from = overlays[fromOverlayUUID]
+		const to = overlays[hoveringOverlayUUID]
+
+		overlays[fromOverlayUUID] = to
+		overlays[hoveringOverlayUUID] = from
+		overlays = {...overlays}
+		fromOverlayUUID = ''
+	}
 </script>
 
 <main transition:fly="{{delay: 0, duration: 200, x: -500, y: 0, easing: quintInOut}}">
@@ -16,16 +39,26 @@
 		<button on:click={() => showOverlayCreator = true} class='nav__heading' >{$_('overlays.buttonNewOverlay')}</button>
 	</nav>
 	<ul>
-	    {#each Object.entries(overlays) as [uuid, overlay] }
-	    	<li class:focused={focusedOverlayUUID===uuid} class:active={activeOverlayUUID===uuid} title="{uuid}">
-	    		<span on:click={() => focusedOverlayUUID=uuid} on:dblclick={() => currentOverlayUUID=uuid}>
-	    			{overlay.title}
-	    		</span>
-	    		<button class='activator' class:active={activeOverlayUUID===uuid} on:click={() => activeOverlayUUID=uuid}>
-	    			⭐
-	    		</button>
-	    	</li>
-	    {/each}
+	{#each Object.entries(overlays) as [uuid, overlay] (uuid)}
+		<li
+			class:focused={focusedOverlayUUID===uuid}
+			class:active={activeOverlayUUID===uuid} title="{uuid}"
+			animate:flip="{{duration: 200}}"
+			draggable={true}
+			on:dragstart={e => handleOverlayDragStart(e, uuid)}
+			on:drop|preventDefault={e => handleOverlayDrop(e, uuid)}
+			ondragover="return false"
+			on:dragenter={() => hoveringOverlayUUID = uuid}
+			class:hover={hoveringOverlayUUID === uuid}
+		>
+			<button class='activator' class:active={activeOverlayUUID===uuid} on:click={() => activeOverlayUUID=uuid}>
+		⭐
+			</button>
+			<span on:click={() => focusedOverlayUUID=uuid} on:dblclick={() => currentOverlayUUID=uuid}>
+		{overlay.title}
+			</span>
+		</li>
+	{/each}
 	</ul>
 </main>
 
@@ -36,9 +69,9 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-        display: grid;
-        grid-template-rows: auto minmax(0, 1fr);
-        grid-template-columns: minmax(0, 1fr);
+		display: grid;
+		grid-template-rows: auto minmax(0, 1fr);
+		grid-template-columns: minmax(0, 1fr);
 	}
 	nav {
 		display: grid;
@@ -75,12 +108,11 @@
 	li {
 		list-style: none;
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-columns: 3em minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr);
 		align-items: center;
 		border: 1px solid transparent;
 		color: var(--secondary);
-		padding-left: 1em;
 	}
 	li.active {
 		border: 1px solid gold;

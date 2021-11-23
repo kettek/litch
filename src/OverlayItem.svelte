@@ -52,14 +52,12 @@
 	let hoveringModuleUUID: string
 	let fromModuleUUID: string
 	function handleModuleDragStart(e: DragEvent, uuid: string) {
-		console.log('drag')
 		if (!e.dataTransfer) return
 		e.dataTransfer.effectAllowed = 'move'
 		e.dataTransfer.dropEffect = 'move'
 		fromModuleUUID = uuid
 	}
 	function handleModuleDrop(e: DragEvent, targetUUID: string) {
-		console.log('drop')
 		if (!e.dataTransfer) return
 		e.dataTransfer.dropEffect = 'move'
 
