@@ -1,4 +1,5 @@
 <script type="ts">
+	import { flip } from 'svelte/animate'
 	import { fly } from 'svelte/transition'
 	import { _ } from 'svelte-i18n'
 	import { quintInOut } from 'svelte/easing'
@@ -48,6 +49,38 @@
 		dispatch('refresh', uuid)
 	}
 
+	let hoveringModuleUUID: string
+	let fromModuleUUID: string
+	function handleModuleDragStart(e: DragEvent, uuid: string) {
+		console.log('drag')
+		if (!e.dataTransfer) return
+		e.dataTransfer.effectAllowed = 'move'
+		e.dataTransfer.dropEffect = 'move'
+		fromModuleUUID = uuid
+	}
+	function handleModuleDrop(e: DragEvent, targetUUID: string) {
+		console.log('drop')
+		if (!e.dataTransfer) return
+		e.dataTransfer.dropEffect = 'move'
+
+		const fromIndex = overlay.modules.findIndex(v=>v.uuid===fromModuleUUID)
+		const toIndex = overlay.modules.findIndex(v=>v.uuid===targetUUID)
+
+		const modules = overlay.modules
+		if (fromIndex < toIndex) {
+			overlay.modules.splice(toIndex+1, 0, modules[fromIndex])
+			overlay.modules.splice(fromIndex, 1)
+		} else {
+			overlay.modules.splice(toIndex, 0, modules[fromIndex])
+			overlay.modules.splice(fromIndex+1, 1)
+		}
+		overlay = {
+			...overlay,
+			modules,
+		}
+		fromModuleUUID = ''
+	}
+
 	let showDangerous: boolean
 
 	const dispatch = createEventDispatcher<string>()
@@ -88,8 +121,16 @@
 	<details bind:open={overlay.openModules}>
 		<summary class='nav__heading'>Active Modules</summary>
 		<ul>
-			{#each overlay.modules as module}
-				<li>
+			{#each overlay.modules as module (module.uuid)}
+				<li
+					animate:flip="{{duration: 200}}"
+					draggable={true}
+					on:dragstart={e => handleModuleDragStart(e, module.uuid)}
+					on:drop|preventDefault={e => handleModuleDrop(e, module.uuid)}
+					ondragover="return false"
+					on:dragenter={() => hoveringModuleUUID = module.uuid}
+					class:active={hoveringModuleUUID === module.uuid}
+				>
 					<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
 				</li>
 			{/each}
@@ -156,6 +197,15 @@
 		display: grid;
 		grid-template-rows: minmax(0, 1fr);
 		grid-template-columns: minmax(0, 1fr);
+		justify-content: stretch;
+		align-items: stretch;
+		border: 1px solid transparent;
+	}
+	li.active {
+		border: 1px solid var(--tertiary);
+	}
+	li > button {
+		height: 100%;
 	}
 	button {
 		cursor: pointer;
