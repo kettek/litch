@@ -104,11 +104,15 @@
 				<input type='number' placeholder='1080' bind:value={height}>
 				<span>Height</span>
 			</label>
-			<button disabled={!changed} on:click={handleApply}>apply</button>
-			<button on:click={()=>showDangerous=true}>dangerous mode</button>
+			<footer>
+				<button on:click={()=>showDangerous=true}>dangerous mode</button>
+				<button disabled={!changed} on:click={handleApply}>apply</button>
+			</footer>
 		{:else}
-			<button on:click={()=>showDangerous=false}>back</button>
 			<button on:click={()=>dispatch('delete', uuid)}>delete</button>
+			<footer>
+				<button on:click={()=>showDangerous=false}>back</button>
+			</footer>
 		{/if}
 	</article>
 	<details bind:open={overlay.openAvailableModules}>
@@ -182,6 +186,15 @@
 	}
 	article.secondary {
 		color: var(--secondary);
+	}
+	article.secondary footer {
+		float: right;
+	}
+	article.secondary footer button {
+		background-color: var(--secondary);
+		color: var(--text);
+		border: 0; border-radius: 0;
+		height: 100%;
 	}
 	summary {
 		background: var(--tertiary);
