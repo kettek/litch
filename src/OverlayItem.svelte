@@ -16,6 +16,8 @@
 	let title: string = overlay.title
 	let width: number = overlay.canvas.width
 	let height: number = overlay.canvas.height
+	let focusedModuleUUID: string
+	$: focusedModule = overlay.modules.find(v=>v.uuid===focusedModuleUUID)
 
 	function hasChanges(width: number, height: number, title: string): boolean {
 		return width !== overlay.canvas.width || height !== overlay.canvas.height || title !== overlay.title
@@ -56,49 +58,55 @@
 		<button on:click={()=>uuid=''}>back</button>
 		<header>{overlay.title}</header>
 	</nav>
-	<details bind:open={overlay.openSettings}>
-		<summary class='nav__heading'>Settings</summary>
-		<article>
-			{#if !showDangerous}
-				<label>
-					<input type='text' placeholder='title' bind:value={title}>
-					<span>Title</span>
-				</label>
-				<label>
-					<input type='number' placeholder='1920' bind:value={width}>
-					<span>Width</span>
-				</label>
-				<label>
-					<input type='number' placeholder='1080' bind:value={height}>
-					<span>Height</span>
-				</label>
-				<button disabled={!changed} on:click={handleApply}>apply</button>
-				<button on:click={()=>showDangerous=true}>dangerous mode</button>
-			{:else}
-				<button on:click={()=>showDangerous=false}>back</button>
-				<button on:click={()=>dispatch('delete', uuid)}>delete</button>
-			{/if}
+	<article class:secondary={true}>
+		{#if !showDangerous}
+			<label>
+	<input type='text' placeholder='title' bind:value={title}>
+	<span>Title</span>
+			</label>
+			<label>
+	<input type='number' placeholder='1920' bind:value={width}>
+	<span>Width</span>
+			</label>
+			<label>
+	<input type='number' placeholder='1080' bind:value={height}>
+	<span>Height</span>
+			</label>
+			<button disabled={!changed} on:click={handleApply}>apply</button>
+			<button on:click={()=>showDangerous=true}>dangerous mode</button>
+		{:else}
+			<button on:click={()=>showDangerous=false}>back</button>
+			<button on:click={()=>dispatch('delete', uuid)}>delete</button>
+		{/if}
+	</article>
+	<details bind:open={overlay.openModules}>
+		<summary class='nav__heading'>Available Modules</summary>
+		<article style="padding: 0; height:100%;">
+			<ModuleList modules={modules} on:add={handleAddModule}/>
 		</article>
 	</details>
 	<details bind:open={overlay.openModules}>
-		<summary class='nav__heading'>Modules</summary>
-		<article style="padding: 0; height:100%;">
-			<ModuleList modules={modules} on:add={handleAddModule}/>
+		<summary class='nav__heading'>Active Modules</summary>
+		<article>
 			{#each overlay.modules as module}
-				<ModuleItem bind:module={module} modules={modules}/>
+				<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
+				<!--<ModuleItem bind:module={module} modules={modules}/>-->
 			{/each}
 		</article>
 	</details>
+	{#if focusedModule}
+		<ModuleItem bind:module={focusedModule} modules={modules} bind:focusedUUID={focusedModuleUUID}/>
+	{/if}
 </main>
 
 <style>
 	main {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
+		position: absolute;
+		top: 0; left: 0;
+		width: 100%; height: 100%;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
-		grid-template-rows: auto auto minmax(0, 1fr);
+		grid-template-rows: auto auto auto minmax(0, 1fr);
 		overflow: hidden;
 	}
 	nav {
@@ -130,6 +138,9 @@
 	article {
 		overflow-y: auto;
 		color: var(--tertiary);
+	}
+	article.secondary {
+		color: var(--secondary);
 	}
 	summary {
 		background: var(--tertiary);

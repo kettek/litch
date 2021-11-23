@@ -27,10 +27,10 @@
 			uuid: v4(),
 			canvas:
 			{
-				x: 0,
-				y: 0,
-				width: width||1920,
-				height: height||1080
+	x: 0,
+	y: 0,
+	width: width||1920,
+	height: height||1080
 			},
 			modules: [],
 			openModules: true,
@@ -65,10 +65,9 @@
 
 <style>
 	main {
-		background: red;
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
+		position: absolute;
+		top: 0; left: 0;
+		width: 100%; height: 100%;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: auto minmax(0, 1fr);
@@ -78,15 +77,26 @@
 		grid-template-columns: auto minmax(0, 1fr);
 		align-items: stretch;
 		justify-content: stretch;
+		background: var(--secondary);
+		color: var(--text);
+	}
+	nav > button {
+		height: 100%;
+		background: none;
+		border: 0;
+		border-radius: 0;
+		color: var(--text);
+	}
+	section {
+		color: var(--secondary);
+		padding: .5em;
 	}
 	header {
-		font-size: 150%;
 		font-weight: 600;
 		display: flex;
 		align-items: center;
 		padding-left: .5em;
-	}
-	section {
+		user-select: none;
 	}
 	label {
 		display: grid;

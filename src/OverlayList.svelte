@@ -12,7 +12,9 @@
 </script>
 
 <main transition:fly="{{delay: 0, duration: 200, x: -500, y: 0, easing: quintInOut}}">
-	<button on:click={() => showOverlayCreator = true} class='nav__heading' >{$_('overlays.buttonNewOverlay')}</button>
+	<nav>
+		<button on:click={() => showOverlayCreator = true} class='nav__heading' >{$_('overlays.buttonNewOverlay')}</button>
+	</nav>
 	<ul>
 	    {#each Object.entries(overlays) as [uuid, overlay] }
 	    	<li class:focused={focusedOverlayUUID===uuid} class:active={activeOverlayUUID===uuid} title="{uuid}">
@@ -38,13 +40,21 @@
         grid-template-rows: auto minmax(0, 1fr);
         grid-template-columns: minmax(0, 1fr);
 	}
-	main > button {
-		width: 100%;
-		height: 100%;
+	nav {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		align-items: stretch;
+		justify-content: stretch;
 		background: var(--secondary);
 		color: var(--text);
+	}
+	nav > button {
+		width: 100%;
+		height: 100%;
+		background: none;
 		border: 0;
 		border-radius: 0;
+		color: var(--text);
 	}
 	.activator {
 		background: none;

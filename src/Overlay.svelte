@@ -296,7 +296,7 @@
 		width: 100%;
 		height: 100%;
 		overflow: auto;
-		background: black;
+		background: var(--bar-bg);
 	}
 	section {
 		position: absolute;
@@ -305,6 +305,7 @@
 		width: var(--width);
 		height: var(--height);
 		border: 1px dashed white;
+		background: var(--overlay-bg);
 	}
 	article {
 		position: absolute;
