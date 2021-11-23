@@ -178,6 +178,7 @@
 	article {
 		overflow-y: auto;
 		color: var(--tertiary);
+		padding: .5em;
 	}
 	article.secondary {
 		color: var(--secondary);
@@ -198,14 +199,17 @@
 		justify-content: stretch;
 		align-items: stretch;
 		border: 1px solid transparent;
+		color: var(--tertiary);
 	}
 	li.active {
 		border: 1px solid var(--tertiary);
 	}
-	li > button {
-		height: 100%;
-	}
 	button {
 		cursor: pointer;
+		background: none;
+		border: 0;
+		border-radius: 0;
+		height: 100%;
+		color: var(--tertiary);
 	}
 </style>

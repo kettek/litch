@@ -26,4 +26,13 @@
 		grid-template-columns: minmax(0, 1fr) auto;
 		grid-template-rows: minmax(0, 1fr);
 	}
+	span {
+		display: flex;
+		align-items: center;
+		padding: .5em;
+	}
+	button {
+		height: 100%;
+		min-width: 3em;
+	}
 </style>
