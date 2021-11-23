@@ -22,7 +22,7 @@
     "@types/node-static": "^0.7.7",
     "@types/uuid": "^8.3.1",
     "@types/ws": "^8.2.0",
-    "electron": "^15.3.1",
+    "electron": "^16.0.1",
     "electron-app-settings": "^1.2.2",
     "express-ws": "^5.0.2",
     "http-terminator": "^3.0.3",
