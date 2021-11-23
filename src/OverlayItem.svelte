@@ -120,7 +120,7 @@
 	<details bind:open={overlay.openActiveModules}>
 		<summary class='nav__heading'>Active Modules</summary>
 		<ul>
-			{#each overlay.modules as module (module.uuid)}
+			{#each [...overlay.modules].reverse() as module (module.uuid)}
 				<li
 					animate:flip="{{duration: 200}}"
 					draggable={true}
