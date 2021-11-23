@@ -33,8 +33,9 @@
 	height: height||1080
 			},
 			modules: [],
-			openModules: true,
 			openSettings: true,
+			openAvailableModules: true,
+			openActiveModules: true,
 		} as OverlayInterface)
 	}
 </script>

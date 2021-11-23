@@ -77,6 +77,7 @@
 			modules,
 		}
 		fromModuleUUID = ''
+		hoveringModuleUUID = ''
 	}
 
 	let showDangerous: boolean
@@ -110,13 +111,13 @@
 			<button on:click={()=>dispatch('delete', uuid)}>delete</button>
 		{/if}
 	</article>
-	<details bind:open={overlay.openModules}>
+	<details bind:open={overlay.openAvailableModules}>
 		<summary class='nav__heading'>Available Modules</summary>
 		<article style="padding: 0; height:100%;">
 			<ModuleList modules={modules} on:add={handleAddModule}/>
 		</article>
 	</details>
-	<details bind:open={overlay.openModules}>
+	<details bind:open={overlay.openActiveModules}>
 		<summary class='nav__heading'>Active Modules</summary>
 		<ul>
 			{#each overlay.modules as module (module.uuid)}
@@ -158,7 +159,6 @@
 		color: var(--text);
 	}
 	nav header {
-		font-size: 150%;
 		font-weight: 600;
 		display: flex;
 		align-items: center;
@@ -204,7 +204,7 @@
 	li.active {
 		border: 1px solid var(--tertiary);
 	}
-	button {
+	li button {
 		cursor: pointer;
 		background: none;
 		border: 0;
