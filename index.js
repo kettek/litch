@@ -1,4 +1,5 @@
 const { app, screen, BrowserWindow, ipcMain } = require("electron")
+const { promises: fs } = require('fs')
 const path = require("path")
 require('electron-app-settings')
 
@@ -19,6 +20,9 @@ app.on("ready", async () => {
   })
   ipcMain.handle('getDisplaySize', async () => {
     return screen.getPrimaryDisplay().size
+  })
+  ipcMain.handle('getModules', async() => {
+    return await fs.readdir('modules')
   })
 })
 

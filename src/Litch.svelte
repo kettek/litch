@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
 	const eap = require('electron-app-settings')
 	const { ipcRenderer } = require('electron')
+	import Button from './components/Button.svelte'
 
 	import { LitchServer } from './LitchServer'
 	import { onMount } from 'svelte'
@@ -58,18 +59,19 @@
 		currentOverlayUUID = await eap.promises.get('currentOverlayUUID') || ''
 		activeOverlayUUID = await eap.promises.get('activeOverlayUUID') || ''
 
-		// Load modules (this should be a separate model)
+		// Load modules (this should bes a separate model)
 		loadingMessage = "Loading modules"
-		let mods = ['dummy', 'youtube']
+		const mods = await ipcRenderer.invoke('getModules')
 		for (let mod of mods) {
 			let fullmod = `/modules/${mod}/dist/index.js`
 			let url = `../..${fullmod}`
-			let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
-			//let m: ModuleInterface = (await import('./modules/dummy/index.js')).default as unknown as ModuleInterface
-			//let m: ModuleInterface = (await import('../modules/dummy/dist/index.js')).default as unknown as ModuleInterface
-			console.log('oh', m)
-			modules[m.uuid] = m
-			modulesMap[m.uuid] = fullmod
+			try {
+				let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
+				modules[m.uuid] = m
+				modulesMap[m.uuid] = fullmod
+			} catch(e: any) {
+				console.error(`error in ${mod}: ${e}`)
+			}
 		}
 
 		loading = false
@@ -114,8 +116,8 @@
 <nav>
 	<h1>litch</h1>
 	<menu>
-		<button disabled={serverStatus==='pending'} on:click={toggleServer}>{serverStatus==='on'?'stop':'start'}</button>
-		<button on:click={toggleSettings}>settings</button>
+		<Button primary disabled={serverStatus==='pending'} on:click={toggleServer}>{serverStatus==='on'?'stop':'start'}</Button>
+		<Button primary on:click={toggleSettings}>settings</Button>
 	</menu>
 </nav>
 <main>
@@ -141,6 +143,7 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
 		grid-template-rows: minmax(0, 1fr);
+		padding: .5em;
 	}
 
 	nav > h1 {
@@ -149,18 +152,12 @@
 		font-weight: 900;
 		margin: 0;
 		padding: 0;
+		display: flex;
+		align-items: center;
 	}
 
 	menu {
 		margin: 0;
-	}
-
-	menu > button {
-		height: 100%;
-		background: var(--primary);
-		border: 0;
-		border-radius: 0;
-		padding: 0 1em;
 	}
 
 	@media (min-width: 640px) {
