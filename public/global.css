@@ -110,13 +110,31 @@ button.primary, button.secondary, button.tertiary {
 button.primary {
 	background: var(--primary);
 }
+button.primary:hover {
+	background: var(--primary-focus);
+}
+button.primary:active {
+	background: var(--primary-press);
+}
 
 button.secondary {
 	background: var(--secondary);
 }
+button.secondary:hover {
+	background: var(--secondary-focus);
+}
+button.secondary:active {
+	background: var(--secondary-press);
+}
 
 button.tertiary {
 	background: var(--tertiary);
+}
+button.tertiary:hover {
+	background: var(--tertiary-focus);
+}
+button.tertiary:active {
+	background: var(--tertiary-press);
 }
 
 :root {
