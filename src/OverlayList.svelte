@@ -85,7 +85,6 @@
 		height: 100%;
 		background: none;
 		border: 0;
-		border-radius: 0;
 		color: var(--text);
 	}
 	.activator {
