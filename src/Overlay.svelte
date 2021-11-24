@@ -255,9 +255,13 @@
 			gridLock = true
 		}
 	}
+	function blur() {
+		// Ensure losing focus removes gridLock derived from alt.
+		gridLock = true
+	}
 </script>
 
-<svelte:window on:keydown={keydown} on:keyup={keyup}/>
+<svelte:window on:keydown={keydown} on:keyup={keyup} on:blur={blur}/>
 <main bind:clientWidth={containerWidth} bind:clientHeight={containerHeight} on:wheel={handleWheel} use:move>
 	<section style="--x: {movingCanvas?getX(overlay.canvas.x+movingX):overlay.canvas.x}px; --y: {movingCanvas?getY(overlay.canvas.y+movingY):overlay.canvas.y}px; --width: {width}px; --height: {height}px; --zoom: {zoom}">
 		<canvas bind:this={canvas}></canvas>
