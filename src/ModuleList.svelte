@@ -1,6 +1,7 @@
 <script type="ts">
 	import type { ModuleInterface } from './interfaces/Module'
 	import Button from './components/Button.svelte'
+	import Icon from './components/Icon.svelte'
 	import { createEventDispatcher } from 'svelte'
 	export let modules: Record<string, ModuleInterface> = {}
 
@@ -11,7 +12,9 @@
 	{#each Object.entries(modules) as [uuid, module]}
 		<li title={uuid}>
 			<span>{module.title}</span>
-			<Button tertiary on:click={()=>dispatch('add', uuid)}>+</Button>
+			<Button tertiary on:click={()=>dispatch('add', uuid)}>
+				<Icon icon='add'></Icon>
+			</Button>
 		</li>
 	{/each}
 </main>

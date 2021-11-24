@@ -10,6 +10,7 @@
 	const { ipcRenderer } = require('electron')
 
 	import Button from './components/Button.svelte'
+	import Icon from './components/Icon.svelte'
 
 	export let shown: boolean
 	let title: string
@@ -43,7 +44,9 @@
 
 <main class:secondary={true} transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
 	<nav>
-		<button on:click={()=>shown=false}>back</button>
+		<Button nobg on:click={()=>shown=false}>
+			<Icon icon='back'></Icon>
+		</Button>
 		<header>{$_('overlays.titleCreateOverlay')}</header>
 	</nav>
 	<section>
@@ -61,7 +64,7 @@
 		</label>
 		<footer>
 			<Button secondary on:click={createOverlay}>
-				create
+				<Icon icon='add'></Icon>
 			</Button>
 		</footer>
 	</section>

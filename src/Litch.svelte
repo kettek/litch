@@ -2,6 +2,7 @@
 	const eap = require('electron-app-settings')
 	const { ipcRenderer } = require('electron')
 	import Button from './components/Button.svelte'
+	import Icon from './components/Icon.svelte'
 
 	import { LitchServer } from './LitchServer'
 	import { onMount } from 'svelte'
@@ -116,8 +117,12 @@
 <nav>
 	<h1>litch</h1>
 	<menu>
-		<Button primary disabled={serverStatus==='pending'} on:click={toggleServer}>{serverStatus==='on'?'stop':'start'}</Button>
-		<Button primary on:click={toggleSettings}>settings</Button>
+		<Button primary disabled={serverStatus==='pending'} on:click={toggleServer}>
+			<Icon icon={serverStatus==='on'?'stop':'start'}></Icon>
+		</Button>
+		<Button primary on:click={toggleSettings}>
+			<Icon icon="settings"></Icon>
+		</Button>
 	</menu>
 </nav>
 <main>

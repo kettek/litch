@@ -13,6 +13,7 @@
 	export let modules: Record<string, ModuleInterface> = {}
 
 	import Button from './components/Button.svelte'
+	import Icon from './components/Icon.svelte'
 
 	export let overlay: OverlayInterface
 	export let uuid: string
@@ -89,7 +90,9 @@
 
 <main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
 	<nav>
-		<button on:click={()=>uuid=''}>back</button>
+		<Button nobg on:click={()=>uuid=''}>
+			<Icon icon='back'></Icon>
+		</Button>
 		<header>{overlay.title}</header>
 	</nav>
 	<article class:secondary={true}>
@@ -108,7 +111,9 @@
 			</label>
 			<footer>
 				<Button secondary on:click={()=>showDangerous=true}>danger mode</Button>
-				<Button secondary disabled={!changed} on:click={handleApply}>apply</Button>
+				<Button secondary disabled={!changed} on:click={handleApply}>
+					<Icon icon='checkmark'></Icon>
+				</Button>
 			</footer>
 		{:else}
 			<footer>
@@ -135,6 +140,7 @@
 					class:active={hoveringModuleUUID === module.uuid}
 				>
 					<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
+					<Button tertiary invert><Icon icon='burger'></Icon></Button>
 				</li>
 			{/each}
 		</ul>
@@ -214,7 +220,7 @@
 		min-height: 2em;
 		display: grid;
 		grid-template-rows: minmax(0, 1fr);
-		grid-template-columns: minmax(0, 1fr);
+		grid-template-columns: minmax(0, 1fr) auto;
 		justify-content: stretch;
 		align-items: stretch;
 		border: 1px solid transparent;

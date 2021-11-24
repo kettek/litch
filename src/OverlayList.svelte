@@ -4,6 +4,7 @@
 	import { flip } from 'svelte/animate'
 	import { quintInOut } from 'svelte/easing';
 
+	import Icon from './components/Icon.svelte'
 	import type { OverlayInterface } from './interfaces/Overlay'
 	export let currentOverlayUUID: string
 	export let activeOverlayUUID: string
@@ -51,7 +52,7 @@
 			class:hover={hoveringOverlayUUID === uuid}
 		>
 			<button class='activator' class:active={activeOverlayUUID===uuid} on:click={() => activeOverlayUUID=uuid}>
-		⭐
+				<Icon icon={activeOverlayUUID===uuid?'active':'inactive'}></Icon>
 			</button>
 			<span on:click={() => {currentOverlayUUID=uuid;focusedOverlayUUID=uuid}}>
 		{overlay.title}
@@ -97,7 +98,7 @@
 		font-size: 150%;
 	}
 	.activator.active {
-		color: gold;
+		color: var(--secondary);
 	}
 	ul {
 		margin: 0;
@@ -111,9 +112,6 @@
 		align-items: stretch;
 		border: 1px solid transparent;
 		color: var(--secondary);
-	}
-	li.active {
-		border: 1px solid gold;
 	}
 	li.focused {
 		background: rgba(128, 128, 128, 0.5);

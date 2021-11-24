@@ -3,13 +3,15 @@
 	export let primary: boolean = false
 	export let secondary: boolean = false
 	export let tertiary: boolean = false
+	export let invert: boolean = false
 	export let noround: boolean = false
+	export let nobg: boolean = false
 	export let dangerous: boolean = false
 	let clazz: string = ''
 	export { clazz as class}
 </script>
 
-<button class:primary class:secondary class:tertiary class:noround class:dangerous class={`${clazz||''}`} disabled={disabled} on:click>
+<button class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class={`${clazz||''}`} class:nobg disabled={disabled} on:click>
 	<slot></slot>
 </button>
 
@@ -63,4 +65,57 @@
 	.noround {
 		border-radius: 0;
 	}
+	.nobg {
+		background: none;
+	}
+
+	.invert.primary {
+		color: var(--primary);
+		background: none;
+	}
+	.invert.primary:hover {
+		color: var(--primary-focus);
+		background: none;
+	}
+	.invert.primary:active {
+		color: var(--primary-press);
+		background: none;
+	}
+	.invert.secondary {
+		color: var(--secondary);
+		background: none;
+	}
+	.invert.secondary:hover {
+		color: var(--secondary-focus);
+		background: none;
+	}
+	.invert.secondary:active {
+		color: var(--secondary-press);
+		background: none;
+	}
+	.invert.tertiary {
+		color: var(--tertiary);
+		background: none;
+	}
+	.invert.tertiary:hover {
+		color: var(--tertiary-focus);
+		background: none;
+	}
+	.invert.tertiary:active {
+		color: var(--tertiary-press);
+		background: none;
+	}
+	.invert.dangerous {
+		color: var(--dangerous);
+		background: none;
+	}
+	.invert.dangerous:hover {
+		color: var(--dangerous-focus);
+		background: none;
+	}
+	.invert.dangerous:hover {
+		color: var(--dangerous-press);
+		background: none;
+	}
+
 </style>
