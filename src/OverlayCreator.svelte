@@ -9,6 +9,8 @@
 	import type { BoxInterface } from './interfaces/Box'
 	const { ipcRenderer } = require('electron')
 
+	import Button from './components/Button.svelte'
+
 	export let shown: boolean
 	let title: string
 	let width: number
@@ -25,12 +27,11 @@
 		dispatch('create', {
 			title: title||'unnamed',
 			uuid: v4(),
-			canvas:
-			{
-	x: 0,
-	y: 0,
-	width: width||1920,
-	height: height||1080
+			canvas: {
+				x: 0,
+				y: 0,
+				width: width||1920,
+				height: height||1080
 			},
 			modules: [],
 			openSettings: true,
@@ -58,9 +59,11 @@
 			<input type='number' placeholder='1080' bind:value={height}>
 			<span>Height</span>
 		</label>
-		<button on:click={createOverlay}>
-			create
-		</button>
+		<footer>
+			<Button secondary on:click={createOverlay}>
+				create
+			</Button>
+		</footer>
 	</section>
 </main>
 
@@ -98,6 +101,9 @@
 		align-items: center;
 		padding-left: .5em;
 		user-select: none;
+	}
+	footer {
+		float: right;
 	}
 	label {
 		display: grid;

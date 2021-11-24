@@ -12,6 +12,8 @@
 	import { v4 } from 'uuid'
 	export let modules: Record<string, ModuleInterface> = {}
 
+	import Button from './components/Button.svelte'
+
 	export let overlay: OverlayInterface
 	export let uuid: string
 	let title: string = overlay.title
@@ -105,23 +107,21 @@
 				<span>Height</span>
 			</label>
 			<footer>
-				<button on:click={()=>showDangerous=true}>dangerous mode</button>
-				<button disabled={!changed} on:click={handleApply}>apply</button>
+				<Button secondary on:click={()=>showDangerous=true}>danger mode</Button>
+				<Button secondary disabled={!changed} on:click={handleApply}>apply</Button>
 			</footer>
 		{:else}
-			<button on:click={()=>dispatch('delete', uuid)}>delete</button>
 			<footer>
-				<button on:click={()=>showDangerous=false}>back</button>
+				<Button secondary on:click={()=>showDangerous=false}>back</Button>
+				<Button dangerous on:click={()=>dispatch('delete', uuid)}>delete</Button>
 			</footer>
 		{/if}
 	</article>
 	<details bind:open={overlay.openAvailableModules}>
 		<summary class='nav__heading'>Available Modules</summary>
-		<article style="padding: 0; height:100%;">
-			<ModuleList modules={modules} on:add={handleAddModule}/>
-		</article>
+		<ModuleList modules={modules} on:add={handleAddModule}/>
 	</details>
-	<details bind:open={overlay.openActiveModules}>
+	<details style="padding: 0 1em 1em 1em" bind:open={overlay.openActiveModules}>
 		<summary class='nav__heading'>Active Modules</summary>
 		<ul>
 			{#each [...overlay.modules].reverse() as module (module.uuid)}
@@ -173,6 +173,9 @@
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: auto minmax(0, 1fr);
 	}
+	details {
+		padding: 1em;
+	}
 	section header {
 		font-weight: 600;
 		display: flex;
@@ -182,7 +185,7 @@
 	article {
 		overflow-y: auto;
 		color: var(--tertiary);
-		padding: .5em;
+		padding: 1.75em;
 	}
 	article.secondary {
 		color: var(--secondary);
@@ -201,7 +204,10 @@
 		color: var(--text);
 	}
 	ul {
-		margin: 0; padding: 0;
+		background: var(--bar-bg);
+		margin: 0 .75em 1em .75em;
+		padding: 1em;
+		border-radius: 0 0 1em 1em;
 	}
 	li {
 		list-style: none;
@@ -221,8 +227,8 @@
 		cursor: pointer;
 		background: none;
 		border: 0;
-		border-radius: 0;
 		height: 100%;
 		color: var(--tertiary);
+		text-align: left;
 	}
 </style>
