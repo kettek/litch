@@ -14,7 +14,7 @@
 		<input type='checkbox' bind:checked={settings.autoplay}/>
 		autoplay
 	</label>
-	<button class="secondary" on:click={()=>update(settings)}>apply</button>
+	<button class="tertiary" on:click={()=>update(settings)}>apply</button>
 </div>
 
 <style>

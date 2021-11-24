@@ -58,7 +58,7 @@
 		grid-template-columns: auto minmax(0, 1fr);
 		align-items: stretch;
 		justify-content: stretch;
-		background: var(--secondary);
+		background: var(--tertiary);
 		color: var(--text);
 	}
 	nav header {
@@ -69,7 +69,7 @@
 		padding-left: .5em;
 	}
 	article {
-		color: var(--secondary);
+		color: var(--tertiary);
 		padding: .5em;
 	}
 </style>
