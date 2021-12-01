@@ -40,9 +40,8 @@ label {
 input, button, select, textarea {
 	font-family: inherit;
 	font-size: inherit;
-	-webkit-padding: 0.4em 0;
-	padding: 0.4em;
-	margin: 0 0 0.5em 0;
+	padding: 0.5em;
+	margin: 0.25em 0;
 	box-sizing: border-box;
 	border: 0;
 	background: var(--bar-bg);
@@ -135,6 +134,10 @@ button.tertiary:hover {
 }
 button.tertiary:active {
 	background: var(--tertiary-press);
+}
+
+details {
+	margin: .25em 0;
 }
 
 :root {
