@@ -31,4 +31,4 @@
 	onDestroy(cleanup)
 </script>
 
-<div bind:this={target} />
+<div on:click on:dblclick on:mousedown on:mouseup bind:this={target} />
