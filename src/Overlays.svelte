@@ -9,6 +9,7 @@
 	import type { OverlayInterface } from './interfaces/Overlay'
 
 	import SplitPane from './components/SplitPane.svelte'
+	import Icon from './components/Icon.svelte'
 
 	import type { ModuleInterface } from './interfaces/Module'
 	export let modules: Record<string, ModuleInterface> = {}
@@ -37,6 +38,7 @@
 		if (currentOverlayUUID === evt.detail) {
 			currentOverlayUUID = ''
 		}
+		overlays = {...overlays}
 	}
 </script>
 
@@ -46,7 +48,7 @@
 			{#if showOverlayCreator}
 				<OverlayCreator bind:shown={showOverlayCreator} on:create={handleCreate} />
 			{:else if currentOverlay === undefined}
-				<OverlayList bind:showOverlayCreator={showOverlayCreator} bind:overlays={overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} bind:focusedOverlayUUID={focusedOverlayUUID}/>
+				<OverlayList bind:showOverlayCreator={showOverlayCreator} bind:overlays={overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} bind:focusedOverlayUUID={focusedOverlayUUID} on:delete={handleDelete}/>
 			{:else}
 				<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID} on:delete={handleDelete} on:refresh modules={modules}/>
 			{/if}

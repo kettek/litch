@@ -4,6 +4,7 @@
 	import { flip } from 'svelte/animate'
 	import { quintInOut } from 'svelte/easing';
 
+	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
 	import type { OverlayInterface } from './interfaces/Overlay'
 	export let currentOverlayUUID: string
@@ -33,6 +34,33 @@
 		overlays = {...overlays}
 		fromOverlayUUID = ''
 	}
+
+	// Menu stuff
+	import { createEventDispatcher } from 'svelte'
+	const dispatch = createEventDispatcher<string>()
+
+	import Menu from './components/Menu.svelte'
+	import MenuOption from './components/MenuOption.svelte'
+	let menuPos = {x: 0, y: 0}
+	let menuUUID: string
+	let showMenu = false
+	async function showOverlayMenu(e: MouseEvent, uuid: string) {
+		menuUUID = uuid
+		e.preventDefault()
+		e.stopPropagation()
+		if (showMenu) {
+			showMenu = false
+			await new Promise(res => setTimeout(res, 100));
+		}
+		menuPos = { x: e.clientX, y: e.clientY }
+		showMenu = true
+	}
+	function closeOverlayMenu() {
+		showMenu = false
+	}
+	function deleteOverlay(uuid: string) {
+		delete overlays[uuid]
+	}
 </script>
 
 <main transition:fly="{{delay: 0, duration: 200, x: -500, y: 0, easing: quintInOut}}">
@@ -55,12 +83,21 @@
 				<Icon icon={activeOverlayUUID===uuid?'active':'inactive'}></Icon>
 			</button>
 			<span on:click={() => {currentOverlayUUID=uuid;focusedOverlayUUID=uuid}}>
-		{overlay.title}
+				{overlay.title}
 			</span>
+			<Button secondary invert on:click={(e)=>showOverlayMenu(e, uuid)}><Icon icon='burger'></Icon></Button>
 		</li>
 	{/each}
 	</ul>
 </main>
+{#if showMenu}
+	<Menu secondary {...menuPos} on:click={closeOverlayMenu} on:clickoutside={closeOverlayMenu}>
+		<MenuOption dangerous on:click={()=>dispatch('delete', menuUUID)}>
+			<span>Delete</span>
+			<Icon icon='delete'></Icon>
+		</MenuOption>
+	</Menu>
+{/if}
 
 <style>
 	main {
@@ -107,7 +144,7 @@
 	li {
 		list-style: none;
 		display: grid;
-		grid-template-columns: 3em minmax(0, 1fr);
+		grid-template-columns: 3em minmax(0, 1fr) auto;
 		grid-template-rows: minmax(0, 1fr);
 		align-items: stretch;
 		border: 1px solid transparent;

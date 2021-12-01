@@ -83,10 +83,7 @@
 		hoveringModuleUUID = ''
 	}
 
-	let showDangerous: boolean
-
 	const dispatch = createEventDispatcher<string>()
-
 
 	import Menu from './components/Menu.svelte'
 	import MenuOption from './components/MenuOption.svelte'
@@ -121,31 +118,23 @@
 		<header>{overlay.title}</header>
 	</nav>
 	<article class:secondary={true}>
-		{#if !showDangerous}
-			<label>
-				<input type='text' placeholder='title' bind:value={title}>
-				<span>Title</span>
-			</label>
-			<label>
-				<input type='number' placeholder='1920' bind:value={width}>
-				<span>Width</span>
-			</label>
-			<label>
-				<input type='number' placeholder='1080' bind:value={height}>
-				<span>Height</span>
-			</label>
-			<footer>
-				<Button secondary on:click={()=>showDangerous=true}>danger mode</Button>
-				<Button secondary disabled={!changed} on:click={handleApply}>
-					<Icon icon='checkmark'></Icon>
-				</Button>
-			</footer>
-		{:else}
-			<footer>
-				<Button secondary on:click={()=>showDangerous=false}>back</Button>
-				<Button dangerous on:click={()=>dispatch('delete', uuid)}>delete</Button>
-			</footer>
-		{/if}
+		<label>
+			<input type='text' placeholder='title' bind:value={title}>
+			<span>Title</span>
+		</label>
+		<label>
+			<input type='number' placeholder='1920' bind:value={width}>
+			<span>Width</span>
+		</label>
+		<label>
+			<input type='number' placeholder='1080' bind:value={height}>
+			<span>Height</span>
+		</label>
+		<footer>
+			<Button secondary disabled={!changed} on:click={handleApply}>
+				<Icon icon='checkmark'></Icon>
+			</Button>
+		</footer>
 	</article>
 	<details bind:open={overlay.openAvailableModules}>
 		<summary class='nav__heading'>Available Modules</summary>
