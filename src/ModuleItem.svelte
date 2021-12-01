@@ -4,6 +4,8 @@
 	import type { ModuleInstanceInterface } from "./interfaces/ModuleInstance";
 	import type { ModuleInterface } from './interfaces/Module'
 	import ModuleWrapper from "./ModuleWrapper.svelte"
+	import Icon from './components/Icon.svelte'
+	import Button from './components/Button.svelte'
 
 	export let modules: Record<string, ModuleInterface> = {}
 	export let module: ModuleInstanceInterface
@@ -22,27 +24,37 @@
 
 <main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
 	<nav>
-		<button on:click={()=>focusedUUID=''}>back</button>
+		<Button nobg on:click={()=>focusedUUID=''}>
+			<Icon icon='back'></Icon>
+		</Button>
 		<header>{module.title}({realModule.title})</header>
 	</nav>
-	<article>
-		<label>
-			<input type="number" bind:value={module.box.x}>
-			X
-		</label>
-		<label>
-			<input type="number" bind:value={module.box.y}>
-			Y
-		</label>
-		<label>
-			<input type="number" bind:value={module.box.width}>
-			Width
-		</label>
-		<label>
-			<input type="number" bind:value={module.box.height}>
-			Height
-		</label>
+	<article class='dimensions'>
+		<div class='dimensions__fields'>
+			<div>
+				<label>
+					<input type="number" bind:value={module.box.x}>
+				</label>
+				<span>x</span>
+				<label>
+					<input type="number" bind:value={module.box.y}>
+				</label>
+			</div>
+			<div>
+				<label>
+					<input type="number" bind:value={module.box.width}>
+				</label>
+				<span>x</span>
+				<label>
+					<input type="number" bind:value={module.box.height}>
+				</label>
+			</div>
+		</div>
+		<div class='dimensions__icon' title='Left, Top, Width, and Height'>
+			<Icon cursor='default' icon='dimensions'></Icon>
+		</div>
 	</article>
+	<hr/>
 	<article>
 		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} bind:updateBox={updateBox} />
 	</article>
@@ -54,7 +66,7 @@
 		top: 0; left: 0;
 		width: 100%; height: 100%;
 		display: grid;
-		grid-template-rows: auto auto minmax(0, 1fr);
+		grid-template-rows: auto auto auto minmax(0, 1fr);
 		background: var(--nav-bg);
 	}
 	nav {
@@ -75,5 +87,37 @@
 	article {
 		color: var(--tertiary);
 		padding: .5em;
+	}
+	article.dimensions {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-rows: minmax(0, 1fr);
+	}
+	div.dimensions__fields {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+	}
+	div.dimensions__fields div {
+		display: grid;
+		align-items: center;
+		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr);
+	}
+	div.dimensions__fields input {
+		width: 100%;
+	}
+	div.dimensions__fields span {
+		margin: 0 .25em;
+	}
+	div.dimensions__icon {
+		display: grid;
+		font-size: 150%;
+		margin-left: 0.25em;
+	}
+	hr {
+		border-color: var(--tertiary);
+		border-style: solid;
+		width: calc(100% - 4em);
 	}
 </style>
