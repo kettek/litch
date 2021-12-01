@@ -7,11 +7,12 @@
 	export let noround: boolean = false
 	export let nobg: boolean = false
 	export let dangerous: boolean = false
+	export let title: string = ''
 	let clazz: string = ''
 	export { clazz as class}
 </script>
 
-<button class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class={`${clazz||''}`} class:nobg disabled={disabled} on:click>
+<button title={title} class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class={`${clazz||''}`} class:nobg disabled={disabled} on:click>
 	<slot></slot>
 </button>
 
