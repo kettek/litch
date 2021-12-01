@@ -13,6 +13,10 @@
 		module.settings = value
 	}
 
+	let updateBox: (value: any) => void = (value: any) => {
+		module.box = value
+	}
+
 	$: realModule = modules[module.moduleUUID]
 </script>
 
@@ -40,7 +44,7 @@
 		</label>
 	</article>
 	<article>
-		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} />
+		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} bind:updateBox={updateBox} />
 	</article>
 </main>
 
