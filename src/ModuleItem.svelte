@@ -27,8 +27,14 @@
 		<Button nobg on:click={()=>focusedUUID=''}>
 			<Icon icon='back'></Icon>
 		</Button>
-		<header>{module.title}({realModule.title})</header>
+		<header>{realModule.title}</header>
 	</nav>
+	<article class='title'>
+		<label>
+			<input type="text" bind:value={module.title}>
+			<span>Title</span>
+		</label>
+	</article>
 	<article class='dimensions'>
 		<div class='dimensions__fields'>
 			<div>
@@ -66,7 +72,7 @@
 		top: 0; left: 0;
 		width: 100%; height: 100%;
 		display: grid;
-		grid-template-rows: auto auto auto minmax(0, 1fr);
+		grid-template-rows: auto auto auto auto minmax(0, 1fr);
 		background: var(--nav-bg);
 	}
 	nav {
@@ -78,7 +84,6 @@
 		color: var(--text);
 	}
 	nav header {
-		font-size: 150%;
 		font-weight: 600;
 		display: flex;
 		align-items: center;
@@ -119,5 +124,13 @@
 		border-color: var(--tertiary);
 		border-style: solid;
 		width: calc(100% - 4em);
+	}
+	article.title label {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+	}
+	article.title label span {
+		margin-left: 0.25em;
 	}
 </style>
