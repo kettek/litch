@@ -9,7 +9,7 @@
 
 	export let cursor: string = ''
 
-	export let large: boolean
+	export let large: boolean = false
 
 	const codes: Record<string, number> = {
 		'burger': 0xe030,
@@ -22,6 +22,7 @@
 		'remove': 0xe052,
 		'inactive': 0xe053,
 		'active': 0xe054,
+		'delete': 0xe055,
 		'open': 0xe060,
 		'resize': 0xe061,
 		'dimensions': 0xe062,
