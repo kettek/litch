@@ -86,6 +86,31 @@
 	let showDangerous: boolean
 
 	const dispatch = createEventDispatcher<string>()
+
+
+	import Menu from './components/Menu.svelte'
+	import MenuOption from './components/MenuOption.svelte'
+	import MenuDivider from './components/MenuDivider.svelte'
+	let menuPos = {x: 0, y: 0}
+	let menuUUID: string
+	let showMenu = false
+	async function showModuleMenu(e: MouseEvent, uuid: string) {
+		menuUUID = uuid
+		e.preventDefault()
+		e.stopPropagation()
+		if (showMenu) {
+			showMenu = false
+			await new Promise(res => setTimeout(res, 100));
+		}
+		menuPos = { x: e.clientX, y: e.clientY }
+		showMenu = true
+	}
+	function closeModuleMenu() {
+		showMenu = false
+	}
+	function deleteModule(uuid: string) {
+		overlay.modules = overlay.modules.filter(v=>v.uuid!==uuid)
+	}
 </script>
 
 <main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
@@ -140,7 +165,7 @@
 					class:active={hoveringModuleUUID === module.uuid}
 				>
 					<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
-					<Button tertiary invert><Icon icon='burger'></Icon></Button>
+					<Button tertiary invert on:click={(e)=>showModuleMenu(e, module.uuid)}><Icon icon='burger'></Icon></Button>
 				</li>
 			{/each}
 		</ul>
@@ -149,6 +174,14 @@
 		<ModuleItem bind:module={focusedModule} modules={modules} bind:focusedUUID={focusedModuleUUID}/>
 	{/if}
 </main>
+{#if showMenu}
+	<Menu tertiary {...menuPos} on:click={closeModuleMenu} on:clickoutside={closeModuleMenu}>
+		<MenuOption dangerous on:click={()=>deleteModule(menuUUID)}>
+			<span>Delete</span>
+			<Icon icon='delete'></Icon>
+		</MenuOption>
+	</Menu>
+{/if}
 
 <style>
 	main {
