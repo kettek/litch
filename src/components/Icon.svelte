@@ -20,6 +20,7 @@
 		'remove': 0xe052,
 		'inactive': 0xe053,
 		'active': 0xe054,
+		'open': 0xe060,
 	}
 	$: code = String.fromCharCode(codes[icon])
 </script>
