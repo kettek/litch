@@ -9,6 +9,8 @@
 
 	export let cursor: string = ''
 
+	export let large: boolean
+
 	const codes: Record<string, number> = {
 		'burger': 0xe030,
 		'settings': 0xe035,
@@ -21,11 +23,14 @@
 		'inactive': 0xe053,
 		'active': 0xe054,
 		'open': 0xe060,
+		'resize': 0xe061,
+		'dimensions': 0xe062,
+		'position': 0xe063,
 	}
 	$: code = String.fromCharCode(codes[icon])
 </script>
 
-<div style={`${style||''}; cursor: ${cursor}`} class={`${clazz||''}`} on:click>{code}</div>
+<div style={`${style||''}; ${large?'font-size:150%;':''} cursor: ${cursor}`} class={`${clazz||''}`} on:click>{code}</div>
 
 <style>
 	@font-face {
