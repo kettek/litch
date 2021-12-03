@@ -5,24 +5,32 @@
 
 	//export let settings: SettingsInterface
 
+	let emoji = '❄'
 	let items = []
-	let count = 50
-	let updateRate = 100
+	let count = 30
+	let updateRate = 50
 	let maxAccumulator = updateRate * 4
-	let speedY = 1
-	let speedX = 0
 	let spawnX = 0
 	let spawnY = -110
 	let minScale = 0.5
 	let scaleRandom = 1
+	let size = 2
+
+	let xRandomRate = [-0.25, 0.25]
+	let yRandomRate = [0.5, 1]
+
+	let rotRandomRate = [-2, 2]
 
 	function reload() {
 	items = new Array(count).fill({}).map((_, i) => {
 		return {
 			x: spawnX + Math.random() * 100,
+			xRate: Math.random() * (xRandomRate[1] - xRandomRate[0]) + xRandomRate[0],
 			y: spawnY + Math.random() * 100,
+			yRate: Math.random() * (yRandomRate[1] - yRandomRate[0]) + yRandomRate[0],
 			scale: minScale + Math.random() * scaleRandom,
 			rotation: Math.random() * 360,
+			rotRate: Math.random() * (rotRandomRate[1] - rotRandomRate[0]) + rotRandomRate[0],
 			dir: Math.random() - 0.5,
 		}
 	})
@@ -30,6 +38,7 @@
 	}
 
 	reload()
+	console.log(items)
 
 	onMount(() => {
 	let frame: number
@@ -50,10 +59,14 @@
 
 		while(accumulator >= updateRate) {
 		for (let item of items) {
-			item.y += speedY * item.scale/4
-			item.x += speedX * item.scale/4
+			item.y += item.yRate * item.scale/4
+			item.x += item.xRate * item.scale/4
+			item.rotation += item.rotRate
 			if (item.y > 110) item.y = -10
-			if (item.x > 110) item.x = spawnX
+			if (item.x > 110) item.x = -10
+			else if (item.x < -10) item.x = 110
+			if (item.rotation > 360) item.rotation = 0
+			else if (item.rotation < 0) item.rotation = 360
 		}
 		accumulator -= updateRate
 		}
@@ -67,7 +80,7 @@
 
 <section>
 	{#each items as item}
-	<div style="left: {item.x+Math.cos((item.y+item.x)/4)*2}%; top: {item.y}%; transform: scale({item.scale}) rotate({item.rotation+(item.y/100*360*item.dir)}deg);" class='item'>❄️</div>
+	<div style="left: {item.x+Math.cos((item.y+item.x)/4)*2}%; top: {item.y}%; transform: scale({size*item.scale}) rotate({item.rotation+(item.y/100*360*item.dir)}deg);" class='item'>{emoji}️</div>
 	{/each}
 </section>
 
