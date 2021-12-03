@@ -63,7 +63,7 @@
 		</div>
 	</article>
 	<hr/>
-	<article>
+	<article class='module__wrapper'>
 		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} bind:updateBox={updateBox} publisher={publisher} />
 	</article>
 </main>
@@ -134,5 +134,8 @@
 	}
 	article.title label span {
 		margin-left: 0.25em;
+	}
+	article.module__wrapper {
+		overflow: auto;
 	}
 </style>
