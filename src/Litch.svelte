@@ -9,6 +9,8 @@
 	import { register, init, isLoading, _ } from 'svelte-i18n'
 	import type { OverlayInterface } from './interfaces/Overlay'
 	import type { ModuleInterface } from './interfaces/Module'
+
+	import { publisher } from './modules'
 </script>
 
 <script lang="ts">
@@ -36,6 +38,13 @@
 		console.log('got on close')
 		serverStatus = 'off'
 	}
+
+	publisher.subscribe('module.*.fail', async ({sourceTopic}) => {
+		console.log(sourceTopic)
+	})
+	publisher.subscribe('module.*.load', async ({sourceTopic}) => {
+		console.log(sourceTopic)
+	})
 
 	onMount(async () => {
 		loadingMessage = "Gathering basic information"
@@ -70,8 +79,10 @@
 				let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
 				modules[m.uuid] = m
 				modulesMap[m.uuid] = fullmod
+				publisher.publish('module.'+mod+'.load', {})
 			} catch(e: any) {
 				console.error(`error in ${mod}: ${e}`)
+				publisher.publish('module.'+mod+'.fail', {})
 			}
 		}
 

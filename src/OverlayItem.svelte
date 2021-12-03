@@ -15,6 +15,8 @@
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
 
+	import { publisher } from './modules'
+
 	export let overlay: OverlayInterface
 	export let uuid: string
 	let title: string = overlay.title
@@ -46,6 +48,7 @@
 			box: {...module.defaults.box},
 			moduleUUID: evt.detail,
 			settings: {...module.defaults.settings},
+			publisher: publisher,
 			openDimensions: false,
 			openSettings: true,
 		})

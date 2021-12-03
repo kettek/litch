@@ -1,3 +1,4 @@
+import type { Publisher } from '@kettek/pubsub/dist/Publisher'
 import type { BoxInterface } from './Box'
 
 /**
@@ -9,6 +10,7 @@ export interface ModuleInstanceInterface {
     box: BoxInterface // used to size module instance component
     moduleUUID: string // UUID Reference to the associated module
     settings: {[key: string]: any} // Passed to module
+    publisher: Publisher
     openDimensions: boolean
     openSettings: boolean
 }

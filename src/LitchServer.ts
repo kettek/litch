@@ -13,6 +13,11 @@ import type { OverlayInterface } from './interfaces/Overlay'
 
 const path = require('path')
 
+// TODO: Replicate module publish topics to preview.
+/*import { publisher } from './modules'
+const { Publisher: PublisherR } = require('@kettek/pubsub')
+import type { Publisher } from "@kettek/pubsub/dist/Publisher"*/
+
 import { isHello, Hello, LitchMessage, LazyUpdate, isLazyUpdate, isModuleTypeRequest, ModuleTypeResponse} from './api'
 
 export class LitchServer {
