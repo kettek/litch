@@ -14,6 +14,7 @@
 	const codes: Record<string, number> = {
 		'burger': 0xe030,
 		'settings': 0xe035,
+		'assets': 0xe036,
 		'stop': 0xe03a,
 		'start': 0xe03b,
 		'back': 0xe040,
@@ -27,6 +28,7 @@
 		'resize': 0xe061,
 		'dimensions': 0xe062,
 		'position': 0xe063,
+		'open-folder': 0xe070,
 	}
 	$: code = String.fromCharCode(codes[icon])
 </script>
