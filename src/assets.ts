@@ -95,10 +95,7 @@ export let handler: SubscriberHandler = async m => {
 			asset.redirectedSource = `http://localhost:${server.address().port}/${asset.uuid}?${asset.refresher}`
 			asset.name = asset.originalSource.substring(asset.originalSource.lastIndexOf('/')+1)
 			if (m.message.fromFolder) {
-				console.log(asset.originalSource)
 				let t = asset.originalSource.substring(0, asset.originalSource.length - (asset.name.length+1))
-				console.log(t)
-				console.log(t.substring(t.lastIndexOf('/')+1))
 				asset.tags = [
 					t.substring(t.lastIndexOf('/')+1)
 				]
