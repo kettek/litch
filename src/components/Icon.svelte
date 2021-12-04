@@ -24,6 +24,7 @@
 		'inactive': 0xe053,
 		'active': 0xe054,
 		'delete': 0xe055,
+		'filter': 0xe056,
 		'open': 0xe060,
 		'resize': 0xe061,
 		'dimensions': 0xe062,
