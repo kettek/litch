@@ -9,11 +9,15 @@
 	import { register, init, isLoading, _ } from 'svelte-i18n'
 	import type { OverlayInterface } from './interfaces/Overlay'
 	import type { ModuleInterface } from './interfaces/Module'
+	import type { Asset } from './interfaces/Assets'
+
+	import { assets, start as startAssets } from './assets'
 
 	import { publisher } from './modules'
 </script>
 
 <script lang="ts">
+	let assets: Asset[] = []
 	let overlays: Record<string, OverlayInterface> = {}
 	let modules: Record<string, ModuleInterface> = {}
 	let modulesMap: Record<string, string> = {}
@@ -86,6 +90,10 @@
 			}
 		}
 
+		// Start up assets server
+		loadingMessage = "Chuffing assets"
+		await startAssets()
+
 		loading = false
 	})
 
@@ -94,6 +102,12 @@
 	let showSettings = false
 	function toggleSettings() {
 		showSettings = !showSettings
+	}
+
+	import Assets from './Assets.svelte'
+	let showAssets = false
+	function toggleAssets() {
+		showAssets = !showAssets
 	}
 
 	async function toggleServer() {
@@ -128,6 +142,9 @@
 <nav>
 	<h1>litch</h1>
 	<menu>
+		<Button primary on:click={toggleAssets}>
+			<Icon icon="assets"></Icon>
+		</Button>
 		<Button primary disabled={serverStatus==='pending'} on:click={toggleServer}>
 			<Icon icon={serverStatus==='on'?'stop':'start'}></Icon>
 		</Button>
@@ -138,6 +155,9 @@
 </nav>
 <main>
 	{#if !loading}
+		{#if showAssets}
+			<Assets/>
+		{/if}
 		{#if showSettings}
 			<Settings/>
 		{/if}
