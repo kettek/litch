@@ -10,6 +10,7 @@
 	import Icon from './components/Icon.svelte'
 	import SplitPane from './components/SplitPane.svelte'
 	import { publisher } from './modules'
+	import type { Asset } from './interfaces/Asset'
 
 	function importAsset() {
 		let el = document.createElement('input')
@@ -78,6 +79,57 @@
 		})
 	}
 
+	/* Filter */
+	let filterValue: string = ''
+	function isAssetFiltered(asset: Asset, filterValue: string): boolean {
+		if (filterValue.trim() === '') return false
+
+		let searches = filterValue.trim().toLowerCase().split(',')
+
+		let matches = 0
+		let badMatches = 0
+		let neededMatches = 0
+		for (let s of searches) {
+			if (s === '') continue
+			s = s.trim()
+			if (s[0] === '!') {
+				s = s.substring(1)
+				if (asset.name.toLowerCase().includes(s)) {
+					badMatches++
+				} else if (asset.mimetype.includes(s)) {
+					badMatches++
+				} else {
+					for (let t of asset.tags) {
+						if (t.includes(s)) {
+							badMatches++
+						}
+					}
+				}
+			} else {
+				neededMatches++
+				if (asset.name.toLowerCase().includes(s)) {
+					matches++
+				} else if (asset.mimetype.includes(s)) {
+					matches++
+				} else {
+					for (let t of asset.tags) {
+						if (t.includes(s)) {
+							matches++
+						}
+					}
+				}
+			}
+		}
+		if (badMatches > 0) {
+			return true
+		}
+		if (matches >= neededMatches) {
+			return false
+		}
+
+		return true
+	}
+
 	/* Lifetime */
 	onMount(async () => {
 		let subscriber = publisher.subscribe('assets.*', async m => {
@@ -96,13 +148,13 @@
 		<SplitPane type="horizontal" pos=25>
 			<section slot='a' class='nav'>
 				<nav>
-					<Button primary on:click={importAsset}>
+					<Button secondary on:click={importAsset}>
 						<Icon icon="open"></Icon>
 					</Button>
-					<Button primary on:click={importFolder}>
+					<Button secondary on:click={importFolder}>
 						<Icon icon="open-folder"></Icon>
 					</Button>
-					<Button primary on:click={addAsset}>
+					<Button secondary on:click={addAsset}>
 						<Icon icon="add"></Icon>
 					</Button>
 				</nav>
@@ -120,18 +172,19 @@
 						<section class='selectedAsset__source'>
 							<label class='selectedAsset__source__file'>
 								<input type='text' bind:value={selectedAsset.originalSource} placeholder='local file' />
-								<Button title='Open file' tertiary on:click={()=>{openSourceDialog()}}>
+								<Button title='Open file' secondary on:click={()=>{openSourceDialog()}}>
 									<Icon icon='open'></Icon>
 								</Button>
 							</label>
 						</section>
+						<label class='selectedAsset__tags__tag'>
+							<input type='text' disabled value={selectedAsset.mimetype}/>
+						</label>
+
 						<hr>
 						<section class='selectedAsset__tags'>
 							<header>tags</header>
 							<section class='selectedAsset__tags__content'>
-								<label class='selectedAsset__tags__tag'>
-									<input type='text' disabled value={selectedAsset.mimetype}/>
-								</label>
 								<label class='selectedAsset__tags__tag'>
 									<input type='text' bind:value={pendingTagValue} on:submit={addTag}/>
 									<Button secondary on:click={addTag}>
@@ -152,26 +205,33 @@
 				</article>
 			</section>
 			<section slot='b' class='content'>
-				<menu>
-					filter goes here
-				</menu>
+				<nav class='filter'>
+					<label>
+						<input placeholder='name, type, !tag, ...' type='text' bind:value={filterValue}/>
+						<Button secondary invert>
+							<Icon icon='filter'></Icon>
+						</Button>
+					</label>
+				</nav>
 				<article class='assets'>
-					{#each assets as asset (asset.uuid)}
-						<div on:click={()=>selectedAssetUUID = asset.uuid} title='{asset.uuid}' class='asset'>
-							<header>{asset.name}</header>
-							<article>
-								{#if asset.mimetype.startsWith('image')}
-									<img alt={asset.uuid} src={asset.redirectedSource||asset.originalSource}/>
-								{:else if asset.mimetype.startsWith('video')}
-									<video controls src={asset.redirectedSource||asset.originalSource}>
-										<track kind="captions" />
-									</video>
-								{:else if asset.mimetype.startsWith('audio')}
-									<audio controls src={asset.redirectedSource||asset.originalSource}>
-									</audio>
-								{/if}
-							</article>
-						</div>
+					{#each assets.sort((a,b)=>a.name.localeCompare(b.name)) as asset (asset.uuid)}
+						{#if !isAssetFiltered(asset, filterValue)}
+							<div on:click={()=>selectedAssetUUID = asset.uuid} title='{asset.uuid}' class='asset'>
+								<header>{asset.name}</header>
+								<article>
+									{#if asset.mimetype.startsWith('image')}
+										<img alt={asset.uuid} src={asset.redirectedSource||asset.originalSource}/>
+									{:else if asset.mimetype.startsWith('video')}
+										<video controls src={asset.redirectedSource||asset.originalSource}>
+											<track kind="captions" />
+										</video>
+									{:else if asset.mimetype.startsWith('audio')}
+										<audio controls src={asset.redirectedSource||asset.originalSource}>
+										</audio>
+									{/if}
+								</article>
+							</div>
+						{/if}
 					{/each}
 				</article>
 			</section>
@@ -234,6 +294,14 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
 	}
+	.filter {
+		display: grid;
+	}
+	.filter > label {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		padding: .5em;
+	}
 	/* window */
 	main {
 		position: absolute;
@@ -248,7 +316,7 @@
 		box-shadow: 0 0 1em .1em #000;
 	}
 	main > header {
-		background: var(--primary);
+		background: var(--secondary);
 		color: var(--text);
 		text-align: center;
 		height: 2em;
@@ -257,7 +325,7 @@
 		font-size: 125%;
 	}
 	main > article {
-		color: var(--primary);
+		color: var(--secondary);
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr);
