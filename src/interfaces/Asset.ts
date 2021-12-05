@@ -1,4 +1,3 @@
-
 export interface Asset {
 	/**
 	 * End-user defined name
@@ -20,4 +19,10 @@ export interface Asset {
 	 */
 	refresher: number
 	//
+}
+
+export interface Collection {
+	name: string
+	uuid: string
+	assets: Asset[]
 }

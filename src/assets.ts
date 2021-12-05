@@ -1,6 +1,6 @@
 import type { SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
 import { v4 } from 'uuid'
-import type { Asset } from './interfaces/Asset'
+import type { Asset, Collection } from './interfaces/Asset'
 
 // This hurts. Need to really figure out how to get rollup to expect cjs modules in electron via import.
 const mime = require('mime-types')
@@ -11,6 +11,7 @@ const fs = require('fs')
 import { publisher } from './modules'
 
 export let assets: Asset[] = []
+export let collections: Collection[] = []
 
 // Callback for starting up the ol' server.
 let server: any
@@ -18,8 +19,11 @@ export function start(): Promise<void> {
 	return new Promise((resolve, reject) => {
 		server = http.createServer((req: any, res: any) => {
 			let url = new URL(req.url, `http://${req.headers.host}`)
-			let uuid = url.pathname.slice(1)
-			let asset = assets.find(v=>v.uuid===uuid)
+			let pathname = url.pathname.slice(1)
+			let slashpos = pathname.lastIndexOf('/')
+			let collectionUUID = pathname.substring(0, slashpos)
+			let uuid = pathname.substring(slashpos+1)
+			let asset = getAsset(collectionUUID, uuid)
 			if (!asset) {
 				res.writeHead(404, {
 					'Content-Type': 'text/plain',
@@ -59,7 +63,19 @@ export function start(): Promise<void> {
 }
 
 export let handler: SubscriberHandler = async m => {
-	if (m.sourceTopic === 'assets.create') {
+	if (m.topic === 'collections.create') {
+		let collection = {
+			name: 'A collection',
+			uuid: v4(),
+			assets: [],
+			...m.message,
+		}
+		collections.push(collection)
+		publisher.publish(`collections.refresh`, {})
+	} else if (m.topic === 'collections.collection.*.assets.create') {
+		let collectionUUID = m.sourceTopic?.split('.')[2]
+		let collection = collections.find(v=>v.uuid === collectionUUID)
+		if (!collection) throw 'oops'
 		let asset = {
 			name: 'my asset',
 			mimetype: '',
@@ -69,9 +85,12 @@ export let handler: SubscriberHandler = async m => {
 			refresher: 0,
 			...m.message,
 		}
-		assets.push(asset)
-		publisher.publish(`assets.refresh`, {})
-	} else if (m.sourceTopic === 'assets.import') {
+		collection.assets.push(asset)
+		publisher.publish(`collections.collection.${collectionUUID}.assets.refresh`, {})
+	} else if (m.topic === 'collections.collection.*.assets.import') {
+		let collectionUUID = m.sourceTopic?.split('.')[2]
+		let collection = collections.find(v=>v.uuid === collectionUUID)
+		if (!collection) throw 'oops'
 		let asset = {
 			name: '',
 			uuid: v4(),
@@ -92,7 +111,7 @@ export let handler: SubscriberHandler = async m => {
 		} catch(err) {
 			mimetype = mime.lookup(asset.originalSource)
 			isLocal = true
-			asset.redirectedSource = `http://localhost:${server.address().port}/${asset.uuid}?${asset.refresher}`
+			asset.redirectedSource = `http://localhost:${server.address().port}/${collectionUUID}/${asset.uuid}?${asset.refresher}`
 			asset.name = asset.originalSource.substring(asset.originalSource.lastIndexOf('/')+1)
 			if (m.message.fromFolder) {
 				let t = asset.originalSource.substring(0, asset.originalSource.length - (asset.name.length+1))
@@ -106,13 +125,13 @@ export let handler: SubscriberHandler = async m => {
 			asset.mimetype = mimetype
 		}
 
-		assets.push(asset)
-		publisher.publish(`assets.refresh`, {})
+		collection.assets.push(asset)
+		publisher.publish(`collections.collection.${collectionUUID}.assets.refresh`, {})
 	}
 }
 
-export function setAssetSource(uuid: string, source: string) {
-	let asset = getAsset(uuid)
+export function setAssetSource(collectionUUID: string, uuid: string, source: string) {
+	let asset = getAsset(collectionUUID, uuid)
 	if (!asset) return
 
 	// Check if the source is a URL or local and get mimetype
@@ -126,7 +145,7 @@ export function setAssetSource(uuid: string, source: string) {
 	} catch(err) {
 		mimetype = mime.lookup(source)
 		isLocal = true
-		asset.redirectedSource = `http://localhost:${server.address().port}/${uuid}?${asset.refresher}`
+		asset.redirectedSource = `http://localhost:${server.address().port}/${collectionUUID}/${asset.uuid}?${asset.refresher}`
 	}
 
 	asset.originalSource = source
@@ -134,21 +153,26 @@ export function setAssetSource(uuid: string, source: string) {
 		asset.mimetype = mimetype
 	}
 
-	publisher.publish(`assets.asset.${uuid}`, {refresh: true})
+	publisher.publish(`collections.collection.${collectionUUID}.assets.asset.${uuid}`, {refresh: true})
 	// I suppose so.
-	publisher.publish(`assets.refresh`, {})
+	publisher.publish(`collections.collection.${collectionUUID}.assets.refresh`, {})
 }
 
-let sourceAdjuster = publisher.subscribe('assets.asset.*.source', async m => {
+let sourceAdjuster = publisher.subscribe('collections.collection.*.assets.asset.*.source', async m => {
+	console.log('frick', m)
 	if (!m.sourceTopic) return
-	let uuid = m.sourceTopic.split('.')[2]
+	let collectionUUID = m.sourceTopic.split('.')[2]
+	let uuid = m.sourceTopic.split('.')[5]
 
-	setAssetSource(uuid, m.message)
+	setAssetSource(collectionUUID, uuid, m.message)
 })
 
-export function getAsset(uuid: string): Asset|undefined {
-	return assets.find(v=>v.uuid===uuid)
+export function getAsset(collectionUUID: string, uuid: string): Asset|undefined {
+	return collections.find(v=>v.uuid===collectionUUID)?.assets.find(v=>v.uuid===uuid)
 }
 
 export let subscriber = publisher.subscribe('assets.*', handler)
+publisher.subscribe('collections.create', handler)
+publisher.subscribe('collections.collection.*.assets.create', handler)
+publisher.subscribe('collections.collection.*.assets.import', handler)
 console.log('now listening for assets')
