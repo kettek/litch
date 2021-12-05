@@ -7,8 +7,6 @@
 	import Icon from './components/Icon.svelte'
 	import Button from './components/Button.svelte'
 
-	import { publisher } from './modules'
-
 	export let modules: Record<string, ModuleInterface> = {}
 	export let module: ModuleInstanceInterface
 	export let focusedUUID: string
@@ -64,7 +62,7 @@
 	</article>
 	<hr/>
 	<article class='module__wrapper'>
-		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} bind:updateBox={updateBox} publisher={publisher} />
+		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} bind:updateBox={updateBox} channel={module.channel} />
 	</article>
 </main>
 
