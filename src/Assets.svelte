@@ -221,11 +221,11 @@
 										{#each collections as collection}
 											<li class='collection' class:selected={selectedCollectionUUID===collection.uuid} title={collection.uuid} on:click={()=>{selectedCollectionUUID=collection.uuid}}>
 												<span>{collection.name}</span>
-												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid} on:click={()=>{setNavState('collection');selectedCollectionUUID=collection.uuid}}>
-													<Icon icon='forward'></Icon>
-												</Button>
 												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid}>
 													<Icon icon='burger'></Icon>
+												</Button>
+												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid} on:click={()=>{setNavState('collection');selectedCollectionUUID=collection.uuid}}>
+													<Icon icon='forward'></Icon>
 												</Button>
 											</li>
 										{/each}
