@@ -219,9 +219,12 @@
 								<svelte:fragment slot="content">
 									<ul>
 										{#each collections as collection}
-											<li class='collection' class:selected={selectedCollectionUUID===collection.uuid} title={collection.uuid} on:click={()=>{setNavState('collection');selectedCollectionUUID=collection.uuid}}>
+											<li class='collection' class:selected={selectedCollectionUUID===collection.uuid} title={collection.uuid} on:click={()=>{selectedCollectionUUID=collection.uuid}}>
 												<span>{collection.name}</span>
-												<Button secondary invert>
+												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid} on:click={()=>{setNavState('collection');selectedCollectionUUID=collection.uuid}}>
+													<Icon icon='forward'></Icon>
+												</Button>
+												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid}>
 													<Icon icon='burger'></Icon>
 												</Button>
 											</li>
@@ -443,18 +446,21 @@
 		padding: 0;
 	}
 	li.collection.selected {
-		border-color: var(--secondary);
+		background: var(--secondary);
+		color: var(--text);
 	}
 	li.collection {
 		list-style: none;
 		min-height: 2em;
 		display: grid;
 		grid-template-rows: minmax(0, 1fr);
-		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-columns: minmax(0, 1fr) auto auto;
 		justify-content: stretch;
-		align-items: stretch;
-		border: 1px solid transparent;
+		align-items: center;
 		color: var(--secondary);
+		margin: 0.5em;
+		padding: 0.5em;
+		border-radius: .25em;
 	}
 	/* window */
 	main {
