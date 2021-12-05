@@ -4,7 +4,7 @@
 	import { _ } from 'svelte-i18n'
 	import { quintInOut } from 'svelte/easing'
 	import type { OverlayInterface } from './interfaces/Overlay'
-	import { createEventDispatcher } from 'svelte'
+	import { createEventDispatcher, tick } from 'svelte'
 	import ModuleItem from './ModuleItem.svelte'
 
 	import type { ModuleInterface } from './interfaces/Module'
@@ -15,7 +15,7 @@
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
 
-	import { publisher } from './modules'
+	import { createModuleChannel, publisher } from './modules'
 
 	export let overlay: OverlayInterface
 	export let uuid: string
@@ -41,18 +41,26 @@
 	function handleAddModule(evt: CustomEvent<string>) {
 		let module = modules[evt.detail]
 		if (!module) return // TODO: show error
-		// TODO: We need module.defaults.{} that contains box, settings, and title.
+		let uuid = v4()
 		overlay.modules.push({
 			title: module.defaults.title,
-			uuid: v4(),
+			uuid: uuid,
 			box: {...module.defaults.box},
 			moduleUUID: evt.detail,
 			settings: {...module.defaults.settings},
-			publisher: publisher,
+			channel: createModuleChannel(overlay.uuid, uuid),
 			openDimensions: false,
 			openSettings: true,
 		})
+		publisher.publish(`overlay.${overlay.uuid}.module.${uuid}.create`, {})
 		dispatch('refresh', uuid)
+	}
+	async function deleteModule(uuid: string) {
+		let module = overlay.modules.find(v=>v.uuid===uuid)
+		if (!module) return
+		overlay.modules = overlay.modules.filter(v=>v.uuid!==uuid)
+		await tick()
+		publisher.publish(`overlay.${overlay.uuid}.module.${uuid}.delete`, {})
 	}
 
 	let hoveringModuleUUID: string
@@ -91,6 +99,7 @@
 	import Menu from './components/Menu.svelte'
 	import MenuOption from './components/MenuOption.svelte'
 	import MenuDivider from './components/MenuDivider.svelte'
+	import DropList from './components/DropList.svelte'
 	let menuPos = {x: 0, y: 0}
 	let menuUUID: string
 	let showMenu = false
@@ -107,9 +116,6 @@
 	}
 	function closeModuleMenu() {
 		showMenu = false
-	}
-	function deleteModule(uuid: string) {
-		overlay.modules = overlay.modules.filter(v=>v.uuid!==uuid)
 	}
 </script>
 
@@ -139,29 +145,37 @@
 			</Button>
 		</footer>
 	</article>
-	<details bind:open={overlay.openAvailableModules}>
-		<summary class='nav__heading'>Available Modules</summary>
-		<ModuleList modules={modules} on:add={handleAddModule}/>
-	</details>
-	<details style="padding: 0 1em 1em 1em" bind:open={overlay.openActiveModules}>
-		<summary class='nav__heading'>Active Modules</summary>
-		<ul>
-			{#each [...overlay.modules].reverse() as module (module.uuid)}
-				<li
-					animate:flip="{{duration: 200}}"
-					draggable={true}
-					on:dragstart={e => handleModuleDragStart(e, module.uuid)}
-					on:drop|preventDefault={e => handleModuleDrop(e, module.uuid)}
-					ondragover="return false"
-					on:dragenter={() => hoveringModuleUUID = module.uuid}
-					class:active={hoveringModuleUUID === module.uuid}
-				>
-					<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
-					<Button tertiary invert on:click={(e)=>showModuleMenu(e, module.uuid)}><Icon icon='burger'></Icon></Button>
-				</li>
-			{/each}
-		</ul>
-	</details>
+	<DropList bind:open={overlay.openAvailableModules} tertiary>
+		<svelte:fragment slot="heading">
+			Available Modules
+		</svelte:fragment>
+		<svelte:fragment slot="content">
+			<ModuleList modules={modules} on:add={handleAddModule}/>
+		</svelte:fragment>
+	</DropList>
+	<DropList style="padding: 0 1em 1em 1em" bind:open={overlay.openActiveModules} tertiary>
+		<svelte:fragment slot="heading">
+			Active Modules
+		</svelte:fragment>
+		<svelte:fragment slot="content">
+			<ul>
+				{#each [...overlay.modules].reverse() as module (module.uuid)}
+					<li
+						animate:flip="{{duration: 200}}"
+						draggable={true}
+						on:dragstart={e => handleModuleDragStart(e, module.uuid)}
+						on:drop|preventDefault={e => handleModuleDrop(e, module.uuid)}
+						ondragover="return false"
+						on:dragenter={() => hoveringModuleUUID = module.uuid}
+						class:active={hoveringModuleUUID === module.uuid}
+					>
+						<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
+						<Button tertiary invert on:click={(e)=>showModuleMenu(e, module.uuid)}><Icon icon='burger'></Icon></Button>
+					</li>
+				{/each}
+			</ul>
+		</svelte:fragment>
+	</DropList>
 	{#if focusedModule}
 		<ModuleItem bind:module={focusedModule} modules={modules} bind:focusedUUID={focusedModuleUUID}/>
 	{/if}
@@ -199,20 +213,6 @@
 		align-items: center;
 		padding-left: .5em;
 	}
-	section {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		grid-template-rows: auto minmax(0, 1fr);
-	}
-	details {
-		padding: 1em;
-	}
-	section header {
-		font-weight: 600;
-		display: flex;
-		align-items: center;
-		padding-left: .5em;
-	}
 	article {
 		overflow-y: auto;
 		color: var(--tertiary);
@@ -224,21 +224,9 @@
 	article.secondary footer {
 		float: right;
 	}
-	article.secondary footer button {
-		background-color: var(--secondary);
-		color: var(--text);
-		border: 0; border-radius: 0;
-		height: 100%;
-	}
-	summary {
-		background: var(--tertiary);
-		color: var(--text);
-	}
 	ul {
-		background: var(--bar-bg);
-		margin: 0 .75em 1em .75em;
-		padding: 1em;
-		border-radius: 0 0 1em 1em;
+		margin: 0;
+		padding: 0;
 	}
 	li {
 		list-style: none;

@@ -23,11 +23,6 @@
 	main {
 		display: flex;
 		flex-direction: column;
-		color: var(--tertiary);
-		background: var(--bar-bg);
-		margin: 0 .75em 1em .7em;
-		padding: 1em;
-		border-radius: 0 0 1em 1em;
 	}
 	li {
 		list-style: none;
