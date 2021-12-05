@@ -18,6 +18,7 @@
 		'stop': 0xe03a,
 		'start': 0xe03b,
 		'back': 0xe040,
+		'forward': 0xe041,
 		'checkmark': 0xe050,
 		'add': 0xe051,
 		'remove': 0xe052,
