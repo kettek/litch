@@ -3,7 +3,7 @@
 
 	import ModuleWrapper from './ModuleWrapper.svelte'
 
-	import { isHello, isLazyUpdate, isModuleTypeResponse, LitchMessage, ModuleTypeRequest } from '../../src/api'
+	import { isHello, isLazyUpdate, isModuleTypeResponse, isEndpoint, LitchMessage, ModuleTypeRequest } from '../../src/api'
 
 	import type { OverlayInterface } from '../../src/interfaces/Overlay'
 	import type { ModuleInterface } from '../../src/interfaces/Module'
@@ -52,6 +52,21 @@
 						checkOverlayModules()
 					} else if (isModuleTypeResponse(msg)) {
 						addModule(msg.uuid, msg.file)
+					} else if (isEndpoint(msg)) {
+						// FIXME: Super hacky
+						let matchIndex = -1
+						let matchModule = ''
+						for (let m of overlay.modules) {
+							let i = msg.data.topic.indexOf(m.uuid)
+							if (i >= 0) {
+								matchIndex = i
+								matchModule = m.uuid
+								break
+							}
+						}
+						if (matchIndex >= 0) {
+							//console.log('parse it !!!')
+						}
 					} else {
 						console.log('got unhandled :(')
 					}
