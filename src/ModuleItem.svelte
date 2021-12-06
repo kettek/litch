@@ -3,9 +3,12 @@
 	import { quintInOut } from 'svelte/easing'
 	import type { ModuleInstanceInterface } from "./interfaces/ModuleInstance";
 	import type { ModuleInterface } from './interfaces/Module'
+	import type { AssetManager, AssetResults } from './interfaces/Asset'
 	import ModuleWrapper from "./ModuleWrapper.svelte"
 	import Icon from './components/Icon.svelte'
 	import Button from './components/Button.svelte'
+
+	import AssetsCard from './AssetsCard.svelte'
 
 	export let modules: Record<string, ModuleInterface> = {}
 	export let module: ModuleInstanceInterface
@@ -17,6 +20,30 @@
 
 	let updateBox: (value: any) => void = (value: any) => {
 		module.box = value
+	}
+
+	let showAssets = false
+	let showOptions: any = {}
+	let assetResolve: undefined | ((value: AssetResults) => void)
+	let assetReject: undefined | ((reason?: any) => void)
+
+	function closeAssets(e: any) {
+		showAssets = false
+		if (assetResolve) {
+			assetResolve(e.detail)
+		}
+		assetResolve = undefined
+		assetReject = undefined
+	}
+	let assets: AssetManager = {
+		open: (options: any): Promise<AssetResults> => {
+			return new Promise((resolve, reject) => {
+				assetResolve = resolve
+				assetReject = reject
+				showOptions = options
+				showAssets = true
+			})
+		}
 	}
 
 	$: realModule = modules[module.moduleUUID]
@@ -62,9 +89,12 @@
 	</article>
 	<hr/>
 	<article class='module__wrapper'>
-		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} bind:updateBox={updateBox} channel={module.channel} />
+		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} bind:updateBox={updateBox} channel={module.channel} assets={assets} />
 	</article>
 </main>
+{#if showAssets}
+	<AssetsCard multiple={showOptions.multiple} on:close={closeAssets}/>
+{/if}
 
 <style>
 	main {
