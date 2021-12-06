@@ -26,3 +26,14 @@ export interface Collection {
 	uuid: string
 	assets: Asset[]
 }
+
+export interface AssetResult {
+	reference: string
+	collectionUUID: string
+	uuid: string
+}
+export type AssetResults = AssetResult[]
+
+export interface AssetManager {
+	open: (options: any) => Promise<AssetResults>
+}
