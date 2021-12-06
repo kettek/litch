@@ -12,6 +12,9 @@
 	import Icon from './components/Icon.svelte'
 
 	import type { ModuleInterface } from './interfaces/Module'
+	import { onMount } from 'svelte'
+	import { publisher } from './modules'
+	import type { Subscriber } from '@kettek/pubsub/dist/Subscriber'
 	export let modules: Record<string, ModuleInterface> = {}
 
 	export let overlays: Record<string, OverlayInterface> = {}
@@ -40,6 +43,13 @@
 		}
 		overlays = {...overlays}
 	}
+
+	let assetsSubscriber: Subscriber
+	onMount(() => {
+		assetsSubscriber = publisher.subscribe('overlay.*.assets', async ({topic, message}) => {
+			console.log('overlay assets', topic, message)
+		})
+	})
 </script>
 
 <main>

@@ -6,9 +6,14 @@
 	import Icon from '../../../src/components/Icon.svelte'
 	import Button from '../../../src/components/Button.svelte'
 
+	import type { ModuleChannel } from '../../../src/interfaces/ModuleInstance'
+import { onMount } from 'svelte';
+
 	const mime = require('mime-types')
 
 	export let box: BoxInterface
+
+	export let channel: ModuleChannel
 
 	export let settings: SettingsInterface = {
 		source: '',
@@ -47,6 +52,17 @@
 		updateBox(box)
 	}
 
+	onMount(() => {
+		console.log('set up ', channel)
+		channel.receive = async (msg: any) => {
+			console.log(msg)
+		}
+		channel.publish('ready', {})
+		return () => {
+			console.log('clean up')
+			channel.receive = null
+		}
+	})
 </script>
 
 <div>

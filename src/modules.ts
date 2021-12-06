@@ -21,7 +21,9 @@ export function createModuleChannel(overlayUUID: string, uuid: string): ModuleCh
 			// To be overridden by the module.
 		},
 		publish: (topic: string, msg: any) => {
-			publisher.publish(s, `${ctx}.${topic}`, msg)
+			//publisher.publish(s, `${ctx}.${topic}`, msg)
+			// FIXME
+			publisher.publish(`${ctx}.${topic}`, msg)
 		},
 		subscribe: (topic: string): ()=>void => {
 			// TODO: Limit topics to subscribe to
@@ -37,6 +39,9 @@ export function createModuleChannel(overlayUUID: string, uuid: string): ModuleCh
 				publisher.unsubscribe(topic, s)
 			}
 		},
+		update: (topic: string, msg: any) => {
+			// OVERRIDE
+		}
 	}
 
 	s.handler = m.handler

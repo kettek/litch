@@ -7,6 +7,8 @@ import type { Application } from 'express-ws'
 import type { MessageEvent, WebSocket, CloseEvent } from 'ws'
 import { v4 } from 'uuid'
 
+import { publisher } from './modules'
+
 const httpTerminator = require('http-terminator')
 
 import type { OverlayInterface } from './interfaces/Overlay'
@@ -18,7 +20,7 @@ const path = require('path')
 const { Publisher: PublisherR } = require('@kettek/pubsub')
 import type { Publisher } from "@kettek/pubsub/dist/Publisher"*/
 
-import { isHello, Hello, LitchMessage, LazyUpdate, isLazyUpdate, isModuleTypeRequest, ModuleTypeResponse} from './api'
+import { isHello, Hello, LitchMessage, LazyUpdate, isLazyUpdate, isModuleTypeRequest, ModuleTypeResponse, Endpoint} from './api'
 
 export class LitchServer {
 	#express : Application | null = null
@@ -139,7 +141,15 @@ export class LitchServer {
 					console.log('got unhandled :(')
 				}
 			})
+
+			let endpoint = publisher.connect('*', async (msg: any): Promise<number> => {
+				var e : Endpoint = {event: 'endpoint', data: msg}
+				ws.send(JSON.stringify(e))
+				return 1
+			})
+
 			ws.onclose = (event: CloseEvent) => {
+				publisher.disconnect(endpoint)
 				delete this.#clients[uuid]
 			}
 		})

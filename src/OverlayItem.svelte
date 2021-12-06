@@ -51,6 +51,7 @@
 			channel: createModuleChannel(overlay.uuid, uuid),
 			openDimensions: false,
 			openSettings: true,
+			assets: [],
 		})
 		publisher.publish(`overlay.${overlay.uuid}.module.${uuid}.create`, {})
 		dispatch('refresh', uuid)

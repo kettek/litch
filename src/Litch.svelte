@@ -156,7 +156,7 @@
 <main>
 	{#if !loading}
 		{#if showAssets}
-			<Assets/>
+			<Assets on:close={()=>showAssets=false}/>
 		{/if}
 		{#if showSettings}
 			<Settings/>

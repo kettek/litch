@@ -15,6 +15,14 @@ export function isHello(object: any): object is Hello {
 	return object.event === 'hello'
 }
 
+export interface Endpoint {
+	event: 'endpoint'
+	data: any
+}
+export function isEndpoint(object: any): object is Endpoint {
+	return object.event === 'endpoint'
+}
+
 export interface OverlayAdd {
 	event: 'overlay-add'
 	uuid: UUID
