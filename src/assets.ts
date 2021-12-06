@@ -158,6 +158,57 @@ export function setAssetSource(collectionUUID: string, uuid: string, source: str
 	publisher.publish(`collections.collection.${collectionUUID}.assets.refresh`, {})
 }
 
+export function isAssetFiltered(asset: Asset, filterValue: string): boolean {
+	if (filterValue.trim() === '') return false
+
+	let searches = filterValue.trim().toLowerCase().split(',')
+
+	let matches = 0
+	let badMatches = 0
+	let neededMatches = 0
+	for (let s of searches) {
+		if (s === '') continue
+		s = s.trim()
+		if (s[0] === '!') {
+			s = s.substring(1)
+			if (asset.name.toLowerCase().includes(s)) {
+				badMatches++
+			} else if (asset.mimetype.includes(s)) {
+				badMatches++
+			} else {
+				for (let t of asset.tags) {
+					t = t.toLowerCase()
+					if (t.includes(s)) {
+						badMatches++
+					}
+				}
+			}
+		} else {
+			neededMatches++
+			if (asset.name.toLowerCase().includes(s)) {
+				matches++
+			} else if (asset.mimetype.includes(s)) {
+				matches++
+			} else {
+				for (let t of asset.tags) {
+					t = t.toLowerCase()
+					if (t.includes(s)) {
+						matches++
+					}
+				}
+			}
+		}
+	}
+	if (badMatches > 0) {
+		return true
+	}
+	if (matches >= neededMatches) {
+		return false
+	}
+
+	return true
+}
+
 let sourceAdjuster = publisher.subscribe('collections.collection.*.assets.asset.*.source', async m => {
 	console.log('frick', m)
 	if (!m.sourceTopic) return
