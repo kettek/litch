@@ -276,7 +276,7 @@
 					</label>
 				</nav>
 				<article class='assets'>
-					<AssetsListing bind:selectedUUID={selectedAssetUUID} assets={assets} filter={filterValue}/>
+					<AssetsListing bind:focused={selectedAssetUUID} assets={assets} filter={filterValue}/>
 				</article>
 			</section>
 		</SplitPane>
