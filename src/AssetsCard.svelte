@@ -91,7 +91,7 @@
 	</section>
 	<section class='return'>
 		<Button on:click={returnResults}>
-			<Icon icon='apply'></Icon>
+			<Icon icon='checkmark'></Icon>
 		</Button>
 	</section>
 </main>

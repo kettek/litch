@@ -108,7 +108,7 @@
 		{/each}
 	</div>
 	<Button title='Apply' tertiary on:click={()=>update(settings)}>
-		<Icon icon='apply'></Icon>
+		<Icon icon='checkmark'></Icon>
 	</Button>
 </div>
 
