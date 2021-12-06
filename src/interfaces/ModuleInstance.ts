@@ -1,5 +1,6 @@
 import type { Publisher } from '@kettek/pubsub/dist/Publisher'
 import type { SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
+import type { AssetManager } from './Asset'
 import type { BoxInterface } from './Box'
 
 /**
@@ -13,7 +14,9 @@ export interface ModuleInstanceInterface {
 	settings: {[key: string]: any} // Passed to module
 	openDimensions: boolean
 	openSettings: boolean
+	// Live
 	channel: ModuleChannel
+	assets: AssetManager
 }
 
 export interface ModuleChannel {
