@@ -18,6 +18,8 @@
 	details {
 		padding: 1em;
 		margin: 0.25em 0;
+		display: grid;
+		grid-template-rows: auto minmax(0, 1fr);
 	}
 	details > summary {
 		color: var(--text);
@@ -43,6 +45,8 @@
 		margin: 0 0.75em 1em 0.75em;
 		padding: 1em;
 		border-radius: 0 0 1em 1em;
+		height: 100%;
+		overflow: auto;
 	}
 	details.primary > section {
 		color: var(--primary);
