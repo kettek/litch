@@ -13,6 +13,8 @@
 	import type { Asset, Collection } from './interfaces/Asset'
 	import DropList from './components/DropList.svelte'
 	import type { Subscriber } from '@kettek/pubsub/dist/Subscriber'
+	import { isAssetFiltered } from './assets'
+	import AssetsListing from './AssetsListing.svelte'
 
 	/* navigation */
 	let navState: 'collections'|'collection' = 'collections'
@@ -118,56 +120,6 @@
 
 	/* Filter */
 	let filterValue: string = ''
-	function isAssetFiltered(asset: Asset, filterValue: string): boolean {
-		if (filterValue.trim() === '') return false
-
-		let searches = filterValue.trim().toLowerCase().split(',')
-
-		let matches = 0
-		let badMatches = 0
-		let neededMatches = 0
-		for (let s of searches) {
-			if (s === '') continue
-			s = s.trim()
-			if (s[0] === '!') {
-				s = s.substring(1)
-				if (asset.name.toLowerCase().includes(s)) {
-					badMatches++
-				} else if (asset.mimetype.includes(s)) {
-					badMatches++
-				} else {
-					for (let t of asset.tags) {
-						t = t.toLowerCase()
-						if (t.includes(s)) {
-							badMatches++
-						}
-					}
-				}
-			} else {
-				neededMatches++
-				if (asset.name.toLowerCase().includes(s)) {
-					matches++
-				} else if (asset.mimetype.includes(s)) {
-					matches++
-				} else {
-					for (let t of asset.tags) {
-						t = t.toLowerCase()
-						if (t.includes(s)) {
-							matches++
-						}
-					}
-				}
-			}
-		}
-		if (badMatches > 0) {
-			return true
-		}
-		if (matches >= neededMatches) {
-			return false
-		}
-
-		return true
-	}
 
 	/* Lifetime */
 	onMount(async () => {
@@ -324,27 +276,7 @@
 					</label>
 				</nav>
 				<article class='assets'>
-					{#if assets}
-						{#each assets.sort((a,b)=>a.name.localeCompare(b.name)) as asset (asset.uuid)}
-							{#if !isAssetFiltered(asset, filterValue)}
-								<div on:click={()=>selectedAssetUUID = asset.uuid} title='{asset.uuid}' class='asset'>
-									<header>{asset.name}</header>
-									<article>
-										{#if asset.mimetype.startsWith('image')}
-											<img alt={asset.uuid} src={asset.redirectedSource||asset.originalSource}/>
-										{:else if asset.mimetype.startsWith('video')}
-											<video controls src={asset.redirectedSource||asset.originalSource}>
-												<track kind="captions" />
-											</video>
-										{:else if asset.mimetype.startsWith('audio')}
-											<audio controls src={asset.redirectedSource||asset.originalSource}>
-											</audio>
-										{/if}
-									</article>
-								</div>
-							{/if}
-						{/each}
-					{/if}
+					<AssetsListing bind:selectedUUID={selectedAssetUUID} assets={assets} filter={filterValue}/>
 				</article>
 			</section>
 		</SplitPane>
@@ -394,35 +326,6 @@
 	.assets {
 		overflow: auto;
 		padding: 0 .5em;
-	}
-	.asset {
-		width: 10em;
-		height: 10em;
-		display: inline-grid;
-		grid-template-rows: auto minmax(0, 1fr);
-		margin: .5em;
-		background: var(--tertiary);
-		color: var(--text);
-		border-radius: .25em .75em;
-	}
-	.asset > header {
-		padding: .25em 0;
-		text-align: center;
-		font-weight: 600;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		word-break: break-word;
-	}
-	.asset > article {
-		padding: .25em;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.asset > article img, .asset > article video, .asset > article audio {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
 	}
 	.selectedAsset__source__file {
 		display: grid;
