@@ -13,6 +13,8 @@ import { publisher } from './modules'
 export let assets: Asset[] = []
 export let collections: Collection[] = []
 
+export let httpReference: string = ''
+
 // Callback for starting up the ol' server.
 let server: any
 export function start(): Promise<void> {
@@ -56,6 +58,7 @@ export function start(): Promise<void> {
 		})
 		server.on('listening', () => {
 			console.log(`assets serving from ${server.address().port}`)
+			httpReference = `http://localhost:${server.address().port}`
 			resolve()
 		})
 		server.listen(0)
