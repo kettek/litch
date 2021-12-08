@@ -51,6 +51,7 @@
 			channel: createModuleChannel(overlay.uuid, uuid),
 			openDimensions: false,
 			openSettings: true,
+			active: true,
 			assets: [],
 		})
 		publisher.publish(`overlay.${overlay.uuid}.module.${uuid}.create`, {})
@@ -170,6 +171,7 @@
 						on:dragenter={() => hoveringModuleUUID = module.uuid}
 						class:active={hoveringModuleUUID === module.uuid}
 					>
+						<Button tertiary invert on:click={()=>module.active = !module.active}><Icon icon={module.active?'active':'inactive'}></Icon></Button>
 						<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
 						<Button tertiary invert on:click={(e)=>showModuleMenu(e, module.uuid)}><Icon icon='burger'></Icon></Button>
 					</li>
@@ -234,7 +236,7 @@
 		min-height: 2em;
 		display: grid;
 		grid-template-rows: minmax(0, 1fr);
-		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-columns: auto minmax(0, 1fr) auto;
 		justify-content: stretch;
 		align-items: stretch;
 		border: 1px solid transparent;
@@ -247,7 +249,6 @@
 		cursor: pointer;
 		background: none;
 		border: 0;
-		height: 100%;
 		color: var(--tertiary);
 		text-align: left;
 	}

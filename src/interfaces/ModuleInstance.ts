@@ -14,6 +14,7 @@ export interface ModuleInstanceInterface {
 	settings: {[key: string]: any} // Passed to module
 	openDimensions: boolean
 	openSettings: boolean
+	active: boolean
 	// Live
 	channel: ModuleChannel
 	assets: AssetManager

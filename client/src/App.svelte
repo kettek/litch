@@ -136,7 +136,7 @@
 
 <main>
 	{#if connected}
-		{#each overlay.modules as module (module.uuid)}
+		{#each overlay.modules.filter(v=>v.active) as module (module.uuid)}
 			<article style="--x: {module.box.x}px; --y: {module.box.y}px; --width: {module.box.width}px; --height: {module.box.height}px">
 				{#if modulesState[module.moduleUUID] === 'done'}
 					<ModuleWrapper this={modulesStore[module.moduleUUID].liveComponent} bind:settings={module.settings} bind:box={module.box} />
