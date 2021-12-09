@@ -12,9 +12,7 @@
 		<slot name="heading"/>
 	</header>
 	<section class:open>
-		{#if open}
-			<slot name="content"/>
-		{/if}
+		<slot name="content"/>
 	</section>
 </main>
 
