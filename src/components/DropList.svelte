@@ -1,27 +1,31 @@
 <script lang="ts">
+	import Icon from './Icon.svelte'
 	export let primary: boolean = false
 	export let secondary: boolean = false
 	export let tertiary: boolean = false
 	export let open: boolean = true
 </script>
 
-<details bind:open={open} style={$$props.style} class:primary class:secondary class:tertiary>
-	<summary>
+<main style={$$props.style} class:primary class:secondary class:tertiary>
+	<header on:click={()=>{open=!open}}>
+		<Icon icon={open?'down':'forward'}></Icon>
 		<slot name="heading"/>
-	</summary>
-	<section>
-		<slot name="content"/>
+	</header>
+	<section class:open>
+		{#if open}
+			<slot name="content"/>
+		{/if}
 	</section>
-</details>
+</main>
 
 <style>
-	details {
+	main {
 		padding: 1em;
 		margin: 0.25em 0;
 		display: grid;
 		grid-template-rows: auto minmax(0, 1fr);
 	}
-	details > summary {
+	header {
 		color: var(--text);
 		height: 2em;
 		line-height: 2em;
@@ -31,16 +35,16 @@
 		user-select: none;
 		cursor: pointer;
 	}
-	details.primary > summary {
+	.primary > header {
 		background: var(--primary);
 	}
-	details.secondary > summary {
+	.secondary > header {
 		background: var(--secondary);
 	}
-	details.tertiary > summary {
+	.tertiary > header {
 		background: var(--tertiary);
 	}
-	details > section {
+	section {
 		background: var(--bar-bg);
 		margin: 0 0.75em 1em 0.75em;
 		padding: 1em;
@@ -48,13 +52,26 @@
 		height: 100%;
 		overflow: auto;
 	}
-	details.primary > section {
+	.primary > section {
 		color: var(--primary);
 	}
-	details.secondary > section {
+	.secondary > section {
 		color: var(--secondary);
 	}
-	details.tertiary > section {
+	.tertiary > section {
 		color: var(--tertiary);
+	}
+	section {
+		max-height: 0;
+		transition: max-height .1s ease-in-out;
+	}
+	section > * {
+		opacity: 0;
+	}
+	section.open > * {
+		opacity: 1;
+	}
+	section.open {
+		max-height: 100%;
 	}
 </style>
