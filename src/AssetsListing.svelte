@@ -97,6 +97,7 @@
 <style>
 	section {
 		height: 100%;
+		overflow: auto;
 	}
 	.asset {
 		width: 10em;

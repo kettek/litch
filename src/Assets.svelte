@@ -270,12 +270,12 @@
 				<nav class='filter'>
 					<label>
 						<input placeholder='name, type, !tag, ...' type='text' bind:value={filterValue}/>
-						<Button secondary invert>
+						<Button tertiary invert>
 							<Icon icon='filter'></Icon>
 						</Button>
 					</label>
 				</nav>
-				<article class='assets'>
+				<article class='assets tertiary'>
 					<AssetsListing bind:focused={selectedAssetUUID} assets={assets} filter={filterValue}/>
 				</article>
 			</section>
@@ -293,7 +293,6 @@
 		position: relative;
 	}
 	.left > article {
-		overflow: auto;
 		/*padding: .5em;*/
 	}
 	.left__nav {
