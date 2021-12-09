@@ -7,15 +7,60 @@
 
 	import type { OverlayInterface } from '../../src/interfaces/Overlay'
 	import type { ModuleInterface } from '../../src/interfaces/Module'
+	import type { ModuleChannel } from '../../src/interfaces/ModuleInstance'
 
 	import { Publisher } from '@kettek/pubsub'
+	import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 
 	const publisher = new Publisher()
 	const endpoint = publisher.connect('*')
-	// temp
-	const subscriber = publisher.subscribe('*', async (msg) => {
-		console.log('okay:', msg)
-	})
+
+	function createModuleChannel(overlayUUID: string, uuid: string): ModuleChannel {
+		let ctx = `overlay.${overlayUUID}.module.${uuid}`
+		let s = publisher.subscribe(`${ctx}.*`)
+
+		let m = {
+			handler: async (msg: any) => {
+				// strip the topics
+				msg = {
+					...msg,
+					sourceTopic: msg.sourceTopic.substring(ctx.length+1),
+					topic: msg.sourceTopic.substring(ctx.length+1),
+				}
+				await m.receive(msg)
+			},
+			receive: async (msg: PublishedMessage) => {
+				// To be overridden by the module.
+			},
+			publish: (topic: string, msg: any) => {
+				//publisher.publish(s, `${ctx}.${topic}`, msg)
+				// FIXME
+				publisher.publish(`${ctx}.${topic}`, msg)
+			},
+			subscribe: (topic: string): ()=> void => {
+				// TODO: Limit topics to subscribe to
+				publisher.subscribe(topic, s)
+				return () => {
+					publisher.unsubscribe(topic, s)
+				}
+			},
+			unsubscribe: (topic?: string) => {
+				if (topic === undefined) {
+					publisher.unsubscribe(s)
+				} else {
+					publisher.unsubscribe(topic, s)
+				}
+			},
+			update: (topic: string, msg: any) => {
+				// OVERRIDE
+			}
+		}
+
+		s.handler = m.handler
+
+		return m
+	}
+
 
 	let webSocket: WebSocket | undefined
 	let connected: boolean = false
@@ -56,6 +101,30 @@
 						uuid = msg.uuid
 						webSocket?.send(JSON.stringify({event: 'hello', uuid: uuid}))
 					} else if (isLazyUpdate(msg)) {
+						if (overlay.uuid !== msg.overlayUUID) {
+							// Overlay change, remove all channels.
+							for (let m of overlay.modules) {
+								if (modulesChannels[m.uuid]) {
+									modulesChannels[m.uuid].unsubscribe()
+								}
+							}
+						} else {
+							// Remove any module channels that don't exist.
+							for (let m of overlay.modules) {
+								if (!msg.modules.find(v=>v.uuid===m.uuid)) {
+									// Module was removed.
+									if (modulesChannels[m.uuid]) {
+										modulesChannels[m.uuid].unsubscribe()
+									}
+								}
+							}
+						}
+						// Ensure modules have channels
+						for (let m of msg.modules) {
+							if (!modulesChannels[m.uuid]) {
+								modulesChannels[m.uuid] = createModuleChannel(msg.overlayUUID, m.uuid)
+							}
+						}
 						overlay = {
 							...overlay,
 							canvas: msg.box,
@@ -81,6 +150,7 @@
 
 	let modulesStore: Record<string, ModuleInterface> = {} // null signifies pending, Error is when it fails.
 	let modulesState: Record<string, 'requesting'|'done'|'missing'|'error'> = {}
+	let modulesChannels: Record<string, ModuleChannel> = {}
 	function checkOverlayModules() {
 		for (let m of overlay.modules) {
 			if (modulesState[m.moduleUUID] === undefined) {
@@ -139,7 +209,7 @@
 		{#each overlay.modules.filter(v=>v.active) as module (module.uuid)}
 			<article style="--x: {module.box.x}px; --y: {module.box.y}px; --width: {module.box.width}px; --height: {module.box.height}px">
 				{#if modulesState[module.moduleUUID] === 'done'}
-					<ModuleWrapper this={modulesStore[module.moduleUUID].liveComponent} bind:settings={module.settings} bind:box={module.box} />
+					<ModuleWrapper this={modulesStore[module.moduleUUID].liveComponent} bind:settings={module.settings} bind:box={module.box} bind:live={module.live} bind:channel={modulesChannels[module.uuid]} />
 				{/if}
 			</article>
 		{/each}
