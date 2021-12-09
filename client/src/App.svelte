@@ -3,10 +3,19 @@
 
 	import ModuleWrapper from './ModuleWrapper.svelte'
 
-	import { isHello, isLazyUpdate, isModuleTypeResponse, isEndpoint, LitchMessage, ModuleTypeRequest } from '../../src/api'
+	import { isHello, isLazyUpdate, isModuleTypeResponse, isEndpoint, LitchMessage, Endpoint, ModuleTypeRequest } from '../../src/api'
 
 	import type { OverlayInterface } from '../../src/interfaces/Overlay'
 	import type { ModuleInterface } from '../../src/interfaces/Module'
+
+	import { Publisher } from '@kettek/pubsub'
+
+	const publisher = new Publisher()
+	const endpoint = publisher.connect('*')
+	// temp
+	const subscriber = publisher.subscribe('*', async (msg) => {
+		console.log('okay:', msg)
+	})
 
 	let webSocket: WebSocket | undefined
 	let connected: boolean = false
@@ -18,6 +27,10 @@
 		uuid: '',
 		canvas: {x: 0, y: 0, width: 0, height: 0},
 		modules: [],
+	}
+
+	async function receivePublish(msg: Endpoint) {
+		publisher.publish(endpoint, msg.data)
 	}
 
 	async function startWs() {
@@ -53,20 +66,7 @@
 					} else if (isModuleTypeResponse(msg)) {
 						addModule(msg.uuid, msg.file)
 					} else if (isEndpoint(msg)) {
-						// FIXME: Super hacky
-						let matchIndex = -1
-						let matchModule = ''
-						for (let m of overlay.modules) {
-							let i = msg.data.topic.indexOf(m.uuid)
-							if (i >= 0) {
-								matchIndex = i
-								matchModule = m.uuid
-								break
-							}
-						}
-						if (matchIndex >= 0) {
-							//console.log('parse it !!!')
-						}
+						receivePublish(msg)
 					} else {
 						console.log('got unhandled :(')
 					}

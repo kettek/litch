@@ -39,10 +39,10 @@ export default {
 			browser: true,
 			dedupe: ['svelte'],
 			extensions: ['.js', '.ts', '.svelte'],
-			preferBuiltins: true,
+			preferBuiltins: false,
 		}),
-		commonjs(),
 		builtins(),
+		commonjs(),
 		typescript({
 			sourceMap: !production,
 			inlineSources: !production,

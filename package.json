@@ -52,6 +52,7 @@
     "@twurple/eventsub": "^5.0.10",
     "express": "^4.17.1",
     "mime-types": "^2.1.34",
+    "rollup-plugin-node-builtins": "^2.1.2",
     "sirv-cli": "^1.0.0"
   }
 }
