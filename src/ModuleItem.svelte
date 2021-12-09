@@ -89,7 +89,7 @@
 	</article>
 	<hr/>
 	<article class='module__wrapper'>
-		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:box={module.box} bind:update={update} bind:updateBox={updateBox} channel={module.channel} assets={assets} />
+		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:live={module.live} bind:box={module.box} bind:update={update} bind:updateBox={updateBox} channel={module.channel} assets={assets} />
 	</article>
 </main>
 {#if showAssets}

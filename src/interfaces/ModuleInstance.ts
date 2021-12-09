@@ -17,6 +17,7 @@ export interface ModuleInstanceInterface {
 	active: boolean
 	// Live
 	channel: ModuleChannel
+	live: {[key: string]: any} // Live information, passed to module
 	assets: AssetManager
 }
 
@@ -25,4 +26,5 @@ export interface ModuleChannel {
 	receive: (msg: any) => Promise<void>
 	publish: (topic: string, msg: any) => void
 	subscribe: (topic: string) => () => void
+	unsubscribe: (topic?: string) => () => void
 }

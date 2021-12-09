@@ -267,7 +267,7 @@
 		<canvas bind:this={canvas}></canvas>
 		{#each overlay.modules.filter(v=>v.active) as module (module.uuid)}
 			<article style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px" use:moveModule={module.uuid}>
-				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} bind:settings={module.settings} bind:box={module.box} update={(v)=>module.settings=v} channel={module.channel} />
+				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} settings={module.settings} bind:box={module.box} update={(v)=>module.settings=v} channel={module.channel} live={module.live} />
 				<footer>
 					<span>
 						{module.box.width}x{module.box.height}

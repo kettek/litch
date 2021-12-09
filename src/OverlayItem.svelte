@@ -53,6 +53,7 @@
 			openSettings: true,
 			active: true,
 			assets: [],
+			live: {},
 		})
 		publisher.publish(`overlay.${overlay.uuid}.module.${uuid}.create`, {})
 		dispatch('refresh', uuid)
