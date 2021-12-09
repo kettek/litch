@@ -3,84 +3,69 @@
 
 	import type { SettingsInterface } from './Settings'
 
-	//export let settings: SettingsInterface
+	export let settings: SettingsInterface
 
-	let emoji = '❄'
 	let items = []
-	let count = 30
-	let updateRate = 50
-	let maxAccumulator = updateRate * 4
-	let spawnX = 0
-	let spawnY = -110
-	let minScale = 0.5
-	let scaleRandom = 1
-	let size = 2
-
-	let xRandomRate = [-0.25, 0.25]
-	let yRandomRate = [0.5, 1]
-
-	let rotRandomRate = [-2, 2]
 
 	function reload() {
-	items = new Array(count).fill({}).map((_, i) => {
-		return {
-			x: spawnX + Math.random() * 100,
-			xRate: Math.random() * (xRandomRate[1] - xRandomRate[0]) + xRandomRate[0],
-			y: spawnY + Math.random() * 100,
-			yRate: Math.random() * (yRandomRate[1] - yRandomRate[0]) + yRandomRate[0],
-			scale: minScale + Math.random() * scaleRandom,
-			rotation: Math.random() * 360,
-			rotRate: Math.random() * (rotRandomRate[1] - rotRandomRate[0]) + rotRandomRate[0],
-			dir: Math.random() - 0.5,
-		}
-	})
-	.sort((a, b) => a.scale - b.scale)
+		items = new Array(settings.count).fill({}).map((_, i) => {
+			return {
+				x: settings.spawnX + Math.random() * 100,
+				xRate: Math.random() * (settings.xRandomRate[1] - settings.xRandomRate[0]) + settings.xRandomRate[0],
+				y: settings.spawnY + Math.random() * 100,
+				yRate: Math.random() * (settings.yRandomRate[1] - settings.yRandomRate[0]) + settings.yRandomRate[0],
+				scale: settings.minScale + Math.random() * settings.scaleRandom,
+				rotation: settings.rotate ? Math.random() * 360 : 0,
+				rotRate: Math.random() * (settings.rotRandomRate[1] - settings.rotRandomRate[0]) + settings.rotRandomRate[0],
+				dir: Math.random() - 0.5,
+			}
+		})
+		.sort((a, b) => a.scale - b.scale)
 	}
 
 	reload()
-	console.log(items)
 
 	onMount(() => {
-	let frame: number
-	let lastFrame = performance.now()
-	let currFrame = performance.now()
-	let accumulator = 0
+		let frame: number
+		let lastFrame = performance.now()
+		let currFrame = performance.now()
+		let accumulator = 0
 
-	function loop() {
-		frame = requestAnimationFrame(loop)
+		function loop() {
+			frame = requestAnimationFrame(loop)
 
-		currFrame = performance.now()
-		let delta = currFrame - lastFrame
-		lastFrame = currFrame
-		accumulator += delta
-		if (accumulator > maxAccumulator) {
-		accumulator = maxAccumulator
+			currFrame = performance.now()
+			let delta = currFrame - lastFrame
+			lastFrame = currFrame
+			accumulator += delta
+			if (accumulator > settings.maxAccumulator) {
+				accumulator = settings.maxAccumulator
+			}
+
+			while(accumulator >= settings.updateRate) {
+				for (let item of items) {
+					item.y += item.yRate * item.scale/4
+					item.x += item.xRate * item.scale/4
+					item.rotation += item.rotRate
+					if (item.y > 110) item.y = -10
+					if (item.x > 110) item.x = -10
+					else if (item.x < -10) item.x = 110
+					if (item.rotation > 360) item.rotation = 0
+					else if (item.rotation < 0) item.rotation = 360
+				}
+				accumulator -= settings.updateRate
+			}
+			items = items
 		}
+		loop()
 
-		while(accumulator >= updateRate) {
-		for (let item of items) {
-			item.y += item.yRate * item.scale/4
-			item.x += item.xRate * item.scale/4
-			item.rotation += item.rotRate
-			if (item.y > 110) item.y = -10
-			if (item.x > 110) item.x = -10
-			else if (item.x < -10) item.x = 110
-			if (item.rotation > 360) item.rotation = 0
-			else if (item.rotation < 0) item.rotation = 360
-		}
-		accumulator -= updateRate
-		}
-		items = items
-	}
-	loop()
-
-	return () => cancelAnimationFrame(frame)
+		return () => cancelAnimationFrame(frame)
 	})
 </script>
 
 <section>
 	{#each items as item}
-	<div style="left: {item.x+Math.cos((item.y+item.x)/4)*2}%; top: {item.y}%; transform: scale({size*item.scale}) rotate({item.rotation+(item.y/100*360*item.dir)}deg);" class='item'>{emoji}️</div>
+	<div style="left: {item.x+Math.cos((item.y+item.x)/4)*2}%; top: {item.y}%; transform: scale({settings.size*item.scale}) rotate({item.rotation}deg);" class='item'>{settings.emoji}️</div>
 	{/each}
 </section>
 
