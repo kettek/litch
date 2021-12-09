@@ -17,6 +17,9 @@ export default {
 			sampleLimit: 2,
 			trigger: 32
 		},
+		live: {
+			reference: '',
+		},
 	},
 	settingsComponent: SettingsComponent,
 	liveComponent: LiveComponent,

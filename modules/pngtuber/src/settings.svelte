@@ -13,6 +13,7 @@
 	}
 
 	export let channel: ModuleChannel
+	export let live: any = {}
 
 	export let assets: AssetManager
 
@@ -56,6 +57,14 @@
 		settings.emotions = settings.emotions.filter(v => v.name !== name)
 	}
 	export let update: (value: any) => void
+
+	function applyChanges() {
+		update(settings)
+		if (!live.reference) {
+			live.reference = settings.emotions[0].faces.eyesOpenMouthClosed.reference
+		}
+	}
+
 </script>
 
 <div>
@@ -107,7 +116,7 @@
 			</details>
 		{/each}
 	</div>
-	<Button title='Apply' tertiary on:click={()=>update(settings)}>
+	<Button title='Apply' tertiary on:click={applyChanges}>
 		<Icon icon='checkmark'></Icon>
 	</Button>
 </div>

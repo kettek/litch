@@ -1,10 +1,23 @@
 <script type="ts">
-	import type { SettingsInterface } from './Settings'
+	import type { ModuleChannel } from '../../../src/interfaces/ModuleInstance'
+	import { onMount } from 'svelte'
 
-	export let settings: SettingsInterface
+	export let channel: ModuleChannel
+	export let live: any = {}
+
+	let reference: string = live.reference
+
+	onMount(() => {
+		channel.receive = async ({topic, message}) => {
+			if (topic === 'setImage') {
+				console.log(Date.now() - message.ts)
+				reference = message.reference
+			}
+		}
+	})
 </script>
 
-<img alt='' src='{settings.emotions[0]?.faces[settings.currentFace]?.reference}'/>
+<img alt='' src='{reference}'/>
 
 <style>
 	img {

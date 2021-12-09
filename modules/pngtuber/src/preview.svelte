@@ -55,6 +55,9 @@
 	export let update: (value: any) => void
 
 	export let channel: ModuleChannel
+	export let live: any = {}
+
+	let currentFace = ''
 
 	function refreshDb() {
 		let total = samples.reduce((previousValue: number, currentValue: number) => {
@@ -64,20 +67,22 @@
 
 		// eh
 		if (db >= settings.trigger) {
-			if (settings.currentFace !== 'eyesOpenMouthOpen') {
-				settings.currentFace = 'eyesOpenMouthOpen'
-				channel.publish('set', {
-					reference: settings.emotions[0]?.faces[settings.currentFace].reference
+			if (currentFace !== 'eyesOpenMouthOpen') {
+				currentFace = 'eyesOpenMouthOpen'
+				live.reference = settings.emotions[0]?.faces[currentFace].reference
+				channel.publish('setImage', {
+					reference: live.reference,
+					ts: Date.now(),
 				})
-				update(settings)
 			}
 		} else {
-			if (settings.currentFace !== 'eyesOpenMouthClosed') {
-				settings.currentFace = 'eyesOpenMouthClosed'
-				channel.publish('set', {
-					reference: settings.emotions[0]?.faces[settings.currentFace].reference
+			if (currentFace !== 'eyesOpenMouthClosed') {
+				currentFace = 'eyesOpenMouthClosed'
+				live.reference = settings.emotions[0]?.faces[currentFace].reference
+				channel.publish('setImage', {
+					reference: live.reference,
+					ts: Date.now(),
 				})
-				update(settings)
 			}
 		}
 	}
@@ -124,7 +129,7 @@
 		{#if settings.emotions.length === 0}
 			you're emotionless
 		{:else}
-			<img alt='' src='{settings.emotions[0]?.faces[settings.currentFace]?.reference}'/>
+			<img alt='' src='{live.reference}'/>
 		{/if}
 	{:else}
 		plz grant permies
