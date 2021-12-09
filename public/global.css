@@ -136,10 +136,6 @@ button.tertiary:active {
 	background: var(--tertiary-press);
 }
 
-details {
-	margin: .25em 0;
-}
-
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
