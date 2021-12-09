@@ -140,6 +140,70 @@ details {
 	margin: .25em 0;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-button {
+  width: 4px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #e1e1e1;
+  border: 0px solid #ffffff;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #000000;
+}
+::-webkit-scrollbar-track {
+  background: #333;
+  border: 0px solid #ffffff;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #444;
+}
+::-webkit-scrollbar-track:active {
+  background: #666;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.primary ::-webkit-scrollbar-thumb {
+	background: var(--primary);
+}
+.primary ::-webkit-scrollbar-thumb:hover {
+	background: var(--primary-focus);
+}
+.primary ::-webkit-scrollbar-thumb:active {
+	background: var(--primary-press);
+}
+
+.secondary ::-webkit-scrollbar-thumb {
+	background: var(--secondary);
+}
+.secondary ::-webkit-scrollbar-thumb:hover {
+	background: var(--secondary-focus);
+}
+.secondary ::-webkit-scrollbar-thumb:active {
+	background: var(--secondary-press);
+}
+
+.tertiary ::-webkit-scrollbar-thumb {
+	background: var(--tertiary);
+}
+.tertiary ::-webkit-scrollbar-thumb:hover {
+	background: var(--tertiary-focus);
+}
+.tertiary ::-webkit-scrollbar-thumb:active {
+	background: var(--tertiary-press);
+}
+
 :root {
 	--primary: rgb(157, 0, 255);
 	--primary-focus: rgb(183, 66, 255);
