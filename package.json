@@ -4,10 +4,13 @@
   "description": "",
   "main": "index.js",
   "workspaces": [
-    "packages/*",
-    "modules/*"
+    "modules/*",
+    "packages/client",
+    "packages/app"
   ],
   "scripts": {
+    "start": "npm run start --workspace=packages/app",
+    "build": "npm run build --workspaces",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
