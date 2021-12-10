@@ -5,6 +5,7 @@ export interface ModuleDefaultsInterface {
     title: string
     box: BoxInterface
     settings: any
+    live: any
 }
 
 export interface ModuleInterface {
