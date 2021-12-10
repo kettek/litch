@@ -135,6 +135,7 @@
 	section {
 		height: 100%;
 		overflow: auto;
+		user-select: none;
 	}
 	.asset {
 		width: 10em;
