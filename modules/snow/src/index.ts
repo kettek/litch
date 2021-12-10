@@ -11,7 +11,9 @@ export default {
 		x: 0, y: 0, width: 200, height: 200,
 		},
 		settings: {
+			sourceType: 'emoji',
 			emoji: '❄',
+			reference: '',
 			count: 30,
 			updateRate: 50,
 			maxAccumulator: 200,

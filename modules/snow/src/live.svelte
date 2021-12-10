@@ -65,7 +65,13 @@
 
 <section>
 	{#each items as item}
-	<div style="left: {item.x+Math.cos((item.y+item.x)/4)*2}%; top: {item.y}%; transform: scale({settings.size*item.scale}) rotate({item.rotation}deg);" class='item'>{settings.emoji}️</div>
+		<div style="left: {item.x+Math.cos((item.y+item.x)/5)*2}%; top: {item.y}%; transform: scale({settings.size*item.scale}) rotate({item.rotation}deg);" class='item'>
+			{#if settings.sourceType === 'emoji'}
+				{settings.emoji}️
+			{:else if settings.sourceType === 'asset'}
+				<img alt="" src={settings.reference}/>
+			{/if}
+		</div>
 	{/each}
 </section>
 

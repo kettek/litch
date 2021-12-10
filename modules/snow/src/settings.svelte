@@ -1,18 +1,53 @@
 <script type="ts">
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
+	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
 	import type { SettingsInterface } from './Settings'
 
 	export let settings: SettingsInterface
+	
+	export let live: any = {}
+
+	export let assets: AssetManager
 
 	export let update: (value: any) => void
+
+	async function openFileDialog() {
+		let results = await assets.open({
+			multiple: false,
+		})
+		if (results.length === 0) return
+		settings.reference = results[0].reference
+		live.reference = settings.reference
+
+		update(settings)
+	}
 </script>
 
 <div>
 	<label>
-		<input type='text' bind:value={settings.emoji}/>
-		Emoji
+		<select bind:value={settings.sourceType}>
+			<option value='emoji'>emoji</option>
+			<option value='asset'>asset</option>
+		</select>
 	</label>
+	{#if settings.sourceType === 'emoji'}
+		<label>
+			<input type='text' bind:value={settings.emoji}/>
+			Emoji
+		</label>
+	{:else if settings.sourceType === 'asset'}
+		<label>
+			<input disabled type='text' value={settings.reference}/>
+			Asset
+			<Button title='Open file' tertiary on:click={openFileDialog}>
+				<Icon icon='open'></Icon>
+			</Button>
+		</label>
+		<div class='preview'>
+			<img alt='preview' src={settings.reference}/>
+		</div>
+	{/if}
 	<label>
 		<input type='number' bind:value={settings.count}/>
 		Count
