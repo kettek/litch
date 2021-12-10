@@ -53,7 +53,7 @@
 			openSettings: true,
 			active: true,
 			assets: [],
-			live: {},
+			live: {...module.defaults.live},
 		})
 		publisher.publish(`overlay.${overlay.uuid}.module.${uuid}.create`, {})
 		dispatch('refresh', uuid)
@@ -64,6 +64,19 @@
 		overlay.modules = overlay.modules.filter(v=>v.uuid!==uuid)
 		await tick()
 		publisher.publish(`overlay.${overlay.uuid}.module.${uuid}.delete`, {})
+	}
+	async function duplicateModule(uuid: string) {
+		let module = overlay.modules.find(v=>v.uuid===uuid)
+		if (!module) return
+		let newUUID = v4()
+		let newModule = {
+			...JSON.parse(JSON.stringify(module)),
+			uuid: newUUID,
+			channel: createModuleChannel(overlay.uuid, newUUID),
+		}
+		overlay.modules.push(newModule)
+		publisher.publish(`overlay.${overlay.uuid}.module.${newUUID}.create`, {})
+		dispatch('refresh', newUUID)
 	}
 
 	let hoveringModuleUUID: string
@@ -186,6 +199,10 @@
 </main>
 {#if showMenu}
 	<Menu tertiary {...menuPos} on:click={closeModuleMenu} on:clickoutside={closeModuleMenu}>
+		<MenuOption tertiary on:click={()=>duplicateModule(menuUUID)}>
+			<span>Duplicate</span>
+			<Icon icon='duplicate'></Icon>
+		</MenuOption>
 		<MenuOption dangerous on:click={()=>deleteModule(menuUUID)}>
 			<span>Delete</span>
 			<Icon icon='delete'></Icon>
