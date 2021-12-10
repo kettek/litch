@@ -63,7 +63,10 @@
 
 <main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
 	<nav>
-		<div on:click={()=>{dispatch('close', [])}}>back</div>
+		<Button on:click={()=>{dispatch('close', [])}}>
+			<Icon icon="back"></Icon>
+		</Button>
+		<header>Select an Asset</header>
 	</nav>
 	<section>
 		<DropList secondary>
@@ -110,7 +113,16 @@
 	nav {
 		background: var(--primary);
 		color: var(--text);
-		min-height: 3em;
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: stretch;
+		justify-content: stretch;
+	}
+	nav header {
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		padding-left: .5em;
 	}
 	.assets {
 		display: grid;
