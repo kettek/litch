@@ -27,9 +27,10 @@
 	div {
 		padding: .5em;
 		cursor: pointer;
-		display: flex;
-		align-items: center;
 		color: var(--text);
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
 	}
 	.primary {
 		background: var(--primary);
