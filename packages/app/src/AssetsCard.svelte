@@ -90,7 +90,7 @@
 		</DropList>
 	</section>
 	<section class='return'>
-		<Button on:click={returnResults}>
+		<Button tertiary on:click={returnResults}>
 			<Icon icon='checkmark'></Icon>
 		</Button>
 	</section>
