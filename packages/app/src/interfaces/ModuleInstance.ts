@@ -26,5 +26,5 @@ export interface ModuleChannel {
 	receive: (msg: any) => Promise<void>
 	publish: (topic: string, msg: any) => void
 	subscribe: (topic: string) => () => void
-	unsubscribe: (topic?: string) => () => void
+	unsubscribe: (topic?: string) => void
 }
