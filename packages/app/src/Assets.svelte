@@ -284,6 +284,9 @@
 </main>
 
 <style>
+	main {
+		overflow: hidden;
+	}
 	.left {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
@@ -321,6 +324,7 @@
 		display: grid;
 		grid-template-rows: auto minmax(0, 1fr);
 		width: 100%;
+		overflow: hidden;
 	}
 	.assets {
 		overflow: auto;

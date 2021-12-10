@@ -2,12 +2,25 @@
 	import type { Asset } from "./interfaces/Asset"
 	import { isAssetFiltered } from './assets'
 
+	import { fly } from 'svelte/transition'
+	import { quintInOut } from 'svelte/easing'
+	import Button from './components/Button.svelte'
+	import Icon from './components/Icon.svelte'
+
 	export let selector: boolean = false
 	export let multiple: boolean = false
 	export let focused: string = ''
 	export let selected: string[] = []
 	export let assets: Asset[] | undefined = []
 	export let filter: string = ''
+
+	let showPopup = false
+	$: focusedAsset = assets?.find(v=>v.uuid===focused)
+	$: selectedAssets = selected.map(v=>assets?.find(v2=>v2.uuid===v))
+
+	function onAssetDoubleClick(e: MouseEvent, uuid:string) {
+		showPopup = true
+	}
 
 	function onAssetClick(e: MouseEvent, uuid: string) {
 		if (selected.includes(uuid)) return
@@ -69,7 +82,7 @@
 	{#if assets}
 		{#each assets.sort((a,b)=>a.name.localeCompare(b.name)) as asset (asset.uuid)}
 			{#if !isAssetFiltered(asset, filter)}
-				<div on:click={(e)=>onAssetClick(e, asset.uuid)} title='{asset.uuid}' class='asset' class:focused={focused===asset.uuid} class:selector={selector} class:selected={selected.includes(asset.uuid)}>
+				<div on:click={(e)=>onAssetClick(e, asset.uuid)} on:dblclick={(e)=>onAssetDoubleClick(e, asset.uuid)} title='{asset.uuid}' class='asset' class:focused={focused===asset.uuid} class:selector={selector} class:selected={selected.includes(asset.uuid)}>
 					{#if !selector}
 						<header>{asset.name}</header>
 					{/if}
@@ -91,6 +104,30 @@
 				</div>
 			{/if}
 		{/each}
+	{/if}
+	{#if showPopup}
+		<div class='popup' transition:fly="{{delay: 0, duration: 200, x: 1080, y: 0, easing: quintInOut}}">
+			<header>
+				<Button tertiary on:click={()=>{showPopup=false}}>
+					<Icon icon='back'></Icon>
+				</Button>
+				<span> View </span>
+			</header>
+			<section>
+				{#if focusedAsset}
+					{#if focusedAsset.mimetype.startsWith('image')}
+						<img alt={focusedAsset.uuid} src={focusedAsset.redirectedSource||focusedAsset.originalSource}/>
+					{:else if focusedAsset.mimetype.startsWith('video')}
+						<video controls src={focusedAsset.redirectedSource||focusedAsset.originalSource}>
+							<track kind="captions" />
+						</video>
+					{:else if focusedAsset.mimetype.startsWith('audio')}
+						<audio controls src={focusedAsset.redirectedSource||focusedAsset.originalSource}>
+						</audio>
+					{/if}
+				{/if}
+			</section>
+		</div>
 	{/if}
 </section>
 
@@ -142,6 +179,28 @@
 		justify-content: center;
 	}
 	.asset > article img, .asset > article video, .asset > article audio {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+	.popup {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		display: grid;
+		grid-template-rows: auto minmax(0, 1fr);
+	}
+	.popup > header {
+		background: var(--tertiary);
+		color: var(--text);
+	}
+	.popup > section {
+		color: var(--tertiary);
+		background: var(--text);
+	}
+	.popup > section > img, .popup > section > video, .popup > section > audio {
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
