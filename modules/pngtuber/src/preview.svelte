@@ -1,7 +1,7 @@
 <script type="ts">
 	import { onDestroy, onMount } from 'svelte'
 
-	import type { ModuleChannel } from "../../../src/interfaces/ModuleInstance"
+	import type { ModuleChannel } from "@kettek/litch-app/src/interfaces/ModuleInstance"
 
 	import type { SettingsInterface } from './Settings'
 	export let settings: SettingsInterface

@@ -1,12 +1,12 @@
 <script type="ts">
 	import type { SettingsInterface } from './Settings'
-	import type { BoxInterface } from '../../../src/interfaces/Box';
+	import type { BoxInterface } from '@kettek/litch-app/src/interfaces/Box';
 	import { renderTypes, fitTypes } from './Settings'
 
-	import Icon from '../../../src/components/Icon.svelte'
-	import Button from '../../../src/components/Button.svelte'
+	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
+	import Button from '@kettek/litch-app/src/components/Button.svelte'
 
-	import type { ModuleChannel } from '../../../src/interfaces/ModuleInstance'
+	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 import { onMount } from 'svelte';
 
 	const mime = require('mime-types')

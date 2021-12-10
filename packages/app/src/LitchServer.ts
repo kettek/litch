@@ -27,8 +27,8 @@ export class LitchServer {
 	#httpServer: Server | null = null
 	#httpTerminator: any
 
-	#filesPath : string = path.resolve('client/public')
-	#modulesPath : string = path.resolve('modules')
+	#filesPath : string = path.resolve('../client/public')
+	#modulesPath : string = path.resolve('../../modules')
 
 	#clients : Record<string, WebSocket> = {}
 

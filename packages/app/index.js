@@ -22,7 +22,7 @@ app.on("ready", async () => {
     return screen.getPrimaryDisplay().size
   })
   ipcMain.handle('getModules', async() => {
-    return await fs.readdir('modules')
+    return await fs.readdir('../../modules')
   })
 })
 

@@ -1,5 +1,5 @@
 <script type="ts">
-	import type { BoxInterface } from '../../../src/interfaces/Box'
+	import type { BoxInterface } from '@kettek/litch-app/src/interfaces/Box'
 	import type { SettingsInterface } from './Settings'
 
 	export let settings: SettingsInterface

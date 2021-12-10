@@ -48,8 +48,8 @@ export default {
 			inlineSources: !production,
   			include: [
 				"./*",
-				"../src/api.ts",
-				"../src/interfaces/**/*"
+				"../app/src/api.ts",
+				"../app/src/interfaces/**/*"
 			],
 		}),
 

@@ -9,7 +9,7 @@
 	import { register, init, isLoading, _ } from 'svelte-i18n'
 	import type { OverlayInterface } from './interfaces/Overlay'
 	import type { ModuleInterface } from './interfaces/Module'
-	import type { Asset } from './interfaces/Assets'
+	import type { Asset } from './interfaces/Asset'
 
 	import { assets, start as startAssets } from './assets'
 
@@ -78,7 +78,7 @@
 		const mods = await ipcRenderer.invoke('getModules')
 		for (let mod of mods) {
 			let fullmod = `/modules/${mod}/dist/index.js`
-			let url = `../..${fullmod}`
+			let url = `../../../..${fullmod}`
 			try {
 				let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
 				modules[m.uuid] = m

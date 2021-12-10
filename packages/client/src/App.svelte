@@ -3,11 +3,11 @@
 
 	import ModuleWrapper from './ModuleWrapper.svelte'
 
-	import { isHello, isLazyUpdate, isModuleTypeResponse, isEndpoint, LitchMessage, Endpoint, ModuleTypeRequest } from '../../src/api'
+	import { isHello, isLazyUpdate, isModuleTypeResponse, isEndpoint, LitchMessage, Endpoint, ModuleTypeRequest } from '@kettek/litch-app/src/api'
 
-	import type { OverlayInterface } from '../../src/interfaces/Overlay'
-	import type { ModuleInterface } from '../../src/interfaces/Module'
-	import type { ModuleChannel } from '../../src/interfaces/ModuleInstance'
+	import type { OverlayInterface } from '@kettek/litch-app/src/interfaces/Overlay'
+	import type { ModuleInterface } from '@kettek/litch-app/src/interfaces/Module'
+	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 
 	import { Publisher } from '@kettek/pubsub'
 	import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"

@@ -1,10 +1,10 @@
 <script type="ts">
-	import Icon from '../../../src/components/Icon.svelte'
-	import Button from '../../../src/components/Button.svelte'
-	import type { AssetManager } from '../../../src/interfaces/Asset'
+	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
+	import Button from '@kettek/litch-app/src/components/Button.svelte'
+	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
 
 	import type { SettingsInterface } from './Settings'
-	import type { ModuleChannel } from '../../../src/interfaces/ModuleInstance'
+	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 
 	export let settings: SettingsInterface
 

@@ -1,5 +1,5 @@
 <script type="ts">
-	import type { ModuleChannel } from '../../../src/interfaces/ModuleInstance'
+	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import { onMount } from 'svelte'
 
 	export let channel: ModuleChannel

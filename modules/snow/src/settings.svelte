@@ -1,6 +1,6 @@
 <script type="ts">
-	import Icon from '../../../src/components/Icon.svelte'
-	import Button from '../../../src/components/Button.svelte'
+	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
+	import Button from '@kettek/litch-app/src/components/Button.svelte'
 	import type { SettingsInterface } from './Settings'
 
 	export let settings: SettingsInterface
