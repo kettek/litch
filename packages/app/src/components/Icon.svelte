@@ -33,6 +33,7 @@
 		'dimensions': 0xe062,
 		'position': 0xe063,
 		'open-folder': 0xe070,
+		'duplicate': 0xe071,
 	}
 	$: code = String.fromCharCode(codes[icon])
 </script>
