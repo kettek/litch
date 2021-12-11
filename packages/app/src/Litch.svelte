@@ -94,6 +94,9 @@
 		loadingMessage = "Chuffing assets"
 		await startAssets()
 
+		loadingMessage = "Spinning server"
+		await toggleServer()
+
 		loading = false
 	})
 
