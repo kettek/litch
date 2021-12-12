@@ -8,12 +8,13 @@
 	export let nobg: boolean = false
 	export let dangerous: boolean = false
 	export let nomargin: boolean = false
+	export let draggable: boolean = false
 	export let title: string = ''
 	let clazz: string = ''
 	export { clazz as class}
 </script>
 
-<button title={title} class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class:nomargin class={`${clazz||''}`} class:nobg disabled={disabled} on:click>
+<button draggable={draggable} title={title} class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class:nomargin class={`${clazz||''}`} class:nobg disabled={disabled} on:click on:dragstart on:dragenter on:dragover on:drop>
 	<slot></slot>
 </button>
 
