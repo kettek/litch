@@ -34,6 +34,7 @@
 		'position': 0xe063,
 		'open-folder': 0xe070,
 		'duplicate': 0xe071,
+		'link': 0xe072,
 	}
 	$: code = String.fromCharCode(codes[icon])
 </script>
