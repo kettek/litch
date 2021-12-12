@@ -46,6 +46,10 @@ export class LitchServer {
 		return this.#running
 	}
 
+	get url(): string {
+		return `http://localhost:8090`
+	}
+
 	constructor() {
 		this.#running = false
 	}
