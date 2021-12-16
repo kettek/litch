@@ -14,7 +14,7 @@
 	export { clazz as class}
 </script>
 
-<button draggable={draggable} title={title} class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class:nomargin class={`${clazz||''}`} class:nobg disabled={disabled} on:click on:dragstart on:dragenter on:dragover on:drop>
+<button draggable={draggable} title={title} class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class:nomargin class={`${clazz||''}`} class:nobg class:disabled disabled={disabled} on:click on:dragstart on:dragenter on:dragover on:drop>
 	<slot></slot>
 </button>
 
@@ -122,6 +122,9 @@
 	.invert.dangerous:hover {
 		color: var(--dangerous-press);
 		background: none;
+	}
+	.disabled {
+		opacity: 0.4;
 	}
 
 </style>
