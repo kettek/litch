@@ -5,6 +5,7 @@
 	import { fly } from 'svelte/transition'
 	import { quintInOut } from 'svelte/easing'
 	import { publisher } from './modules'
+	import { settings } from './stores/settings'
 	import DropList from './components/DropList.svelte'
 	import AssetsListing from './AssetsListing.svelte'
 	import Button from './components/Button.svelte'
@@ -17,8 +18,7 @@
 
 	$: collections = realCollections
 
-	let collectionUUID: string = ''
-	$: collection = realCollections.find(v=>v.uuid === collectionUUID)
+	$: collection = realCollections.find(v=>v.uuid === $settings.collectionUUID)
 	$: assets = collection?.assets
 
 	let focusedAssetUUID: string = ''
@@ -30,9 +30,9 @@
 	function returnResults() {
 		dispatch('close', selectedAssetUUIDs.map(v => {
 			return {
-				collectionUUID: collectionUUID,
+				collectionUUID: $settings.collectionUUID,
 				assetUUID: v,
-				reference: `${httpReference}/${collectionUUID}/${v}`,
+				reference: `${httpReference}/${$settings.collectionUUID}/${v}`,
 			}
 		}))
 	}
@@ -49,7 +49,7 @@
 
 		let refresher = publisher.subscribe('collections.collection.*.assets.refresh', async m => {
 			let uuid = m.sourceTopic?.split('.')[2]
-			if (uuid === collectionUUID) {
+			if (uuid === $settings.collectionUUID) {
 				collections = realCollections
 			}
 		})
@@ -75,7 +75,7 @@
 			</svelte:fragment>
 			<svelte:fragment slot="content">
 				{#each collections as collection}
-					<div on:click={()=>collectionUUID=collection.uuid}>
+					<div on:click={()=>$settings.collectionUUID=collection.uuid}>
 						{collection.name}
 					</div>
 				{/each}
