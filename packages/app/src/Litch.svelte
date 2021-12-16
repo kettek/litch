@@ -107,7 +107,7 @@
 		showSettings = !showSettings
 	}
 
-	import Assets from './Assets.svelte'
+	import Collections from './Collections.svelte'
 	let showAssets = false
 	function toggleAssets() {
 		showAssets = !showAssets
@@ -173,7 +173,7 @@
 <main>
 	{#if !loading}
 		{#if showAssets}
-			<Assets on:close={()=>showAssets=false}/>
+			<Collections on:close={()=>showAssets=false}/>
 		{/if}
 		{#if showSettings}
 			<Settings/>
