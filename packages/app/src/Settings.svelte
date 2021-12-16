@@ -3,6 +3,7 @@
 	import { quintOut } from 'svelte/easing';
 
 	import { onMount } from 'svelte'
+	import { settings } from './stores/settings';
 
 	onMount(async () => {
 
@@ -12,6 +13,10 @@
 <section transition:scale="{{delay: 0, duration: 200, easing: quintOut}}">
 	<header> Settings </header>
 	<article>
+		<label>
+			<input type='number' bind:value={$settings.port} placeholder='port'/>
+			<span>Port</span>
+		</label>
 	</article>
 </section>
 

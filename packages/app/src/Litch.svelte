@@ -13,6 +13,8 @@
 
 	import { assets, start as startAssets } from './assets'
 
+	import { settings } from './stores/settings'
+
 	import { publisher } from './modules'
 </script>
 
@@ -23,7 +25,7 @@
 	let modulesMap: Record<string, string> = {}
 	let currentOverlayUUID: string = ''
 	let activeOverlayUUID: string = ''
-	let litchServer: LitchServer = new LitchServer()
+	let litchServer: LitchServer = new LitchServer($settings.port)
 	let serverStatus: string = 'off'
 	function getCurrentOverlay(uuid: string): OverlayInterface | undefined {
 		return overlays[uuid]
@@ -34,6 +36,7 @@
 	$: activeOverlayUUID ? litchServer.updateActiveOverlay(activeOverlayUUID) : null
 	$: overlays ? litchServer.updateOverlays(overlays) : null
 	$: modulesMap ? litchServer.updateModules(modulesMap) : null
+	$: $settings.port ? litchServer.changePort($settings.port) : null
 
 	$: loading = true
 	$: loadingMessage = ""

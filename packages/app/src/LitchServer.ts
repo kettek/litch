@@ -47,11 +47,14 @@ export class LitchServer {
 	}
 
 	get url(): string {
-		return `http://localhost:8090`
+		return `http://localhost:${this.port}`
 	}
 
-	constructor() {
+	constructor(port?: number) {
 		this.#running = false
+		if (port !== undefined) {
+			this.port = port
+		}
 	}
 
 	updateOverlays(overlays: Record<string, OverlayInterface>) {
@@ -94,6 +97,14 @@ export class LitchServer {
 			modules: active.modules
 		}
 		s.send(JSON.stringify(u))
+	}
+
+	async changePort(port: number) {
+		this.port = port
+		if (this.#running) {
+			await this.stop()
+			await this.start()
+		}
 	}
 
 	async start(): Promise<boolean> {
