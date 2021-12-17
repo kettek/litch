@@ -223,7 +223,7 @@
 <main>
 	{#if connected}
 		{#each overlay.modules.filter(v=>v.active) as module (module.uuid)}
-			<article style="--x: {module.box.x}px; --y: {module.box.y}px; --width: {module.box.width}px; --height: {module.box.height}px">
+			<article style="--x: {module.box.x}px; --y: {module.box.y}px; --width: {module.box.width}px; --height: {module.box.height}px; --rad: {module.box.rotate}rad">
 				{#if modulesState[module.moduleUUID] === 'done'}
 					<ModuleWrapper this={modulesStore[module.moduleUUID].liveComponent} bind:settings={module.settings} bind:box={module.box} bind:live={module.live} bind:channel={modulesChannels[module.uuid]} assets={assets} />
 				{/if}
@@ -246,6 +246,7 @@
 		top: var(--y);
 		width: var(--width);
 		height: var(--height);
+		transform: rotate(var(--rad));
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr);

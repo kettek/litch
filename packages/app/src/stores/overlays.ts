@@ -2,6 +2,7 @@ import type { OverlayInterface } from '../interfaces/Overlay'
 import { createModuleChannel } from '../modules'
 import { localStore } from './localStore'
 import { get } from 'svelte/store'
+import { v4 } from 'uuid'
 
 export function restoreOverlays() {
 
@@ -27,6 +28,11 @@ export function deserializeOverlays() {
 		for (let [uuid, overlay] of Object.entries(overlays)) {
 			for (let m of overlay.modules) {
 				m.channel = createModuleChannel(uuid, m.uuid)
+				// Reroll any module UUIDs that exist more than once.
+				if (overlay.modules.filter(v=>v.uuid!==uuid).length > 1) {
+					console.log('duplicate module uuid found rerolling')
+					m.uuid = v4()
+				}
 			}
 		}
 		return v

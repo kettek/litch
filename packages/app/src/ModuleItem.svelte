@@ -91,6 +91,12 @@
 					<input type="number" bind:value={module.box.height}>
 				</label>
 			</div>
+			<div>
+				<label>
+					<input type="number" bind:value={module.box.rotate}>
+					<span>rotation</span>
+				</label>
+			</div>
 		</div>
 		<div class='dimensions__icon' title='Left, Top, Width, and Height'>
 			<Icon cursor='default' icon='dimensions'></Icon>

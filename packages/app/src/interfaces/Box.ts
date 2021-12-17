@@ -6,4 +6,5 @@ export interface BoxInterface {
     y: number
     width: number
     height: number
+    rotate?: number
 }

@@ -22,6 +22,10 @@
 	let resizingY: number = 0
 	let movingX: number = 0
 	let movingY: number = 0
+	let rotatingModule: string = ''
+	let rotate: number = 0
+	let rotatingX: number = 0
+	let rotatingY: number = 0
 
 	let gridWidth: number = 30
 	let gridHeight: number = 30
@@ -31,7 +35,7 @@
 	let containerWidth: number
 	let containerHeight: number
 
-	$: (width||height||zoom) ? renderCanvas() : null
+	$: (width??height??zoom) ? renderCanvas() : null
 
 	let assets: AssetManager = {
 		open: async (options: any): Promise<AssetResults> => {
@@ -210,6 +214,62 @@
 		}
 	}
 
+	// Module rotate
+	function rotateModule(node: HTMLElement, params: {uuid: string, act: string}) {
+		const mousedown = (e: MouseEvent) => {
+			if (e.button !== 0) return
+			e.preventDefault()
+			e.stopPropagation()
+
+			rotatingModule = params.uuid
+
+			let parent = node.parentElement
+			let bbox = parent.getBoundingClientRect()
+
+			let startX = bbox.left + bbox.width / 2
+			let startY = bbox.top + bbox.height / 2
+			rotatingX = e.clientX
+			rotatingY = e.clientY
+
+			rotate = 0
+
+			const addRotate = (e: MouseEvent) => {
+				rotatingX += e.movementX
+				rotatingY += e.movementY
+				rotate = Math.atan2(rotatingY - startY, rotatingX - startX)
+			}
+
+			const mousemove = (e: MouseEvent) => {
+				addRotate(e)
+			}
+
+			const mouseup = () => {
+				addRotate(e)
+
+				let m = overlay.modules.find(v=>v.uuid===rotatingModule)
+				if (m) {
+					m.box.rotate = (m.box.rotate??0) + rotate
+					refreshOverlays()
+				}
+
+				rotatingModule = ''
+
+				window.removeEventListener('mousemove', mousemove, false)
+				window.removeEventListener('mouseup', mouseup, false)
+			}
+
+			window.addEventListener('mousemove', mousemove, false)
+			window.addEventListener('mouseup', mouseup, false)
+		}
+		node.addEventListener('mousedown', mousedown, false)
+
+		return {
+			destroy() {
+				node.removeEventListener('mousedown', mousedown, false)
+			}
+		}
+	}
+
 	let canvas: HTMLCanvasElement
 	function renderCanvas() {
 		console.log('render')
@@ -275,13 +335,17 @@
 	<section style="--x: {movingCanvas?getX(overlay.canvas.x+movingX):overlay.canvas.x}px; --y: {movingCanvas?getY(overlay.canvas.y+movingY):overlay.canvas.y}px; --width: {width}px; --height: {height}px; --zoom: {zoom}">
 		<canvas bind:this={canvas}></canvas>
 		{#each overlay.modules.filter(v=>v.active) as module (module.uuid)}
-			<article style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px" use:moveModule={module.uuid}>
+			<article style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px; --rad: {(rotatingModule===module.uuid?(rotate+(module.box?.rotate??0)):module.box?.rotate)}rad" use:moveModule={module.uuid}>
 				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} settings={module.settings} bind:box={module.box} update={(v)=>module.settings=v} channel={module.channel} live={module.live} assets={assets} />
 				<footer>
 					<span>
 						{module.box.width}x{module.box.height}
 					</span>
 				</footer>
+				<nav use:rotateModule={{uuid: module.uuid, act: 'nw-resize'}} class='rotate-top-left'></nav>
+				<nav use:rotateModule={{uuid: module.uuid, act: 'ne-resize'}} class='rotate-top-right'></nav>
+				<nav use:rotateModule={{uuid: module.uuid, act: 'sw-resize'}} class='rotate-bottom-left'></nav>
+				<nav use:rotateModule={{uuid: module.uuid, act: 'se-resize'}} class='rotate-bottom-right'></nav>
 				<nav use:resizeModule={{uuid: module.uuid, act: 'nw-resize'}} class='top-left'></nav>
 				<nav use:resizeModule={{uuid: module.uuid, act: 'ne-resize'}} class='top-right'></nav>
 				<nav use:resizeModule={{uuid: module.uuid, act: 'sw-resize'}} class='bottom-left'></nav>
@@ -330,7 +394,7 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr);
-		overflow: hidden;
+		transform: rotate(var(--rad));
 	}
 	article nav {
 		position: absolute;
@@ -339,21 +403,41 @@
 		border: 1px solid red;
 	}
 	article nav.top-left {
+		left: calc(0em * var(--zoom));
+		top: calc(0em * var(--zoom));
+		cursor: nw-resize;
+	}
+	article nav.top-right {
+		right: calc(0em * var(--zoom));
+		top: calc(0em * var(--zoom));
+		cursor: ne-resize;
+	}
+	article nav.bottom-left {
+		left: calc(0em * var(--zoom));
+		bottom: calc(0em * var(--zoom));
+		cursor: sw-resize;
+	}
+	article nav.bottom-right {
+		right: calc(0em * var(--zoom));
+		bottom: calc(0em * var(--zoom));
+		cursor: se-resize;
+	}
+	article nav.rotate-top-left {
 		left: calc(-1em * var(--zoom));
 		top: calc(-1em * var(--zoom));
 		cursor: nw-resize;
 	}
-	article nav.top-right {
+	article nav.rotate-top-right {
 		right: calc(-1em * var(--zoom));
 		top: calc(-1em * var(--zoom));
 		cursor: ne-resize;
 	}
-	article nav.bottom-left {
+	article nav.rotate-bottom-left {
 		left: calc(-1em * var(--zoom));
 		bottom: calc(-1em * var(--zoom));
 		cursor: sw-resize;
 	}
-	article nav.bottom-right {
+	article nav.rotate-bottom-right {
 		right: calc(-1em * var(--zoom));
 		bottom: calc(-1em * var(--zoom));
 		cursor: se-resize;
