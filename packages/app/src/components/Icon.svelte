@@ -32,6 +32,7 @@
 		'resize': 0xe061,
 		'dimensions': 0xe062,
 		'position': 0xe063,
+		'refresh': 0xe064,
 		'open-folder': 0xe070,
 		'duplicate': 0xe071,
 		'link': 0xe072,
