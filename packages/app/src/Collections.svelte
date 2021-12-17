@@ -7,12 +7,14 @@
 	import Window from './components/Window.svelte'
 
 	import { v4 } from 'uuid'
-	import { collections, refreshCollections } from './stores/collections'
+	import { collections, duplicateCollection, removeCollection } from './stores/collections'
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
 	import SplitPane from './components/SplitPane.svelte'
 	import { publisher } from './modules'
 	import type { Asset, Collection } from './interfaces/Asset'
+	import Menu from './components/Menu.svelte'
+	import MenuOption from './components/MenuOption.svelte'
 	import DropList from './components/DropList.svelte'
 	import AssetsListing from './AssetsListing.svelte'
 
@@ -126,6 +128,24 @@
 	/* Filter */
 	let filterValue: string = ''
 
+	/* Collections Menu */
+	let menuPos = {x: 0, y: 0}
+	let menuUUID: string
+	let showMenu = false
+	async function showCollectionMenu(e: MouseEvent, uuid: string) {
+		e.preventDefault()
+		e.stopPropagation()
+		menuUUID = uuid
+		if (showMenu) {
+			showMenu = false
+			await new Promise(res => setTimeout(res, 100));
+		}
+		menuPos = { x: e.clientX, y: e.clientY }
+		showMenu = true
+	}
+	function closeCollectionMenu() {
+		showMenu = false
+	}
 </script>
 
 <Window primary on:close>
@@ -158,7 +178,7 @@
 										{#each $collections as collection}
 											<li class='collection' class:selected={selectedCollectionUUID===collection.uuid} title={collection.uuid} on:click={()=>{selectedCollectionUUID=collection.uuid}}>
 												<span>{collection.name}</span>
-												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid}>
+												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid} on:click={(e)=>showCollectionMenu(e, collection.uuid)}>
 													<Icon icon='burger'></Icon>
 												</Button>
 												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid} on:click={()=>{setNavState('collection');selectedCollectionUUID=collection.uuid}}>
@@ -265,6 +285,18 @@
 				</article>
 			</section>
 		</SplitPane>
+		{#if showMenu}
+			<Menu tertiary {...menuPos} on:click={closeCollectionMenu} on:clickoutside={closeCollectionMenu}>
+				<MenuOption secondary on:click={()=>duplicateCollection(menuUUID)}>
+					<span>Duplicate</span>
+					<Icon icon='duplicate'></Icon>
+				</MenuOption>
+				<MenuOption dangerous on:click={()=>removeCollection(menuUUID)}>
+					<span>Delete</span>
+					<Icon icon='delete'></Icon>
+				</MenuOption>
+			</Menu>
+		{/if}
 	</article>
 </Window>
 
