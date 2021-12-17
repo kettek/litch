@@ -72,18 +72,16 @@
 		if (db >= settings.trigger) {
 			if (currentFace !== 'eyesOpenMouthOpen') {
 				currentFace = 'eyesOpenMouthOpen'
-				live.reference = settings.emotions[0]?.faces[currentFace].reference
 				channel.publish('setImage', {
-					reference: live.reference,
+					reference: settings.emotions[0]?.faces[currentFace].reference,
 					ts: Date.now(),
 				})
 			}
 		} else {
 			if (currentFace !== 'eyesOpenMouthClosed') {
 				currentFace = 'eyesOpenMouthClosed'
-				live.reference = settings.emotions[0]?.faces[currentFace].reference
 				channel.publish('setImage', {
-					reference: live.reference,
+					reference: settings.emotions[0]?.faces[currentFace].reference,
 					ts: Date.now(),
 				})
 			}
@@ -121,6 +119,16 @@
 
 	onMount(async () => {
 		start()
+		channel.receive = async ({topic, message}) => {
+			if (topic === 'update') {
+				channel.publish('setImage', {
+					reference: message.emotions[0]?.faces[currentFace].reference,
+					ts: Date.now(),
+				})
+			} else if (topic === 'setImage') {
+				live.reference = message.reference
+			}
+		}
 	})
 	onDestroy(() => {
 		stop()
