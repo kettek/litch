@@ -120,6 +120,7 @@
 							for (let m of overlay.modules) {
 								if (modulesChannels[m.uuid]) {
 									modulesChannels[m.uuid].unsubscribe()
+									delete modulesChannels[m.uuid]
 								}
 							}
 						} else {
@@ -129,6 +130,7 @@
 									// Module was removed.
 									if (modulesChannels[m.uuid]) {
 										modulesChannels[m.uuid].unsubscribe()
+										delete modulesChannels[m.uuid]
 									}
 								}
 							}
