@@ -1,8 +1,10 @@
 <script type="ts">
 	import { onMount } from 'svelte'
 
-	import type { SettingsInterface } from './Settings'
+	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
+	import type { SettingsInterface } from './SettingsI'
 
+	export let assets: AssetManager
 	export let settings: SettingsInterface
 
 	let items = []
@@ -69,7 +71,7 @@
 			{#if settings.sourceType === 'emoji'}
 				{settings.emoji}️
 			{:else if settings.sourceType === 'asset'}
-				<img alt="" src={settings.reference}/>
+				<img alt="" src={assets.source(settings.reference)}/>
 			{/if}
 		</div>
 	{/each}

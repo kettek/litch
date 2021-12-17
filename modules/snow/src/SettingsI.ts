@@ -1,7 +1,10 @@
 export interface SettingsInterface {
 	sourceType: 'emoji' | 'asset'
 	emoji: string
-	reference: string
+	reference: {
+		collection: string
+		asset: string
+	}
 	count: number
 	updateRate: number
 	maxAccumulator: number

@@ -1,8 +1,8 @@
 <script type="ts">
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
-	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
-	import type { SettingsInterface } from './Settings'
+	import type { AssetManager, AssetResult } from '@kettek/litch-app/src/interfaces/Asset'
+	import type { SettingsInterface } from './SettingsI'
 
 	export let settings: SettingsInterface
 	
@@ -17,10 +17,8 @@
 			multiple: false,
 		})
 		if (results.length === 0) return
-		settings.reference = results[0].reference
+		settings.reference = results[0] as AssetResult
 		live.reference = settings.reference
-
-		update(settings)
 	}
 </script>
 
@@ -38,14 +36,14 @@
 		</label>
 	{:else if settings.sourceType === 'asset'}
 		<label>
-			<input disabled type='text' value={settings.reference}/>
+			<input type='hidden'/>
 			Asset
 			<Button title='Open file' tertiary on:click={openFileDialog}>
 				<Icon icon='open'></Icon>
 			</Button>
 		</label>
 		<div class='preview'>
-			<img alt='preview' src={settings.reference}/>
+			<img alt='preview' src={assets.source(settings.reference)}/>
 		</div>
 	{/if}
 	<label>
