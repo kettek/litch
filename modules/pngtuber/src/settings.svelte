@@ -25,7 +25,7 @@
 		if (!emotion) return
 		emotion.faces[emotionFace] = {
 			...emotion.faces[emotionFace],
-			...results[0]
+			reference: results[0],
 		}
 		refresh()
 	}
@@ -34,9 +34,10 @@
 		let makeSource = () => {
 			return {
 				open: true,
-				collectionUUID: '',
-				assetUUID: '',
-				reference: '',
+				reference: {
+					collection: '',
+					asset: '',
+				},
 			}
 		}
 		settings.emotions = [
@@ -107,7 +108,7 @@
 									<Icon icon='open'></Icon>
 								</Button>
 								<div class='face'>
-									<img alt='preview' src={imageSource.reference}/>
+									<img alt='preview' src={assets.source(imageSource.reference)}/>
 								</div>
 							</article>
 						</details>

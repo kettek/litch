@@ -1,11 +1,13 @@
 <script type="ts">
 	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
+	import type { AssetManager, AssetResult } from '@kettek/litch-app/src/interfaces/Asset'
 	import { onMount } from 'svelte'
 
+	export let assets: AssetManager
 	export let channel: ModuleChannel
 	export let live: any = {}
 
-	let reference: string = live.reference
+	let reference: AssetResult = live.reference
 
 	onMount(() => {
 		channel.receive = async ({topic, message}) => {
@@ -17,7 +19,7 @@
 	})
 </script>
 
-<img alt='' src='{reference}'/>
+<img alt='' src='{assets.source(reference)}'/>
 
 <style>
 	img {

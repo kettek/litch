@@ -18,7 +18,10 @@ export default {
 			trigger: 32
 		},
 		live: {
-			reference: '',
+			reference: {
+				collection: '',
+				asset: '',
+			},
 		},
 	},
 	settingsComponent: SettingsComponent,

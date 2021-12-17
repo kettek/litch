@@ -25,9 +25,10 @@ export interface Faces {
 
 export interface ImageSource {
 	open: boolean
-	collectionUUID: string
-	assetUUID: string
-	reference?: string
+	reference: {
+		collection: string
+		asset: string
+	}
 }
 
 export const renderTypes = ['auto', 'smooth', 'high-quality', 'crisp-edges', 'pixelated']

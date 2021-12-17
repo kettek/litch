@@ -6,6 +6,9 @@
 	import type { SettingsInterface } from './Settings'
 	export let settings: SettingsInterface
 
+	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
+	export let assets: AssetManager
+
 	let hasPermission = false
 	let permissionFailed = false
 
@@ -129,7 +132,7 @@
 		{#if settings.emotions.length === 0}
 			you're emotionless
 		{:else}
-			<img alt='' src='{live.reference}'/>
+			<img alt='' src='{assets.source(live.reference)}'/>
 		{/if}
 	{:else}
 		plz grant permies
