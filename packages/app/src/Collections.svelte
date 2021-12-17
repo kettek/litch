@@ -7,7 +7,7 @@
 	import Window from './components/Window.svelte'
 
 	import { v4 } from 'uuid'
-	import { collections, duplicateCollection, removeCollection } from './stores/collections'
+	import { collections, duplicateCollection, removeAsset, removeCollection } from './stores/collections'
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
 	import SplitPane from './components/SplitPane.svelte'
@@ -119,6 +119,11 @@
 			if (!selectedAsset) return
 			publisher.publish(`collections.collection.${selectedCollectionUUID}.assets.asset.${selectedAssetUUID}.source`, el.files[0].path)
 		})
+	}
+
+	/* Asset Deletion */
+	function removeAssets() {
+		removeAsset(selectedCollectionUUID, selectedAssetUUID)
 	}
 	
 	function close() {
@@ -265,6 +270,17 @@
 											</section>
 										</section>
 									{/if}
+								</svelte:fragment>
+							</DropList>
+							<DropList tertiary>
+								<svelte:fragment slot="heading">
+									Actions
+								</svelte:fragment>
+								<svelte:fragment slot="content">
+									<Button dangerous on:click={()=>{removeAssets()}}>
+										delete
+										<Icon icon='close'/>
+									</Button>
 								</svelte:fragment>
 							</DropList>
 						</article>
