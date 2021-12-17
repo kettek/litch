@@ -16,9 +16,12 @@
 	export let module: ModuleInstanceInterface
 	export let focusedUUID: string
 
+	$: pendingSettings = JSON.parse(JSON.stringify(module.settings)) // FIXME: Use a clone lib
+
 	let update: (value: any) => void = (value: any) => {
 		module.settings = value
 		refreshOverlays()
+		module.channel.publish('update', module.settings)
 	}
 
 	let updateBox: (value: any) => void = (value: any) => {
@@ -95,8 +98,17 @@
 	</article>
 	<hr/>
 	<article class='module__wrapper'>
-		<ModuleWrapper this={realModule.settingsComponent} settings={module.settings} bind:live={module.live} bind:box={module.box} bind:update={update} bind:updateBox={updateBox} channel={module.channel} assets={assets} />
+		<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} channel={module.channel} assets={assets} />
 	</article>
+	<nav class='module__controls'>
+		<Button tertiary on:click={()=>{update(pendingSettings);module.channel.publish('reload', pendingSettings)}}>
+			<Icon icon='checkmark'></Icon>
+			& reload
+		</Button>
+		<Button tertiary on:click={()=>update(pendingSettings)}>
+			<Icon icon='checkmark'></Icon>
+		</Button>
+	</nav>
 </main>
 {#if showAssets}
 	<AssetsCard multiple={showOptions.multiple} on:close={closeAssets}/>
@@ -108,7 +120,7 @@
 		top: 0; left: 0;
 		width: 100%; height: 100%;
 		display: grid;
-		grid-template-rows: auto auto auto auto minmax(0, 1fr);
+		grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
 		background: var(--nav-bg);
 	}
 	nav {
@@ -175,4 +187,13 @@
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr);
 	}
+	nav.module__controls {
+		display: grid;
+		grid-template-columns: auto auto;
+		align-items: stretch;
+		justify-content: stretch;
+		background: initial;
+		color: var(--tertiary);
+	}
+
 </style>
