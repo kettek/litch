@@ -4,6 +4,8 @@ export interface SettingsInterface {
 	reference: {
 		collection: string
 		asset: string
+		mimetype: string
+		name: string
 	}
 	count: number
 	updateRate: number

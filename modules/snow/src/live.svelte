@@ -79,7 +79,14 @@
 			{#if settings.sourceType === 'emoji'}
 				{settings.emoji}️
 			{:else if settings.sourceType === 'asset'}
-				<img alt="" src={assets.source(settings.reference)}/>
+				{#if settings.reference?.mimetype?.startsWith('image')}
+					<img alt="" src={assets.source(settings.reference)}/>
+				{:else if settings.reference?.mimetype?.startsWith('video')}
+					<video autoplay loop>
+						<track kind="captions"/>
+						<source src="{assets.source(settings.reference)}" type="{settings.reference.mimetype}">
+					</video>
+				{/if}
 			{/if}
 		</div>
 	{/each}

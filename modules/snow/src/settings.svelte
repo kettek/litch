@@ -44,7 +44,16 @@
 			</Button>
 		</label>
 		<div class='preview'>
-			<img alt='preview' src={assets.source(settings.reference)}/>
+			{#if settings.reference?.mimetype?.startsWith('image')}
+				<img alt='preview' src={assets.source(settings.reference)}/>
+			{:else if settings.reference?.mimetype?.startsWith('video')}
+				<video autoplay loop>
+					<track kind="captions"/>
+					<source src="{assets.source(settings.reference)}" type="{settings.reference.mimetype}">
+				</video>
+			{:else}
+				unsupported asset
+			{/if}
 		</div>
 	{/if}
 	<label>
