@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { onMount } from 'svelte'
-	import { scale, fly, FlyParams } from 'svelte/transition'
-	import { quintOut, quintInOut } from 'svelte/easing'
+	import { createEventDispatcher } from 'svelte'
+	import { fly, FlyParams } from 'svelte/transition'
+	import { quintInOut } from 'svelte/easing'
 	import { flip } from 'svelte/animate'
+
+	import Window from './components/Window.svelte'
 
 	import { v4 } from 'uuid'
 	import { collections, refreshCollections } from './stores/collections'
@@ -12,9 +14,10 @@
 	import { publisher } from './modules'
 	import type { Asset, Collection } from './interfaces/Asset'
 	import DropList from './components/DropList.svelte'
-	import type { Subscriber } from '@kettek/pubsub/dist/Subscriber'
-	import { isAssetFiltered } from './assets'
 	import AssetsListing from './AssetsListing.svelte'
+
+	/* dispatch */
+	const dispatch = createEventDispatcher()
 
 	/* navigation */
 	let navState: 'collections'|'collection' = 'collections'
@@ -115,15 +118,19 @@
 			publisher.publish(`collections.collection.${selectedCollectionUUID}.assets.asset.${selectedAssetUUID}.source`, el.files[0].path)
 		})
 	}
+	
+	function close() {
+		dispatch('close')
+	}
 
 	/* Filter */
 	let filterValue: string = ''
 
 </script>
 
-<main transition:scale="{{delay: 0, duration: 200, easing: quintOut}}">
-	<header> Assets </header>
-	<article>
+<Window primary on:close>
+	<span slot="title">Collections</span>
+	<article slot="content">
 		<SplitPane type="horizontal" pos=25>
 			<section slot='a' class='left'>
 				{#if navState === 'collections'}
@@ -259,12 +266,9 @@
 			</section>
 		</SplitPane>
 	</article>
-</main>
+</Window>
 
 <style>
-	main {
-		overflow: hidden;
-	}
 	.left {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
@@ -273,8 +277,8 @@
 		overflow: hidden;
 		position: relative;
 	}
-	.left > article {
-		/*padding: .5em;*/
+	article {
+		color: var(--secondary);
 	}
 	.left__nav {
 		display: grid;
@@ -347,32 +351,8 @@
 		border-radius: .25em;
 	}
 	/* window */
-	main {
-		position: absolute;
-		left: 12.5%;
-		top: 12.5%;
-		width: 75%;
-		height: 75%;
-		background: var(--overlay-bg);
-		z-index: 9999;
+	nav {
 		display: grid;
-		grid-template-rows: auto minmax(0, 1fr);
-		box-shadow: 0 0 1em .1em #000;
-	}
-	main > header {
-		background: var(--primary);
-		color: var(--text);
-		text-align: center;
-		height: 2em;
-		line-height: 2em;
-		font-weight: 600;
-		font-size: 125%;
-	}
-	main > article {
-		color: var(--secondary);
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		grid-template-rows: minmax(0, 1fr);
 	}
 	hr {
 		border-color: var(--secondary);
