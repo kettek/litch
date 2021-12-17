@@ -119,28 +119,28 @@ The software is provided "as is", without warranty of any kind, including but no
 	}
 
 	.horizontal {
-		padding: 0 8px;
+		padding: 0 3px;
 		width: 0;
 		height: 100%;
 		cursor: ew-resize;
 	}
 
 	.horizontal::after {
-		left: 8px;
+		left: 3px;
 		top: 0;
 		width: 1px;
 		height: 100%;
 	}
 
 	.vertical {
-		padding: 8px 0;
+		padding: 3px 0;
 		width: 100%;
 		height: 0;
 		cursor: ns-resize;
 	}
 
 	.vertical::after {
-		top: 8px;
+		top: 3px;
 		left: 0;
 		width: 100%;
 		height: 1px;
@@ -174,7 +174,7 @@ The software is provided "as is", without warranty of any kind, including but no
 	</div>
 
 	{#if !fixed}
-		<div class="{type} divider" style="{side}: calc({pos}% - 8px)" use:drag={setPos}></div>
+		<div class="{type} divider" style="{side}: calc({pos}% - 3px)" use:drag={setPos}></div>
 	{/if}
 </div>
 
