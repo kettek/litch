@@ -5,7 +5,7 @@
 	import { flip } from 'svelte/animate'
 
 	import { v4 } from 'uuid'
-	import { collections as realCollections } from './assets'
+	import { collections, refreshCollections } from './stores/collections'
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
 	import SplitPane from './components/SplitPane.svelte'
@@ -74,10 +74,8 @@
 		})
 	}
 
-	$: collections = realCollections
-
 	let selectedCollectionUUID = ''
-	$: selectedCollection = collections.find(v=>v.uuid===selectedCollectionUUID)
+	$: selectedCollection = $collections.find(v=>v.uuid===selectedCollectionUUID)
 	$: assets = selectedCollection?.assets
 
 	let selectedAssetUUID = ''
@@ -121,26 +119,6 @@
 	/* Filter */
 	let filterValue: string = ''
 
-	/* Lifetime */
-	onMount(async () => {
-		let collectionSubscriber = publisher.subscribe('collections.*', async m => {
-			if (m.sourceTopic === 'collections.refresh') {
-				collections = realCollections
-			}
-		})
-
-		let refresher = publisher.subscribe('collections.collection.*.assets.refresh', async m => {
-			let uuid = m.sourceTopic?.split('.')[2]
-			if (uuid === selectedCollectionUUID) {
-				collections = realCollections
-			}
-		})
-
-		return () => {
-			publisher.unsubscribe(collectionSubscriber)
-			publisher.unsubscribe(refresher)
-		}
-	})
 </script>
 
 <main transition:scale="{{delay: 0, duration: 200, easing: quintOut}}">
@@ -170,7 +148,7 @@
 								</svelte:fragment>
 								<svelte:fragment slot="content">
 									<ul>
-										{#each collections as collection}
+										{#each $collections as collection}
 											<li class='collection' class:selected={selectedCollectionUUID===collection.uuid} title={collection.uuid} on:click={()=>{selectedCollectionUUID=collection.uuid}}>
 												<span>{collection.name}</span>
 												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid}>

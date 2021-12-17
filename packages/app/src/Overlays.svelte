@@ -15,33 +15,37 @@
 	import { onMount } from 'svelte'
 	import { publisher } from './modules'
 	import type { Subscriber } from '@kettek/pubsub/dist/Subscriber'
+	import { addOverlay, removeOverlay, overlays } from './stores/overlays'
 	export let modules: Record<string, ModuleInterface> = {}
 
-	export let overlays: Record<string, OverlayInterface> = {}
+	//export let overlays: Record<string, OverlayInterface> = {}
 	export let currentOverlayUUID: string = ''
 	export let activeOverlayUUID: string = ''
 	export let focusedOverlayUUID: string = ''
 	let showOverlaySelection: boolean = false
 	let showOverlayCreator: boolean = false
 
-	$: currentOverlay = overlays[currentOverlayUUID]
-	$: activeOverlay = overlays[activeOverlayUUID]
-	$: focusedOverlay = overlays[focusedOverlayUUID]
+	$: currentOverlay = $overlays[currentOverlayUUID]
+	$: activeOverlay = $overlays[activeOverlayUUID]
+	$: focusedOverlay = $overlays[focusedOverlayUUID]
 	$: displayedOverlay = focusedOverlay || activeOverlay
 	
 	function handleCreate(evt: CustomEvent<OverlayInterface>) {
-		overlays[evt.detail.uuid] = evt.detail
+		addOverlay(evt.detail)
+
+		//overlays[evt.detail.uuid] = evt.detail
 		showOverlayCreator = false
 	}
 	function handleDelete(evt: CustomEvent<string>) {
-		delete overlays[evt.detail]
+		removeOverlay(evt.detail)
+		//delete overlays[evt.detail]
 		if (activeOverlayUUID === evt.detail) {
 			activeOverlayUUID = ''
 		}
 		if (currentOverlayUUID === evt.detail) {
 			currentOverlayUUID = ''
 		}
-		overlays = {...overlays}
+		//overlays = {...overlays}
 	}
 
 	let assetsSubscriber: Subscriber
@@ -58,9 +62,9 @@
 			{#if showOverlayCreator}
 				<OverlayCreator bind:shown={showOverlayCreator} on:create={handleCreate} />
 			{:else if currentOverlay === undefined}
-				<OverlayList bind:showOverlayCreator={showOverlayCreator} bind:overlays={overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} bind:focusedOverlayUUID={focusedOverlayUUID} on:delete={handleDelete}/>
+				<OverlayList bind:showOverlayCreator={showOverlayCreator} bind:overlays={$overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} bind:focusedOverlayUUID={focusedOverlayUUID} on:delete={handleDelete}/>
 			{:else}
-				<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID} on:delete={handleDelete} on:refresh modules={modules}/>
+				<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID} on:delete={handleDelete} modules={modules}/>
 			{/if}
 		</nav>
 		<section slot=b style='width: 100%;'>
@@ -71,7 +75,7 @@
 					{$_('overlays.createOverlay')}
 				{/if}
 			{:else}
-				<Overlay bind:overlay={displayedOverlay} modules={modules} on:refresh active={displayedOverlay === activeOverlay} />
+				<Overlay bind:overlay={displayedOverlay} modules={modules} active={displayedOverlay === activeOverlay} />
 			{/if}
 		</section>
 	</SplitPane>

@@ -1,6 +1,8 @@
 import type { SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
 import { v4 } from 'uuid'
-import type { Asset, Collection } from './interfaces/Asset'
+import type { Asset, AssetResult, Collection } from './interfaces/Asset'
+import { collections, addCollection, removeCollection, addAsset, refreshCollections } from './stores/collections'
+import { get } from 'svelte/store'
 
 // This hurts. Need to really figure out how to get rollup to expect cjs modules in electron via import.
 const mime = require('mime-types')
@@ -9,9 +11,7 @@ const fs = require('fs')
 
 // Hmm
 import { publisher } from './modules'
-
-export let assets: Asset[] = []
-export let collections: Collection[] = []
+import { overlays } from './stores/overlays'
 
 export let httpReference: string = ''
 
@@ -59,6 +59,10 @@ export function start(): Promise<void> {
 		server.on('listening', () => {
 			console.log(`assets serving from ${server.address().port}`)
 			httpReference = `http://localhost:${server.address().port}`
+			// Refresh all assets whenever the server starts.
+			adjustSources()
+			//
+			publisher.publish('collections.reference', httpReference)
 			resolve()
 		})
 		server.listen(0)
@@ -66,19 +70,20 @@ export function start(): Promise<void> {
 }
 
 export let handler: SubscriberHandler = async m => {
-	if (m.topic === 'collections.create') {
+	if (m.topic === 'collections.refresh') {
+		refreshCollections()
+	} else if (m.topic === 'collections.create') {
 		let collection = {
 			name: 'A collection',
 			uuid: v4(),
 			assets: [],
 			...m.message,
 		}
-		collections.push(collection)
+		addCollection(collection)
 		publisher.publish(`collections.refresh`, {})
 	} else if (m.topic === 'collections.collection.*.assets.create') {
 		let collectionUUID = m.sourceTopic?.split('.')[2]
-		let collection = collections.find(v=>v.uuid === collectionUUID)
-		if (!collection) throw 'oops'
+		if (!collectionUUID) throw 'oops'
 		let asset = {
 			name: 'my asset',
 			mimetype: '',
@@ -88,12 +93,11 @@ export let handler: SubscriberHandler = async m => {
 			refresher: 0,
 			...m.message,
 		}
-		collection.assets.push(asset)
+		addAsset(collectionUUID, asset)
 		publisher.publish(`collections.collection.${collectionUUID}.assets.refresh`, {})
 	} else if (m.topic === 'collections.collection.*.assets.import') {
 		let collectionUUID = m.sourceTopic?.split('.')[2]
-		let collection = collections.find(v=>v.uuid === collectionUUID)
-		if (!collection) throw 'oops'
+		if (!collectionUUID) throw 'oops'
 		let asset = {
 			name: '',
 			uuid: v4(),
@@ -128,7 +132,7 @@ export let handler: SubscriberHandler = async m => {
 			asset.mimetype = mimetype
 		}
 
-		collection.assets.push(asset)
+		addAsset(collectionUUID, asset)
 		publisher.publish(`collections.collection.${collectionUUID}.assets.refresh`, {})
 	}
 }
@@ -212,8 +216,27 @@ export function isAssetFiltered(asset: Asset, filterValue: string): boolean {
 	return true
 }
 
+export function getAssetSource(ref: AssetResult): string {
+	if (!ref) return ''
+	let collection = get(collections).find(v=>v.uuid===ref.collection)
+	if (!collection) return ''
+	let asset = collection.assets.find(v=>v.uuid===ref.asset)
+	if (!asset) return ''
+	return asset.redirectedSource || asset.originalSource
+}
+
+function adjustSources() {
+	for (let collection of get(collections)) {
+		for (let asset of collection.assets) {
+			if (asset.redirectedSource) {
+				asset.redirectedSource = `http://localhost:${server.address().port}/${collection.uuid}/${asset.uuid}?${asset.refresher}`
+			}
+		}
+		publisher.publish(`collections.collection.${collection.uuid}.assets.refresh`, {})
+	}
+}
+
 let sourceAdjuster = publisher.subscribe('collections.collection.*.assets.asset.*.source', async m => {
-	console.log('frick', m)
 	if (!m.sourceTopic) return
 	let collectionUUID = m.sourceTopic.split('.')[2]
 	let uuid = m.sourceTopic.split('.')[5]
@@ -222,7 +245,7 @@ let sourceAdjuster = publisher.subscribe('collections.collection.*.assets.asset.
 })
 
 export function getAsset(collectionUUID: string, uuid: string): Asset|undefined {
-	return collections.find(v=>v.uuid===collectionUUID)?.assets.find(v=>v.uuid===uuid)
+	return get(collections).find(v=>v.uuid===collectionUUID)?.assets.find(v=>v.uuid===uuid)
 }
 
 export let subscriber = publisher.subscribe('assets.*', handler)

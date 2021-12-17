@@ -11,16 +11,16 @@
 	import type { ModuleInterface } from './interfaces/Module'
 	import type { Asset } from './interfaces/Asset'
 
-	import { assets, start as startAssets } from './assets'
+	import { assets, httpReference, start as startAssets } from './assets'
 
 	import { settings } from './stores/settings'
+	import { overlays } from './stores/overlays'
 
 	import { publisher } from './modules'
 </script>
 
 <script lang="ts">
 	let assets: Asset[] = []
-	let overlays: Record<string, OverlayInterface> = {}
 	let modules: Record<string, ModuleInterface> = {}
 	let modulesMap: Record<string, string> = {}
 	let currentOverlayUUID: string = ''
@@ -28,13 +28,13 @@
 	let litchServer: LitchServer = new LitchServer($settings.port)
 	let serverStatus: string = 'off'
 	function getCurrentOverlay(uuid: string): OverlayInterface | undefined {
-		return overlays[uuid]
+		return $overlays[uuid]
 	}
 
 	$: currentOverlay = getCurrentOverlay(currentOverlayUUID)
 
 	$: activeOverlayUUID ? litchServer.updateActiveOverlay(activeOverlayUUID) : null
-	$: overlays ? litchServer.updateOverlays(overlays) : null
+	$: $overlays ? litchServer.updateOverlays($overlays) : null
 	$: modulesMap ? litchServer.updateModules(modulesMap) : null
 	$: $settings.port ? litchServer.changePort($settings.port) : null
 
@@ -72,7 +72,7 @@
 
 		// Populate structures.
 		loadingMessage = "Populating structures"
-		overlays = await eap.promises.get('overlays') || {}
+		//$overlays = await eap.promises.get('overlays') || {}
 		currentOverlayUUID = await eap.promises.get('currentOverlayUUID') || ''
 		activeOverlayUUID = await eap.promises.get('activeOverlayUUID') || ''
 
@@ -122,6 +122,8 @@
 			serverStatus = 'pending'
 			if (await litchServer.start()) {
 				serverStatus = 'on'
+				// Always let the server know of our current file redirect reference after start.
+				publisher.publish('collections.reference', httpReference)
 			} else {
 				serverStatus = 'off'
 			}
@@ -136,8 +138,8 @@
 	}
 
 	function handleRefresh(evt: CustomEvent<string>) {
-		overlays = {
-			...overlays
+		$overlays = {
+			...$overlays
 		}
 		currentOverlayUUID = currentOverlayUUID
 		activeOverlayUUID = activeOverlayUUID
@@ -157,7 +159,7 @@
 		<Button primary disabled={serverStatus!=='on'} draggable={true} on:dragstart={e => {
 			let width = 1920
 			let height = 1080
-			let o = overlays[activeOverlayUUID]
+			let o = $overlays[activeOverlayUUID]
 			if (o) {
 				width = o.canvas.width
 				height = o.canvas.height
@@ -181,7 +183,7 @@
 		{#if showSettings}
 			<Settings/>
 		{/if}
-		<Overlays bind:overlays={overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} on:refresh={handleRefresh} modules={modules}/>
+		<Overlays bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} on:refresh={handleRefresh} modules={modules}/>
 	{:else}
 		{loadingMessage}
 	{/if}

@@ -1,14 +1,16 @@
 <script type="ts">
 	import { fly } from 'svelte/transition'
 	import { quintInOut } from 'svelte/easing'
-	import type { ModuleInstanceInterface } from "./interfaces/ModuleInstance";
+	import type { ModuleInstanceInterface } from "./interfaces/ModuleInstance"
 	import type { ModuleInterface } from './interfaces/Module'
-	import type { AssetManager, AssetResults } from './interfaces/Asset'
+	import type { AssetManager, AssetResult, AssetResults } from './interfaces/Asset'
 	import ModuleWrapper from "./ModuleWrapper.svelte"
 	import Icon from './components/Icon.svelte'
 	import Button from './components/Button.svelte'
 
 	import AssetsCard from './AssetsCard.svelte'
+	import { getAssetSource } from './assets'
+	import { refreshOverlays } from './stores/overlays'
 
 	export let modules: Record<string, ModuleInterface> = {}
 	export let module: ModuleInstanceInterface
@@ -16,6 +18,7 @@
 
 	let update: (value: any) => void = (value: any) => {
 		module.settings = value
+		refreshOverlays()
 	}
 
 	let updateBox: (value: any) => void = (value: any) => {
@@ -43,6 +46,9 @@
 				showOptions = options
 				showAssets = true
 			})
+		},
+		source: (ref: AssetResult): string => {
+			return getAssetSource(ref)
 		}
 	}
 

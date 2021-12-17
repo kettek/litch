@@ -3,7 +3,8 @@
 	import type { ModuleInterface } from './interfaces/Module'
 	import ModuleWrapper from "./ModuleWrapper.svelte"
 	import { onMount } from 'svelte'
-	import { createEventDispatcher } from 'svelte'
+	import type { AssetManager, AssetResult, AssetResults } from './interfaces/Asset'
+	import { getAssetSource } from './assets'
 
 	export let modules: Record<string, ModuleInterface> = {}
 
@@ -30,6 +31,15 @@
 	let containerHeight: number
 
 	$: (width||height||zoom) ? renderCanvas() : null
+
+	let assets: AssetManager = {
+		open: async (options: any): Promise<AssetResults> => {
+			return []
+		},
+		source: (ref: AssetResult): string => {
+			return getAssetSource(ref)
+		}
+	}
 
 	function move(node: HTMLElement) {
 		const mousedown = (e: MouseEvent) => {
@@ -80,7 +90,7 @@
 			y = containerHeight - overlay.canvas.height / 4
 		}
 		[overlay.canvas.x, overlay.canvas.y] = getCoordinates(x, y)
-		dispatch('refresh', '')
+		refreshOverlays()
 	}
 
 	function handleWheel(e: WheelEvent) {
@@ -127,7 +137,7 @@
 		let m = overlay.modules.find(v=>v.uuid===uuid)
 		if (!m) return
 		[m.box.x, m.box.y] = getCoordinates(m.box.x + movingX, m.box.y + movingY)
-		dispatch('refresh', uuid)
+		refreshOverlays()
 	}
 	// Module resize
 	function resizeModule(node: HTMLElement, params: {uuid: string, act: string}) {
@@ -177,7 +187,7 @@
 						...getCoordinates(m.box.x + movingX, m.box.y + movingY),
 						...getCoordinates(m.box.width + resizingX, m.box.height + resizingY)
 					]
-					dispatch('refresh', resizingModule)
+					refreshOverlays()
 				}
 
 				resizingModule = ''
@@ -198,8 +208,6 @@
 			}
 		}
 	}
-
-	const dispatch = createEventDispatcher<string>()
 
 	let canvas: HTMLCanvasElement
 	function renderCanvas() {
@@ -267,7 +275,7 @@
 		<canvas bind:this={canvas}></canvas>
 		{#each overlay.modules.filter(v=>v.active) as module (module.uuid)}
 			<article style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px" use:moveModule={module.uuid}>
-				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} settings={module.settings} bind:box={module.box} update={(v)=>module.settings=v} channel={module.channel} live={module.live} />
+				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} settings={module.settings} bind:box={module.box} update={(v)=>module.settings=v} channel={module.channel} live={module.live} assets={assets} />
 				<footer>
 					<span>
 						{module.box.width}x{module.box.height}

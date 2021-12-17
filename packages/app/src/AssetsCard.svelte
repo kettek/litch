@@ -1,6 +1,7 @@
 <script type='ts'>
 	import type { Asset, Collection } from './interfaces/Asset'
-	import { httpReference, collections as realCollections } from './assets'
+	import { httpReference } from './assets'
+	import { collections, refreshCollections } from './stores/collections'
 	import { createEventDispatcher, onMount } from 'svelte'
 	import { fly } from 'svelte/transition'
 	import { quintInOut } from 'svelte/easing'
@@ -16,9 +17,7 @@
 	/* dispatch */
 	const dispatch = createEventDispatcher()
 
-	$: collections = realCollections
-
-	$: collection = realCollections.find(v=>v.uuid === $settings.collectionUUID)
+	$: collection = $collections.find(v=>v.uuid === $settings.collectionUUID)
 	$: assets = collection?.assets
 
 	let focusedAssetUUID: string = ''
@@ -30,8 +29,8 @@
 	function returnResults() {
 		dispatch('close', selectedAssetUUIDs.map(v => {
 			return {
-				collectionUUID: $settings.collectionUUID,
-				assetUUID: v,
+				collection: $settings.collectionUUID,
+				asset: v,
 				reference: `${httpReference}/${$settings.collectionUUID}/${v}`,
 			}
 		}))
@@ -39,26 +38,6 @@
 
 	/* filter */
 	let filter: string = ''
-
-	onMount(async () => {
-		let collectionSubscriber = publisher.subscribe('collections.*', async m => {
-			if (m.sourceTopic === 'collections.refresh') {
-				collections = realCollections
-			}
-		})
-
-		let refresher = publisher.subscribe('collections.collection.*.assets.refresh', async m => {
-			let uuid = m.sourceTopic?.split('.')[2]
-			if (uuid === $settings.collectionUUID) {
-				collections = realCollections
-			}
-		})
-
-		return () => {
-			publisher.unsubscribe(collectionSubscriber)
-			publisher.unsubscribe(refresher)
-		}
-	})
 </script>
 
 <main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
@@ -74,7 +53,7 @@
 				Collections
 			</svelte:fragment>
 			<svelte:fragment slot="content">
-				{#each collections as collection}
+				{#each $collections as collection}
 					<div on:click={()=>$settings.collectionUUID=collection.uuid}>
 						{collection.name}
 					</div>

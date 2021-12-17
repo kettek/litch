@@ -4,7 +4,7 @@
 	import { _ } from 'svelte-i18n'
 	import { quintInOut } from 'svelte/easing'
 	import type { OverlayInterface } from './interfaces/Overlay'
-	import { createEventDispatcher, tick } from 'svelte'
+	import { tick } from 'svelte'
 	import ModuleItem from './ModuleItem.svelte'
 
 	import type { ModuleInterface } from './interfaces/Module'
@@ -35,7 +35,7 @@
 		overlay.canvas.height = height
 		overlay.title = title
 		width = width
-		dispatch('refresh', uuid)
+		refreshOverlays()
 	}
 
 	function handleAddModule(evt: CustomEvent<string>) {
@@ -52,11 +52,10 @@
 			openDimensions: false,
 			openSettings: true,
 			active: true,
-			assets: [],
 			live: {...module.defaults.live},
 		})
 		publisher.publish(`overlay.${overlay.uuid}.module.${uuid}.create`, {})
-		dispatch('refresh', uuid)
+		refreshOverlays()
 	}
 	async function deleteModule(uuid: string) {
 		let module = overlay.modules.find(v=>v.uuid===uuid)
@@ -64,6 +63,7 @@
 		overlay.modules = overlay.modules.filter(v=>v.uuid!==uuid)
 		await tick()
 		publisher.publish(`overlay.${overlay.uuid}.module.${uuid}.delete`, {})
+		refreshOverlays()
 	}
 	async function duplicateModule(uuid: string) {
 		let module = overlay.modules.find(v=>v.uuid===uuid)
@@ -76,7 +76,7 @@
 		}
 		overlay.modules.push(newModule)
 		publisher.publish(`overlay.${overlay.uuid}.module.${newUUID}.create`, {})
-		dispatch('refresh', newUUID)
+		refreshOverlays()
 	}
 
 	let hoveringModuleUUID: string
@@ -102,20 +102,22 @@
 			overlay.modules.splice(toIndex, 0, modules[fromIndex])
 			overlay.modules.splice(fromIndex+1, 1)
 		}
-		overlay = {
-			...overlay,
-			modules,
-		}
 		fromModuleUUID = ''
 		hoveringModuleUUID = ''
+		refreshOverlays()
 	}
-
-	const dispatch = createEventDispatcher<string>()
+	function handleModuleToggle(targetUUID: string) {
+		let module = overlay.modules.find(v=>v.uuid === targetUUID)
+		if (!module) return
+		module.active = !module.active
+		refreshOverlays()
+	}
 
 	import Menu from './components/Menu.svelte'
 	import MenuOption from './components/MenuOption.svelte'
 	import MenuDivider from './components/MenuDivider.svelte'
 	import DropList from './components/DropList.svelte'
+	import { refreshOverlays } from './stores/overlays'
 	let menuPos = {x: 0, y: 0}
 	let menuUUID: string
 	let showMenu = false
@@ -185,7 +187,7 @@
 						on:dragenter={() => hoveringModuleUUID = module.uuid}
 						class:active={hoveringModuleUUID === module.uuid}
 					>
-						<Button tertiary invert on:click={()=>module.active = !module.active}><Icon icon={module.active?'active':'inactive'}></Icon></Button>
+						<Button tertiary invert on:click={()=>handleModuleToggle(module.uuid)}><Icon icon={module.active?'active':'inactive'}></Icon></Button>
 						<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
 						<Button tertiary invert on:click={(e)=>showModuleMenu(e, module.uuid)}><Icon icon='burger'></Icon></Button>
 					</li>

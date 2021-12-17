@@ -21,6 +21,7 @@ const { Publisher: PublisherR } = require('@kettek/pubsub')
 import type { Publisher } from "@kettek/pubsub/dist/Publisher"*/
 
 import { isHello, Hello, LitchMessage, LazyUpdate, isLazyUpdate, isModuleTypeRequest, ModuleTypeResponse, Endpoint} from './api'
+import { httpReference } from './assets'
 
 export class LitchServer {
 	#express : Application | null = null
@@ -136,7 +137,7 @@ export class LitchServer {
 			this.#clients[uuid] = ws
 			var h : Hello = {event: 'hello', uuid}
 			ws.send(JSON.stringify(h))
-			this.sendActiveOverlayTo(ws)
+
 			ws.on('message', (data: string) => {
 				let msg = JSON.parse(data)
 				if (isHello(msg)) {
@@ -162,6 +163,12 @@ export class LitchServer {
 				ws.send(JSON.stringify(e))
 				return 1
 			})
+
+			// Send current file http reference location
+			publisher.publish('collections.reference', httpReference)
+
+			// Send overlay information
+			this.sendActiveOverlayTo(ws)
 
 			ws.onclose = (event: CloseEvent) => {
 				publisher.disconnect(endpoint)
