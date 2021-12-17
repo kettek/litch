@@ -18,7 +18,6 @@ export interface ModuleInstanceInterface {
 	// Live
 	channel: ModuleChannel
 	live: {[key: string]: any} // Live information, passed to module
-	assets: AssetManager
 }
 
 export interface ModuleChannel {
