@@ -120,6 +120,11 @@
 	input[type=number] {
 		width: 5em;
 	}
+	.preview > * {
+		max-height: 8em;
+		max-width: 8em;
+		object-fit: contain;
+	}
 	hr {
 		width: 100%;
 		border-color: var(--text);
