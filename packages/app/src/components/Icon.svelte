@@ -33,6 +33,7 @@
 		'dimensions': 0xe062,
 		'position': 0xe063,
 		'reload': 0xe064,
+		'close': 0xe065,
 		'open-folder': 0xe070,
 		'duplicate': 0xe071,
 		'link': 0xe072,

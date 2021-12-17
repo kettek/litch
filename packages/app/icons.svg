@@ -34,7 +34,7 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer19">
+     inkscape:current-layer="layer20">
     <inkscape:grid
        type="xygrid"
        id="grid824"
@@ -474,7 +474,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer19"
-     inkscape:label="reload">
+     inkscape:label="reload"
+     style="display:none">
     <path
        style="fill:none;stroke:#000000;stroke-width:0.396875;stroke-linecap:round;stroke-linejoin:round;stroke-dashoffset:1.65"
        d="m 2.2489581,0.66145812 c 0.876752,-2e-8 1.5875,0.71074798 1.5875,1.58749998 0,0.876752 -0.710748,1.5875 -1.5875,1.5875 -0.876752,0 -1.58749999,-0.710748 -1.58749997,-1.5875 1e-8,-0.4669225 0.20158195,-0.886763 0.52246547,-1.1772411"
@@ -484,5 +485,20 @@
        style="fill:none;stroke:#000000;stroke-width:0.396875;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 0.70776068,0.77721351 H 1.5015107 V 1.5709634"
        id="path1366" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer20"
+     inkscape:label="close">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.52916665;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 0.39687498,0.39687498 4.1010415,4.1010415"
+       id="path964"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.52916665;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 0.39687498,4.1010415 4.1010415,0.39687498"
+       id="path966"
+       sodipodi:nodetypes="cc" />
   </g>
 </svg>
