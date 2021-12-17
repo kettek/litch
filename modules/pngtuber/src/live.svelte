@@ -12,7 +12,6 @@
 	onMount(() => {
 		channel.receive = async ({topic, message}) => {
 			if (topic === 'setImage') {
-				console.log(Date.now() - message.ts)
 				reference = message.reference
 			}
 		}
