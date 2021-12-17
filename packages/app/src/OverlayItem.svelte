@@ -78,6 +78,11 @@
 		publisher.publish(`overlay.${overlay.uuid}.module.${newUUID}.create`, {})
 		refreshOverlays()
 	}
+	async function reloadModule(uuid: string) {
+		let module = overlay.modules.find(v=>v.uuid===uuid)
+		if (!module) return
+		module.channel.publish('reload', module.settings)
+	}
 
 	let hoveringModuleUUID: string
 	let fromModuleUUID: string
@@ -201,6 +206,10 @@
 </main>
 {#if showMenu}
 	<Menu tertiary {...menuPos} on:click={closeModuleMenu} on:clickoutside={closeModuleMenu}>
+		<MenuOption tertiary on:click={()=>reloadModule(menuUUID)}>
+			<span>Reload</span>
+			<Icon icon='refresh'></Icon>
+		</MenuOption>
 		<MenuOption tertiary on:click={()=>duplicateModule(menuUUID)}>
 			<span>Duplicate</span>
 			<Icon icon='duplicate'></Icon>
