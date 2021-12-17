@@ -1,9 +1,11 @@
 <script type="ts">
 	import { onMount } from 'svelte'
 
+	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
 	import type { SettingsInterface } from './SettingsI'
 
+	export let channel: ModuleChannel
 	export let assets: AssetManager
 	export let settings: SettingsInterface
 
@@ -60,6 +62,12 @@
 			items = items
 		}
 		loop()
+
+		channel.receive = async ({topic, message}) => {
+			if (topic === 'reload') {
+				reload()
+			}
+		}
 
 		return () => cancelAnimationFrame(frame)
 	})
