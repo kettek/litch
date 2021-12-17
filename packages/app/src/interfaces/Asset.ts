@@ -31,6 +31,8 @@ export interface AssetResult {
 	reference?: string
 	collection: string
 	asset: string
+	name: string
+	mimetype: string
 }
 export type AssetResults = AssetResult[]
 

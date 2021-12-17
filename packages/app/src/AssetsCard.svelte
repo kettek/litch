@@ -1,6 +1,6 @@
 <script type='ts'>
 	import type { Asset, Collection } from './interfaces/Asset'
-	import { httpReference } from './assets'
+	import { getAsset, httpReference } from './assets'
 	import { collections, refreshCollections } from './stores/collections'
 	import { createEventDispatcher, onMount } from 'svelte'
 	import { fly } from 'svelte/transition'
@@ -28,10 +28,13 @@
 	/* */
 	function returnResults() {
 		dispatch('close', selectedAssetUUIDs.map(v => {
+			let asset = getAsset($settings.collectionUUID, v)
 			return {
 				collection: $settings.collectionUUID,
 				asset: v,
 				reference: `${httpReference}/${$settings.collectionUUID}/${v}`,
+				mimetype: asset?.mimetype,
+				name: asset?.name,
 			}
 		}))
 	}
