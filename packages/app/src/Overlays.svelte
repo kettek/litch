@@ -45,7 +45,6 @@
 		if (currentOverlayUUID === evt.detail) {
 			currentOverlayUUID = ''
 		}
-		//overlays = {...overlays}
 	}
 
 	let assetsSubscriber: Subscriber
