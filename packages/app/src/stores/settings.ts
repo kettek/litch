@@ -1,6 +1,7 @@
-import { writable } from 'svelte/store'
+import { localStore } from './localStore'
 
-export const settings = writable({
+export const settings = localStore('settings', {
 	port: 8090,
 	collectionUUID: '',
+	activeOverlay: '',
 })
