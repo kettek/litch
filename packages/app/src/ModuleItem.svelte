@@ -102,7 +102,7 @@
 	</article>
 	<nav class='module__controls'>
 		<Button tertiary on:click={()=>{module.channel.publish('reload', module.settings)}}>
-			<Icon icon='refresh'></Icon>
+			<Icon icon='reload'></Icon>
 		</Button>
 		<Button tertiary on:click={()=>update(pendingSettings)}>
 			<Icon icon='checkmark'></Icon>
