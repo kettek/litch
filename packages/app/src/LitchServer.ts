@@ -101,6 +101,7 @@ export class LitchServer {
 	}
 
 	async changePort(port: number) {
+		if (this.port === port) return
 		this.port = port
 		if (this.#running) {
 			await this.stop()
