@@ -21,13 +21,11 @@ export function refreshCollections() {
 }
 
 export function addAsset(uuid: string, asset: Asset) {
-	collections.update((v: any) => {
-		let collection = v.find((v2: any)=>v2.uuid === uuid)
-		if (collection) {
-			collection.assets.push(asset)
-		}
-		return v
-	})
+	let cs = get(collections)
+	let c = cs.find((v: any)=>v.uuid === uuid)
+	if (!c) return
+	c.assets.push(asset)
+	collections.set(cs)
 }
 
 export const collections = localStore<Collection[]>('collections', [])
