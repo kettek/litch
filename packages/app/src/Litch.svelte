@@ -11,7 +11,7 @@
 	import type { ModuleInterface } from './interfaces/Module'
 	import type { Asset } from './interfaces/Asset'
 
-	import { assets, httpReference, start as startAssets } from './assets'
+	import { httpReference, start as startAssets } from './assets'
 
 	import { settings } from './stores/settings'
 	import { overlays } from './stores/overlays'
