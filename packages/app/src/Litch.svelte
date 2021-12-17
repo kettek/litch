@@ -24,7 +24,6 @@
 	let modules: Record<string, ModuleInterface> = {}
 	let modulesMap: Record<string, string> = {}
 	let currentOverlayUUID: string = ''
-	let activeOverlayUUID: string = ''
 	let litchServer: LitchServer = new LitchServer($settings.port)
 	let serverStatus: string = 'off'
 	function getCurrentOverlay(uuid: string): OverlayInterface | undefined {
@@ -33,7 +32,7 @@
 
 	$: currentOverlay = getCurrentOverlay(currentOverlayUUID)
 
-	$: activeOverlayUUID ? litchServer.updateActiveOverlay(activeOverlayUUID) : null
+	$: $settings.activeOverlay ? litchServer.updateActiveOverlay($settings.activeOverlay) : null
 	$: $overlays ? litchServer.updateOverlays($overlays) : null
 	$: modulesMap ? litchServer.updateModules(modulesMap) : null
 	$: $settings.port ? litchServer.changePort($settings.port) : null
@@ -74,7 +73,6 @@
 		loadingMessage = "Populating structures"
 		//$overlays = await eap.promises.get('overlays') || {}
 		currentOverlayUUID = await eap.promises.get('currentOverlayUUID') || ''
-		activeOverlayUUID = await eap.promises.get('activeOverlayUUID') || ''
 
 		// Load modules (this should bes a separate model)
 		loadingMessage = "Loading modules"
@@ -142,7 +140,7 @@
 			...$overlays
 		}
 		currentOverlayUUID = currentOverlayUUID
-		activeOverlayUUID = activeOverlayUUID
+		$settings.activeOverlay = $settings.activeOverlay
 	}
 
 </script>
@@ -159,7 +157,7 @@
 		<Button primary disabled={serverStatus!=='on'} draggable={true} on:dragstart={e => {
 			let width = 1920
 			let height = 1080
-			let o = $overlays[activeOverlayUUID]
+			let o = $overlays[$settings.activeOverlay]
 			if (o) {
 				width = o.canvas.width
 				height = o.canvas.height
@@ -183,7 +181,7 @@
 		{#if showSettings}
 			<Settings/>
 		{/if}
-		<Overlays bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} on:refresh={handleRefresh} modules={modules}/>
+		<Overlays bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={$settings.activeOverlay} on:refresh={handleRefresh} modules={modules}/>
 	{:else}
 		{loadingMessage}
 	{/if}
