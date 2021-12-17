@@ -38,4 +38,12 @@ export function addAsset(uuid: string, asset: Asset) {
 	collections.set(cs)
 }
 
+export function removeAsset(collectionUUID: string, assetUUID: string) {
+	let cs = get(collections)
+	let c = cs.find((v: any)=>v.uuid === collectionUUID)
+	if (!c) return
+	c.assets = c.assets.filter(v=>v.uuid !== assetUUID)
+	collections.set(cs)
+}
+
 export const collections = localStore<Collection[]>('collections', [])
