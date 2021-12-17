@@ -8,12 +8,26 @@
 	import type { OverlayInterface } from '@kettek/litch-app/src/interfaces/Overlay'
 	import type { ModuleInterface } from '@kettek/litch-app/src/interfaces/Module'
 	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
+	import type { AssetManager, AssetResult, AssetResults } from '@kettek/litch-app/src/interfaces/Asset'
 
 	import { Publisher } from '@kettek/pubsub'
 	import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 
 	const publisher = new Publisher()
 	const endpoint = publisher.connect('*')
+	const collectionsUpdater  = publisher.subscribe('collections.reference', async ({message}) => {
+		collectionsReference = message
+	})
+	let collectionsReference = ''
+	let referenceIncrementer = 0
+	let assets: AssetManager = {
+		open: async (options: any): Promise<AssetResults> => {
+			return []
+		},
+		source: (ref: AssetResult): string => {
+			return `${collectionsReference}/${ref.collection}/${ref.asset}?${referenceIncrementer++}`
+		}
+	}
 
 	function createModuleChannel(overlayUUID: string, uuid: string): ModuleChannel {
 		let ctx = `overlay.${overlayUUID}.module.${uuid}`
@@ -209,7 +223,7 @@
 		{#each overlay.modules.filter(v=>v.active) as module (module.uuid)}
 			<article style="--x: {module.box.x}px; --y: {module.box.y}px; --width: {module.box.width}px; --height: {module.box.height}px">
 				{#if modulesState[module.moduleUUID] === 'done'}
-					<ModuleWrapper this={modulesStore[module.moduleUUID].liveComponent} bind:settings={module.settings} bind:box={module.box} bind:live={module.live} bind:channel={modulesChannels[module.uuid]} />
+					<ModuleWrapper this={modulesStore[module.moduleUUID].liveComponent} bind:settings={module.settings} bind:box={module.box} bind:live={module.live} bind:channel={modulesChannels[module.uuid]} assets={assets} />
 				{/if}
 			</article>
 		{/each}
