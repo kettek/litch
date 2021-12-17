@@ -171,5 +171,8 @@
 	}
 	article.module__wrapper {
 		overflow: auto;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr);
 	}
 </style>
