@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte'
 	import type { AssetManager, AssetResult, AssetResults } from './interfaces/Asset'
 	import { getAssetSource } from './assets'
+	import { refreshOverlays } from './stores/overlays'
 
 	export let modules: Record<string, ModuleInterface> = {}
 
