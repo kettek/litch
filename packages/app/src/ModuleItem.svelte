@@ -101,9 +101,8 @@
 		<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} channel={module.channel} assets={assets} />
 	</article>
 	<nav class='module__controls'>
-		<Button tertiary on:click={()=>{update(pendingSettings);module.channel.publish('reload', pendingSettings)}}>
-			<Icon icon='checkmark'></Icon>
-			& reload
+		<Button tertiary on:click={()=>{module.channel.publish('reload', module.settings)}}>
+			<Icon icon='refresh'></Icon>
 		</Button>
 		<Button tertiary on:click={()=>update(pendingSettings)}>
 			<Icon icon='checkmark'></Icon>
