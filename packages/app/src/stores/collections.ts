@@ -1,5 +1,6 @@
 import type { Asset, Collection } from '../interfaces/Asset'
 import { localStore } from './localStore'
+import { get } from 'svelte/store'
 
 export function addCollection(o: Collection) {
 	collections.update((v: any) => {
@@ -16,9 +17,7 @@ export function removeCollection(u: string) {
 }
 
 export function refreshCollections() {
-	collections.update((v: any) => {
-		return v
-	})
+	collections.set(get(collections))
 }
 
 export function addAsset(uuid: string, asset: Asset) {

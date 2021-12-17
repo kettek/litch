@@ -1,6 +1,7 @@
 import type { OverlayInterface } from '../interfaces/Overlay'
 import { createModuleChannel } from '../modules'
 import { localStore } from './localStore'
+import { get } from 'svelte/store'
 
 export function restoreOverlays() {
 
@@ -33,10 +34,7 @@ export function deserializeOverlays() {
 }
 
 export function refreshOverlays() {
-	overlays.update((v: any) => {
-		console.log('called refreshOverlays')
-		return v
-	})
+	overlays.set(get(overlays))
 }
 
 const initialOverlays: Record<string, OverlayInterface> = {}
