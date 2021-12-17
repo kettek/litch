@@ -208,7 +208,7 @@
 	<Menu tertiary {...menuPos} on:click={closeModuleMenu} on:clickoutside={closeModuleMenu}>
 		<MenuOption tertiary on:click={()=>reloadModule(menuUUID)}>
 			<span>Reload</span>
-			<Icon icon='refresh'></Icon>
+			<Icon icon='reload'></Icon>
 		</MenuOption>
 		<MenuOption tertiary on:click={()=>duplicateModule(menuUUID)}>
 			<span>Duplicate</span>
