@@ -11,10 +11,16 @@ export function createModuleChannel(overlayUUID: string, uuid: string): ModuleCh
 	let ctx = `overlay.${overlayUUID}.module.${uuid}`
 	let s = publisher.subscribe(`${ctx}.*`)
 	// Subscribe to assets.
-	publisher.subscribe(`overlay.${overlayUUID}.assets.*`)
+	//publisher.subscribe(`overlay.${overlayUUID}.assets.*`)
 
 	let m = {
 		handler: async (msg: any) => {
+			// strip the topics
+			msg = {
+				...msg,
+				sourceTopic: msg.sourceTopic.substring(ctx.length+1),
+				topic: msg.sourceTopic.substring(ctx.length+1),
+			}
 			await m.receive(msg)
 		},
 		receive: async (msg: PublishedMessage) => {
