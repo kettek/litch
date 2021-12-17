@@ -12,8 +12,6 @@
 
 	export let assets: AssetManager
 
-	export let update: (value: any) => void
-
 	async function openFileDialog() {
 		let results = await assets.open({
 			multiple: false,
@@ -107,28 +105,16 @@
 			</label>
 		</fieldset>
 	</section>
-	<nav>
-		<Button tertiary on:click={()=>{update(settings)}}>
-			<Icon icon='checkmark'></Icon>
-		</Button>
-		<Button tertiary on:click={()=>{update(settings);channel.publish('reload', {})}}>
-			apply & reload
-		</Button>
-	</nav>
 </main>
 
 <style>
 	main {
 		display: grid;
-		grid-template-rows: minmax(0, 1fr) auto;
+		grid-template-rows: minmax(0, 1fr);
 		height: 100%;
 	}
 	section {
 		overflow: auto;
-	}
-	nav {
-		display: grid;
-		grid-template-columns: auto auto;
 	}
 	input[type=number] {
 		width: 5em;
