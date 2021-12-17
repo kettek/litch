@@ -28,12 +28,13 @@ export interface Collection {
 }
 
 export interface AssetResult {
-	reference: string
-	collectionUUID: string
-	uuid: string
+	reference?: string
+	collection: string
+	asset: string
 }
 export type AssetResults = AssetResult[]
 
 export interface AssetManager {
 	open: (options: any) => Promise<AssetResults>
+	source: (reference: AssetResult) => string
 }
