@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { scale } from 'svelte/transition';
-	import { quintOut } from 'svelte/easing';
 
 	import { onMount } from 'svelte'
-	import { settings } from './stores/settings';
-	import Button from './components/Button.svelte';
-	import Icon from './components/Icon.svelte';
+	import { settings } from './stores/settings'
+	import Button from './components/Button.svelte'
+	import Icon from './components/Icon.svelte'
+	import Window from './components/Window.svelte'
 
 	let pendingSettings = {...$settings}
 	$: hasChanges = !equal($settings, pendingSettings)
@@ -36,9 +35,9 @@
 	})
 </script>
 
-<section transition:scale="{{delay: 0, duration: 200, easing: quintOut}}">
-	<header> Settings </header>
-	<article>
+<Window primary on:close>
+	<span slot='title'>Settings</span>
+	<article slot='content'>
 		<label>
 			<input type='number' bind:value={pendingSettings.port} placeholder='port'/>
 			<span>Port</span>
@@ -46,28 +45,11 @@
 		<Button primary disabled={!hasChanges} on:click={applyChanges}>
 			<Icon icon="checkmark"></Icon>
 		</Button>
+
 	</article>
-</section>
+</Window>
 
 <style>
-	section {
-		position: absolute;
-		left: calc(50% - 15em);
-		top: calc(50% - 15em);
-		width: 30em;
-		height: 30em;
-		background: var(--nav-bg);
-		z-index: 9999;
-	}
-	header {
-		background: var(--primary);
-		color: var(--text);
-		text-align: center;
-		height: 2em;
-		line-height: 2em;
-		font-weight: 600;
-		font-size: 125%;
-	}
 	article {
 		color: var(--primary);
 		padding: .5em;
