@@ -79,6 +79,7 @@
 
 	let webSocket: WebSocket | undefined
 	let connected: boolean = false
+	let shown: boolean = true
 	let backoff: number = 100
 	let uuid: string = ''
 
@@ -116,6 +117,18 @@
 						uuid = msg.uuid
 						webSocket?.send(JSON.stringify({event: 'hello', uuid: uuid}))
 					} else if (isLazyUpdate(msg)) {
+						// If we're loaded from an /overlays/ path, ensure we are not shown if the overlay is not meant for us.
+						const parsedUrl = new URL(window.location.href)
+						if (parsedUrl.pathname.startsWith('/overlays/')) {
+							if (msg.overlayUUID !== parsedUrl.pathname.substring(('/overlays/').length)) {
+								shown = false
+								return
+							} else {
+								shown = true
+							}
+						} else {
+							shown = true
+						}
 						if (overlay.uuid !== msg.overlayUUID) {
 							// Overlay change, remove all channels.
 							for (let m of overlay.modules) {
@@ -222,7 +235,7 @@
 </script>
 
 <main>
-	{#if connected}
+	{#if connected && shown}
 		{#each overlay.modules.filter(v=>v.active) as module (module.uuid)}
 			<article style="--x: {module.box.x}px; --y: {module.box.y}px; --width: {module.box.width}px; --height: {module.box.height}px; --rad: {module.box.rotate}rad">
 				{#if modulesState[module.moduleUUID] === 'done'}
@@ -231,7 +244,9 @@
 			</article>
 		{/each}
 	{:else}
-		connecting...
+		{#if !connected}
+			connecting...
+		{/if}
 	{/if}
 </main>
 
