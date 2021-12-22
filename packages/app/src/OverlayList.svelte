@@ -148,6 +148,7 @@
 		padding: 0;
 		margin: 0;
 		font-size: 150%;
+		cursor: pointer;
 	}
 	.activator.active {
 		color: var(--secondary);
