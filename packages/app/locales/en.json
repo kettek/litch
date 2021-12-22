@@ -17,5 +17,9 @@
 		"reload": "Reload",
 		"duplicate": "Duplicate",
 		"delete": "Delete"
+	},
+	"settings": {
+		"title": "Settings",
+		"port": "Port"
 	}
 }

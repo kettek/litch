@@ -1,6 +1,6 @@
 <script lang="ts">
-
 	import { onMount } from 'svelte'
+	import { _ } from 'svelte-i18n'
 	import { settings } from './stores/settings'
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
@@ -36,11 +36,11 @@
 </script>
 
 <Window primary on:close>
-	<span slot='title'>Settings</span>
+	<span slot='title'>{$_('settings.title')}</span>
 	<article slot='content'>
 		<label>
-			<input type='number' bind:value={pendingSettings.port} placeholder='port'/>
-			<span>Port</span>
+			<input type='number' bind:value={pendingSettings.port}/>
+			<span>{$_('settings.port')}</span>
 		</label>
 		<Button primary disabled={!hasChanges} on:click={applyChanges}>
 			<Icon icon="checkmark"></Icon>
