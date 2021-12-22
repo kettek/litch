@@ -12,8 +12,9 @@
 	let items = []
 
 	function reload() {
+		items = []
 		for (let group of settings.groups) {
-			items = [...new Array(group.count).fill({}).map((_, i) => {
+			items = [...items, ...new Array(group.count).fill({}).map((_, i) => {
 				return {
 					x: group.spawnX + Math.random() * 100,
 					xRate: Math.random() * (group.xRandomRate[1] - group.xRandomRate[0]) + group.xRandomRate[0],
