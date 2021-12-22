@@ -192,7 +192,9 @@
 						on:dragenter={() => hoveringModuleUUID = module.uuid}
 						class:active={hoveringModuleUUID === module.uuid}
 					>
-						<Button tertiary invert on:click={()=>handleModuleToggle(module.uuid)}><Icon icon={module.active?'active':'inactive'}></Icon></Button>
+						<Button tertiary invert on:click={()=>handleModuleToggle(module.uuid)} title={module.active?$_('module.inactivate'):$_('module.activate')}>
+							<Icon icon={module.active?'active':'inactive'}></Icon>
+						</Button>
 						<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
 						<Button tertiary invert on:click={(e)=>showModuleMenu(e, module.uuid)}><Icon icon='burger'></Icon></Button>
 					</li>

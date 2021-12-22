@@ -41,7 +41,9 @@
 		"actions": {
 			"reload": "Reload",
 			"applyChanges": "Apply Changes"
-		}
+		},
+		"activate": "Activate",
+		"inactivate": "Inactivate"
 	},
 	"collections": {
 		"title": "Collections",
