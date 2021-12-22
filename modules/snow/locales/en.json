@@ -1,0 +1,25 @@
+{
+	"updateRate": "Update rate",
+	"maxAccumulator": "Max accumulator",
+	"selectAGroup": "Select or create a group",
+	"unsupportedAsset": "Unsupported asset",
+	"openAsset": "Open asset",
+	"addGroup": "Add group",
+	"deleteGroup": "Delete group",
+	"group": {
+		"emojiType": "Emoji",
+		"assetType": "Asset",
+		"type": "Type",
+		"baseSize": "Base Size",
+		"count": "Count",
+		"spawnX": "X Spawn",
+		"spawnY": "Y Spawn",
+		"minScale": "Min Scale",
+		"randomScale": "Random Scale",
+		"randomXRate": "X Random Rate (min, max)",
+		"randomYRate": "Y Random Rate (min, max)",
+		"randomizeStartingRotation": "Randomize Starting Rotation",
+		"randomRotationRate": "Rotation Random Rate (min, max)",
+		"reloadRequired": "Reload Required"
+	}
+}

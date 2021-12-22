@@ -2,9 +2,11 @@
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
 	import type { AssetManager, AssetResult } from '@kettek/litch-app/src/interfaces/Asset'
-	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
+	import type { ModuleChannel, ModuleFormat } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import { defaultGroup, SettingsInterface } from './SettingsI'
 	import { upgrade } from './upgrade'
+
+	export let format: ModuleFormat
 
 	export let settings: SettingsInterface
 
@@ -45,11 +47,11 @@
 	<header>
 		<label>
 			<input type='number' bind:value={settings.updateRate}/>
-			Update Rate
+			{format('updateRate')}
 		</label>
 		<label>
 			<input type='number' bind:value={settings.maxAccumulator}/>
-			Max Accumulator
+			{format('maxAccumulator')}
 		</label>
 	</header>
 	<nav>
@@ -58,34 +60,34 @@
 				{index+1}
 			</Button>
 		{/each}
-		<Button tertiary on:click={addGroup}>
+		<Button tertiary on:click={addGroup} title={format('addGroup')}>
 			<Icon icon='add'></Icon>
 		</Button>
 	</nav>
 	<section>
 		{#if !currentGroup}
-			Select or create a group
+			{format('selectAGroup')}
 		{:else}
-			<Button dangerous on:click={()=>{removeGroup(selectedIndex)}}>
+			<Button dangerous on:click={()=>{removeGroup(selectedIndex)}} title={format('deleteGroup')}>
 				<Icon icon='delete'></Icon>
 			</Button>
 			<label>
 				<select bind:value={currentGroup.sourceType}>
-					<option value='emoji'>emoji</option>
-					<option value='asset'>asset</option>
+					<option value='emoji'>{format('group.emojiType')}</option>
+					<option value='asset'>{format('group.assetType')}</option>
 				</select>
-				Type
+				{format('group.type')}
 			</label>
 			{#if currentGroup.sourceType === 'emoji'}
 				<label>
 					<input type='text' bind:value={currentGroup.emoji}/>
-					Emoji
+					{format('group.emojiType')}
 				</label>
 			{:else if currentGroup.sourceType === 'asset'}
 				<label>
 					<input type='hidden'/>
-					Asset
-					<Button title='Open file' tertiary on:click={()=>{openFileDialog(selectedIndex)}}>
+					{format('group.assetType')}
+					<Button title={format('openAsset')} tertiary on:click={()=>{openFileDialog(selectedIndex)}}>
 						<Icon icon='open'></Icon>
 					</Button>
 				</label>
@@ -98,54 +100,54 @@
 							<source src="{assets.source(currentGroup.reference)}" type="{currentGroup.reference.mimetype}">
 						</video>
 					{:else}
-						unsupported asset
+						{format('unsupportedAsset')}
 					{/if}
 				</div>
 			{/if}
 			<label>
 				<input type='number' bind:value={currentGroup.size}/>
-				Base Size
+				<span>{format('group.baseSize')}</span>
 			</label>
 			<hr/>
-			<span>Reload Required</span>
+			<span>{format('group.reloadRequired')}</span>
 			<label>
 				<input type='number' bind:value={currentGroup.count}/>
-				Count
+				<span>{format('group.count')}</span>
 			</label>
 			<label>
 				<input type='number' bind:value={currentGroup.spawnX}/>
-				X Spawn
+				<span>{format('group.spawnX')}</span>
 			</label>
 			<label>
 				<input type='number' bind:value={currentGroup.spawnY}/>
-				Y Spawn
+				<span>{format('group.spawnY')}</span>
 			</label>
 			<label>
 				<input type='number' bind:value={currentGroup.minScale}/>
-				Min Scale
+				<span>{format('group.minScale')}</span>
 			</label>
 			<label>
 				<input type='number' bind:value={currentGroup.scaleRandom}/>
-				Random Scale
+				<span>{format('group.randomScale')}</span>
 			</label>
 			<label>
 				<input type='number' bind:value={currentGroup.xRandomRate[0]}/>
 				<input type='number' bind:value={currentGroup.xRandomRate[1]}/>
-				X Random Rate (min, max)
+				<span>{format('group.randomXRate')}</span>
 			</label>
 			<label>
 				<input type='number' bind:value={currentGroup.yRandomRate[0]}/>
 				<input type='number' bind:value={currentGroup.yRandomRate[1]}/>
-				Y Random Rate (min, max)
+				<span>{format('group.randomYRate')}</span>
 			</label>
 			<label>
 				<input type='checkbox' bind:checked={currentGroup.rotate}/>
-				Randomize Starting Rotation
+				<span>{format('group.randomizeStartingRotation')}</span>
 			</label>
 			<label>
 				<input type='number' bind:value={currentGroup.rotRandomRate[0]}/>
 				<input type='number' bind:value={currentGroup.rotRandomRate[1]}/>
-				Rotation Random Rate (min, max)
+				<span>{format('group.randomRotationRate')}</span>
 			</label>
 		{/if}
 	</section>
