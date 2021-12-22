@@ -23,20 +23,18 @@ export function removeOverlay(u: string) {
 }
 
 export function deserializeOverlays() {
-	overlays.update((v: any) => {
-		let overlays: Record<string, OverlayInterface> = v as Record<string, OverlayInterface>
-		for (let [uuid, overlay] of Object.entries(overlays)) {
-			for (let m of overlay.modules) {
-				m.channel = createModuleChannel(uuid, m.uuid)
-				// Reroll any module UUIDs that exist more than once.
-				if (overlay.modules.filter(v=>v.uuid!==uuid).length > 1) {
-					console.log('duplicate module uuid found rerolling')
-					m.uuid = v4()
-				}
+	let os = get(overlays) as Record<string, OverlayInterface>
+	for (let [uuid, overlay] of Object.entries(os)) {
+		for (let m of overlay.modules) {
+			m.channel = createModuleChannel(uuid, m.uuid)
+			// Reroll any module UUIDs that exist more than once.
+			if (overlay.modules.filter(v=>v.uuid===uuid).length > 1) {
+				console.log('duplicate module uuid found rerolling')
+				m.uuid = v4()
 			}
 		}
-		return v
-	})
+	}
+	overlays.set(os)
 }
 
 export function refreshOverlays() {
