@@ -168,7 +168,7 @@
 	<h1>litch</h1>
 	<menu>
 		{#if !loading}
-			<Button primary on:click={toggleAssets} title={$_('litch.openAssets')}>
+			<Button primary on:click={toggleAssets} title={$_('litch.openCollections')}>
 				<Icon icon="assets"></Icon>
 			</Button>
 			<Button primary disabled={serverStatus==='pending'} on:click={toggleServer} title={serverStatus==='on'?$_('litch.stopServer'):$_('litch.startServer')}>
