@@ -281,4 +281,15 @@
 		color: var(--tertiary);
 		text-align: left;
 	}
+	label {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+	label > span {
+		min-width: 5ch;
+		margin-left: 0.5em;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 </style>
