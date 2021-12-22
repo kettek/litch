@@ -1,3 +1,9 @@
 {
-    "editor.insertSpaces": false
+    "editor.insertSpaces": false,
+    "i18n-ally.enabledFrameworks": [
+        "svelte"
+    ],
+    "i18n-ally.localesPaths": [
+        "packages/app/locales"
+    ]
 }
