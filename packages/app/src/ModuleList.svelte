@@ -1,4 +1,5 @@
 <script type="ts">
+	import { _ } from 'svelte-i18n'
 	import type { ModuleInterface } from './interfaces/Module'
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
@@ -12,7 +13,7 @@
 	{#each Object.entries(modules) as [uuid, module]}
 		<li title={uuid}>
 			<span>{module.title}</span>
-			<Button tertiary on:click={()=>dispatch('add', uuid)}>
+			<Button tertiary on:click={()=>dispatch('add', uuid)} title={$_('overlays.addModule', {values: {title: module.title}})}>
 				<Icon icon='add'></Icon>
 			</Button>
 		</li>
