@@ -24,7 +24,9 @@
 		"state": {
 			"active": "active",
 			"inactive": "inactive"
-		}
+		},
+		"activate": "Activate overlay",
+		"inactivate": "Inactivate overlay"
 	},
 	"modules": {
 		"reload": "Reload",

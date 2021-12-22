@@ -80,7 +80,7 @@
 			on:dragenter={() => hoveringOverlayUUID = uuid}
 			class:hover={hoveringOverlayUUID === uuid}
 		>
-			<button class='activator' class:active={activeOverlayUUID===uuid} on:click={() => activeOverlayUUID=uuid}>
+			<button class='activator' class:active={activeOverlayUUID===uuid} on:click={() => activeOverlayUUID=uuid} title={activeOverlayUUID===uuid?$_('overlay.inactivate'):$_('overlay.activate')}>
 				<Icon icon={activeOverlayUUID===uuid?'active':'inactive'}></Icon>
 			</button>
 			<span on:click={() => {currentOverlayUUID=uuid;focusedOverlayUUID=uuid}}>
