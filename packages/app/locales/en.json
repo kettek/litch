@@ -10,6 +10,7 @@
 		"createOverlay": "Create an overlay",
 		"selectOverlay": "Select an overlay",
 		"titleCreateOverlay": "New Overlay",
+		"buttonNewOverlay": "Add new overlay",
 		"obsSourceDragger": "Drag Overlay as OBS Browser Source",
 		"obsActivatorSourceDragger": "Drag Overlay as OBS Browser Source & Activator",
 		"title": "Title",
