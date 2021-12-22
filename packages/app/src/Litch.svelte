@@ -6,7 +6,7 @@
 
 	import { LitchServer } from './LitchServer'
 	import { onMount } from 'svelte'
-	import { register, init, isLoading, _ } from 'svelte-i18n'
+	import { register, init, isLoading, _, addMessages } from 'svelte-i18n'
 	import type { OverlayInterface } from './interfaces/Overlay'
 	import type { ModuleInterface } from './interfaces/Module'
 	import type { Asset } from './interfaces/Asset'
@@ -87,6 +87,16 @@
 				let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
 				modules[m.uuid] = m
 				modulesMap[m.uuid] = fullmod
+				// TODO: It'd be nice to have locales be unloadable but I don't know if svelte-i18n supports that.
+				if (m.locales) {
+					for (let [lang, dictionary] of Object.entries(m.locales)) {
+						let o = {
+							'modules': {}
+						} as any
+						o.modules[m.uuid] = dictionary
+						addMessages(lang, o)
+					}
+				}
 				publisher.publish('module.'+mod+'.load', {})
 			} catch(e: any) {
 				console.error(`error in ${mod}: ${e}`)

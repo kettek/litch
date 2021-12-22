@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n'
 	import { fly } from 'svelte/transition'
 	import { quintInOut } from 'svelte/easing'
-	import type { ModuleInstanceInterface } from "./interfaces/ModuleInstance"
+	import type { ModuleFormat, FormatMessageObject, ModuleInstanceInterface } from "./interfaces/ModuleInstance"
 	import type { ModuleInterface } from './interfaces/Module'
 	import type { AssetManager, AssetResult, AssetResults } from './interfaces/Asset'
 	import ModuleWrapper from "./ModuleWrapper.svelte"
@@ -27,6 +27,10 @@
 
 	let updateBox: (value: any) => void = (value: any) => {
 		module.box = value
+	}
+
+	let localeFormat: ModuleFormat = (messageId: string, options?: FormatMessageObject): string => {
+		return $_(`modules.${module.moduleUUID}.${messageId}`, options)
 	}
 
 	let showAssets = false
@@ -105,7 +109,7 @@
 	</article>
 	<hr/>
 	<article class='module__wrapper'>
-		<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} channel={module.channel} assets={assets} />
+		<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} channel={module.channel} assets={assets} format={localeFormat} />
 	</article>
 	<nav class='module__controls'>
 		<Button tertiary on:click={()=>{module.channel.publish('reload', module.settings)}} title={$_('module.actions.reload')}>

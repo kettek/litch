@@ -27,3 +27,13 @@ export interface ModuleChannel {
 	subscribe: (topic: string) => () => void
 	unsubscribe: (topic?: string) => void
 }
+
+export interface FormatMessageObject {
+	id?: string
+	locale?: string
+	format?: string
+	default?: string
+	values?: Record<string, string | number | Date>
+}
+
+export type ModuleFormat = (messageId: string, options?: FormatMessageObject) => string
