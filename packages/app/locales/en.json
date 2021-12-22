@@ -30,6 +30,18 @@
 		"duplicate": "Duplicate",
 		"delete": "Delete"
 	},
+	"module": {
+		"title": "Title",
+		"x": "x",
+		"y": "y",
+		"width": "Width",
+		"height": "Height",
+		"rotation": "Rotation",
+		"actions": {
+			"reload": "Reload",
+			"applyChanges": "Apply Changes"
+		}
+	},
 	"collections": {
 		"title": "Collections",
 		"name": "Name",

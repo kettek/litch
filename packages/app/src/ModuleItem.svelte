@@ -1,4 +1,5 @@
 <script type="ts">
+	import { _ } from 'svelte-i18n'
 	import { fly } from 'svelte/transition'
 	import { quintInOut } from 'svelte/easing'
 	import type { ModuleInstanceInterface } from "./interfaces/ModuleInstance"
@@ -68,7 +69,7 @@
 	<article class='title'>
 		<label>
 			<input type="text" bind:value={module.title}>
-			<span>Title</span>
+			<span>{$_('module.title')}</span>
 		</label>
 	</article>
 	<article class='dimensions'>
@@ -94,7 +95,7 @@
 			<div>
 				<label>
 					<input type="number" bind:value={module.box.rotate}>
-					<span>rotation</span>
+					<span>{$_('module.rotation')}</span>
 				</label>
 			</div>
 		</div>
@@ -107,10 +108,10 @@
 		<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} channel={module.channel} assets={assets} />
 	</article>
 	<nav class='module__controls'>
-		<Button tertiary on:click={()=>{module.channel.publish('reload', module.settings)}}>
+		<Button tertiary on:click={()=>{module.channel.publish('reload', module.settings)}} title={$_('module.actions.reload')}>
 			<Icon icon='reload'></Icon>
 		</Button>
-		<Button tertiary on:click={()=>update(pendingSettings)}>
+		<Button tertiary on:click={()=>update(pendingSettings)} title={$_('module.actions.applyChanges')}>
 			<Icon icon='checkmark'></Icon>
 		</Button>
 	</nav>
