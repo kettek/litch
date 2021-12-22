@@ -19,6 +19,12 @@
 		"availableModules": "Available Modules",
 		"activeModules": "Active Modules"
 	},
+	"overlay": {
+		"state": {
+			"active": "active",
+			"inactive": "inactive"
+		}
+	},
 	"modules": {
 		"reload": "Reload",
 		"duplicate": "Duplicate",

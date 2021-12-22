@@ -1,4 +1,5 @@
 <script type="ts">
+	import { _ } from 'svelte-i18n'
 	import type { OverlayInterface } from './interfaces/Overlay'
 	import type { ModuleInterface } from './interfaces/Module'
 	import ModuleWrapper from "./ModuleWrapper.svelte"
@@ -354,7 +355,9 @@
 		{/each}
 		<footer>
 			{#if active}
-				<span class='active'>active</span>
+				<span class='active'>{$_('overlay.state.active')}</span>
+			{:else}
+				<span>{$_('overlay.state.inactive')}</span>
 			{/if}
 			<span>
 				{overlay.canvas.width}x{overlay.canvas.height} @ {Math.round(zoom*100)}% ({width}x{height})
