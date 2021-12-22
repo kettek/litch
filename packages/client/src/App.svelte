@@ -25,7 +25,8 @@
 			return []
 		},
 		source: (ref: AssetResult): string => {
-			return `${collectionsReference}/${ref.collection}/${ref.asset}?${referenceIncrementer++}`
+			return `${collectionsReference}/${ref.collection}/${ref.asset}`
+			//return `${collectionsReference}/${ref.collection}/${ref.asset}?${referenceIncrementer++}`
 		}
 	}
 
