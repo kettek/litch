@@ -163,7 +163,7 @@
 		<Button primary disabled={serverStatus==='pending'} on:click={toggleServer}>
 			<Icon icon={serverStatus==='on'?'stop':'start'}></Icon>
 		</Button>
-		<Button primary invert disabled={serverStatus!=='on'} draggable={true} on:dragstart={e => {
+		<Button title='drag browser source to OBS' primary invert disabled={serverStatus!=='on'} draggable={true} on:dragstart={e => {
 			let width = 1920
 			let height = 1080
 			let o = $overlays[$settings.activeOverlay]
