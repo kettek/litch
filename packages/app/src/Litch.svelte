@@ -158,10 +158,10 @@
 	<h1>litch</h1>
 	<menu>
 		{#if !loading}
-			<Button primary on:click={toggleAssets}>
+			<Button primary on:click={toggleAssets} title={$_('litch.openAssets')}>
 				<Icon icon="assets"></Icon>
 			</Button>
-			<Button primary disabled={serverStatus==='pending'} on:click={toggleServer}>
+			<Button primary disabled={serverStatus==='pending'} on:click={toggleServer} title={serverStatus==='on'?$_('litch.stopServer'):$_('litch.startServer')}>
 				<Icon icon={serverStatus==='on'?'stop':'start'}></Icon>
 			</Button>
 			<Button title={$_('overlays.obsSourceDragger')} primary invert disabled={serverStatus!=='on'} draggable={true} on:dragstart={e => {
@@ -178,7 +178,7 @@
 			}}>
 				<Icon icon='link'></Icon>
 			</Button>
-			<Button primary on:click={toggleSettings}>
+			<Button primary on:click={toggleSettings} title={$_('litch.openSettings')}>
 				<Icon icon="settings"></Icon>
 			</Button>
 		{/if}

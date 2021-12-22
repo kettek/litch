@@ -1,5 +1,10 @@
 {
-	"test": "Test!",
+	"litch": {
+		"startServer": "Start server",
+		"stopServer": "Stop server",
+		"openCollections": "Open collections",
+		"openSettings": "Open settings"
+	},
 	"overlays": {
 		"activateOverlay": "Activate an overlay!",
 		"createOverlay": "Create an overlay",
