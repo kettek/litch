@@ -257,14 +257,14 @@
 											<section class='selectedAsset__tags__content'>
 												<label class='selectedAsset__tags__tag'>
 													<input type='text' bind:value={pendingTagValue} on:submit={addTag}/>
-													<Button secondary on:click={addTag}>
+													<Button secondary on:click={addTag} title={$_('asset.addTag')}>
 														<Icon icon='add'></Icon>
 													</Button>
 												</label>
 												{#each selectedAsset.tags as tag (tag)}
 													<label animate:flip="{{duration: 200}}" class='selectedAsset__tags__tag'>
 														<input type='text' bind:value={tag}/>
-														<Button dangerous on:click={()=>{removeTag(tag)}}>
+														<Button dangerous on:click={()=>{removeTag(tag)}} title={$_('asset.removeTag')}>
 															<Icon icon='remove'></Icon>
 														</Button>
 													</label>
@@ -291,7 +291,7 @@
 			</section>
 			<section slot='b' class='content'>
 				<nav class='filter'>
-					<label>
+					<label title={$_('collections.filterAssetsInfo')}>
 						<input placeholder='name, type, !tag, ...' type='text' bind:value={filterValue}/>
 						<Button tertiary invert>
 							<Icon icon='filter'></Icon>

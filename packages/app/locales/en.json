@@ -28,7 +28,8 @@
 		"createAsset": "Create empty asset",
 		"openFile": "Open file",
 		"duplicate": "Duplicate",
-		"delete": "Delete"
+		"delete": "Delete",
+		"filterAssetsInfo": "Filter assets by name, type, tag, or more"
 	},
 	"assets": {
 		"title": "Assets",
@@ -37,6 +38,8 @@
 	"asset": {
 		"name": "Name",
 		"tags": "Tags",
+		"addTag": "Add tag",
+		"removeTag": "Remove tag",
 		"actions": {
 			"title": "Actions",
 			"delete": "Delete"
@@ -45,5 +48,6 @@
 	"settings": {
 		"title": "Settings",
 		"port": "Port"
-	}
+	},
+	"filter": "Filter"
 }
