@@ -4,6 +4,7 @@
 	export let secondary: boolean = false
 	export let tertiary: boolean = false
 	export let invert: boolean = false
+	export let border: boolean = false
 	export let noround: boolean = false
 	export let nobg: boolean = false
 	export let dangerous: boolean = false
@@ -14,7 +15,7 @@
 	export { clazz as class}
 </script>
 
-<button draggable={draggable} title={title} class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class:nomargin class={`${clazz||''}`} class:nobg class:disabled disabled={disabled} on:click on:dragstart on:dragenter on:dragover on:drop>
+<button draggable={draggable} title={title} class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class:nomargin class={`${clazz||''}`} class:nobg class:border class:disabled disabled={disabled} on:click on:dragstart on:dragenter on:dragover on:drop>
 	<slot></slot>
 </button>
 
@@ -34,6 +35,7 @@
 	}
 	.primary {
 		background: var(--primary);
+		border-color: var(--primary);
 	}
 	.primary:hover {
 		background: var(--primary-focus);
@@ -43,6 +45,7 @@
 	}
 	.secondary {
 		background: var(--secondary);
+		border-color: var(--secondary);
 	}
 	.secondary:hover {
 		background: var(--secondary-focus);
@@ -52,6 +55,7 @@
 	}
 	.tertiary {
 		background: var(--tertiary);
+		border-color: var(--tertiary);
 	}
 	.tertiary:hover {
 		background: var(--tertiary-focus);
@@ -61,6 +65,7 @@
 	}
 	.dangerous {
 		background: var(--dangerous);
+		border-color: var(--dangerous);
 	}
 	.dangerous:hover {
 		background: var(--dangerous-focus);
@@ -122,6 +127,10 @@
 	.invert.dangerous:hover {
 		color: var(--dangerous-press);
 		background: none;
+	}
+	.border {
+		border-width: 2px;
+		border-style: solid;
 	}
 	.disabled {
 		opacity: 0.4;
