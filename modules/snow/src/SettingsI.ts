@@ -1,4 +1,10 @@
 export interface SettingsInterface {
+	groups: SpawnItem[]
+	updateRate: number
+	maxAccumulator: number
+}
+
+export interface SpawnItem {
 	sourceType: 'emoji' | 'asset'
 	emoji: string
 	reference: {
@@ -8,8 +14,6 @@ export interface SettingsInterface {
 		name: string
 	}
 	count: number
-	updateRate: number
-	maxAccumulator: number
 	spawnX: number
 	spawnY: number
 	minScale: number
@@ -19,4 +23,25 @@ export interface SettingsInterface {
 	xRandomRate: [number, number]
 	yRandomRate: [number, number]
 	rotRandomRate: [number, number]
+}
+
+export const defaultGroup: SpawnItem = {
+	sourceType: 'emoji',
+	emoji: '❄',
+	reference: {
+		collection: '',
+		asset: '',
+		mimetype: '',
+		name: '',
+	},
+	count: 30,
+	spawnX: 0,
+	spawnY: -110,
+	minScale: 0.5,
+	scaleRandom: 1,
+	size: 2,
+	rotate: true,
+	xRandomRate: [-0.25, 0.25],
+	yRandomRate: [0.5, 1],
+	rotRandomRate: [-2, 2],
 }

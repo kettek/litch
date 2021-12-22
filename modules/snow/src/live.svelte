@@ -12,19 +12,23 @@
 	let items = []
 
 	function reload() {
-		items = new Array(settings.count).fill({}).map((_, i) => {
-			return {
-				x: settings.spawnX + Math.random() * 100,
-				xRate: Math.random() * (settings.xRandomRate[1] - settings.xRandomRate[0]) + settings.xRandomRate[0],
-				y: settings.spawnY + Math.random() * 100,
-				yRate: Math.random() * (settings.yRandomRate[1] - settings.yRandomRate[0]) + settings.yRandomRate[0],
-				scale: settings.minScale + Math.random() * settings.scaleRandom,
-				rotation: settings.rotate ? Math.random() * 360 : 0,
-				rotRate: Math.random() * (settings.rotRandomRate[1] - settings.rotRandomRate[0]) + settings.rotRandomRate[0],
-				dir: Math.random() - 0.5,
-			}
-		})
-		.sort((a, b) => a.scale - b.scale)
+		for (let group of settings.groups) {
+			items = [...new Array(group.count).fill({}).map((_, i) => {
+				return {
+					x: group.spawnX + Math.random() * 100,
+					xRate: Math.random() * (group.xRandomRate[1] - group.xRandomRate[0]) + group.xRandomRate[0],
+					y: group.spawnY + Math.random() * 100,
+					yRate: Math.random() * (group.yRandomRate[1] - group.yRandomRate[0]) + group.yRandomRate[0],
+					scale: group.minScale + Math.random() * group.scaleRandom,
+					rotation: group.rotate ? Math.random() * 360 : 0,
+					rotRate: Math.random() * (group.rotRandomRate[1] - group.rotRandomRate[0]) + group.rotRandomRate[0],
+					dir: Math.random() - 0.5,
+					// I guess this isn't too inefficient. We're being lazy and keeping a reference to its group so we can maintain simple item iteration but allow all items to be sorted in the same array.
+					groupSettings: group,
+				}
+			})]
+		}
+		items.sort((a, b) => a.scale - b.scale)
 	}
 
 	reload()
@@ -75,16 +79,16 @@
 
 <section>
 	{#each items as item}
-		<div style="left: {item.x+Math.cos((item.y+item.x)/5)*2}%; top: {item.y}%; transform: scale({settings.size*item.scale}) rotate({item.rotation}deg);" class='item'>
-			{#if settings.sourceType === 'emoji'}
-				{settings.emoji}️
-			{:else if settings.sourceType === 'asset'}
-				{#if settings.reference?.mimetype?.startsWith('image')}
-					<img alt="" src={assets.source(settings.reference)}/>
-				{:else if settings.reference?.mimetype?.startsWith('video')}
+		<div style="left: {item.x+Math.cos((item.y+item.x)/5)*2}%; top: {item.y}%; transform: scale({item.groupSettings.size*item.scale}) rotate({item.rotation}deg);" class='item'>
+			{#if item.groupSettings.sourceType === 'emoji'}
+				{item.groupSettings.emoji}️
+			{:else if item.groupSettings.sourceType === 'asset'}
+				{#if item.groupSettings.reference?.mimetype?.startsWith('image')}
+					<img alt="" src={assets.source(item.groupSettings.reference)}/>
+				{:else if item.groupSettings.reference?.mimetype?.startsWith('video')}
 					<video autoplay loop>
 						<track kind="captions"/>
-						<source src="{assets.source(settings.reference)}" type="{settings.reference.mimetype}">
+						<source src="{assets.source(item.groupSettings.reference)}" type="{item.groupSettings.reference.mimetype}">
 					</video>
 				{/if}
 			{/if}

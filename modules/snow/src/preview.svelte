@@ -1,13 +1,29 @@
 <script type="ts">
 	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
+	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import type { SettingsInterface } from './SettingsI'
+	import { upgrade } from './upgrade'
 
 	export let settings: SettingsInterface
 	export let assets: AssetManager
+	export let update: (v: any) => void
+
+	let [changed, settings_] = upgrade(settings)
+	if (changed) {
+		update(settings_)
+	}
 </script>
 
 <div>
-	<img alt='' src={assets.source(settings.reference)}/>
+	<section>
+		{#each settings.groups as group}
+			{#if group.sourceType === 'asset'}
+				<img alt='' src={assets.source(group.reference)}/>
+			{:else if group.sourceType === 'emoji'}
+				<span>{group.emoji}</span>
+			{/if}
+		{/each}
+	</section>
 	<header>Snow</header>
 </div>
 
@@ -19,6 +35,9 @@
 		height: 100%;
 		align-items: center;
 		justify-content: center;
+	}
+	section {
+		display: flex;
 	}
 	img {
 		max-width: 100%;

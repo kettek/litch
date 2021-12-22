@@ -1,6 +1,7 @@
 import SettingsComponent from './settings.svelte'
 import LiveComponent from './live.svelte'
 import PreviewComponent from './preview.svelte'
+import { defaultGroup } from './SettingsI'
 
 export default {
 	title: "Snow",
@@ -11,21 +12,7 @@ export default {
 		x: 0, y: 0, width: 200, height: 200,
 		},
 		settings: {
-			sourceType: 'emoji',
-			emoji: '❄',
-			reference: '',
-			count: 30,
-			updateRate: 50,
-			maxAccumulator: 200,
-			spawnX: 0,
-			spawnY: -110,
-			minScale: 0.5,
-			scaleRandom: 1,
-			size: 2,
-			rotate: true,
-			xRandomRate: [-0.25, 0.25],
-			yRandomRate: [0.5, 1],
-			rotRandomRate: [-2, 2],
+			groups: [JSON.parse(JSON.stringify(defaultGroup))]
 		},
 	},
 	settingsComponent: SettingsComponent,
