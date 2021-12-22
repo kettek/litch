@@ -415,4 +415,8 @@
 		justify-content: center;
 		padding-left: .25em;
 	}
+	label {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
 </style>
