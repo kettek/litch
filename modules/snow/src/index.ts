@@ -12,6 +12,8 @@ export default {
 		x: 0, y: 0, width: 200, height: 200,
 		},
 		settings: {
+			updateRate: 50,
+			maxAccumulator: 200,
 			groups: [JSON.parse(JSON.stringify(defaultGroup))]
 		},
 	},
