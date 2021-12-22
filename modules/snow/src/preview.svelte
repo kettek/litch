@@ -38,6 +38,12 @@
 	}
 	section {
 		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	section > * {
+		width: 4em;
+		height: 4em;
 	}
 	img {
 		max-width: 100%;
