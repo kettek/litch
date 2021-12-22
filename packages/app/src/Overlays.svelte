@@ -19,6 +19,7 @@
 	export let modules: Record<string, ModuleInterface> = {}
 
 	//export let overlays: Record<string, OverlayInterface> = {}
+	export let litchURL: string = ''
 	export let currentOverlayUUID: string = ''
 	export let activeOverlayUUID: string = ''
 	export let focusedOverlayUUID: string = ''
@@ -61,7 +62,7 @@
 			{#if showOverlayCreator}
 				<OverlayCreator bind:shown={showOverlayCreator} on:create={handleCreate} />
 			{:else if currentOverlay === undefined}
-				<OverlayList bind:showOverlayCreator={showOverlayCreator} bind:overlays={$overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} bind:focusedOverlayUUID={focusedOverlayUUID} on:delete={handleDelete}/>
+				<OverlayList litchURL={litchURL} bind:showOverlayCreator={showOverlayCreator} bind:overlays={$overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} bind:focusedOverlayUUID={focusedOverlayUUID} on:delete={handleDelete}/>
 			{:else}
 				<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID} on:delete={handleDelete} modules={modules}/>
 			{/if}

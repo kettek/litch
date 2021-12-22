@@ -44,6 +44,9 @@
 		console.log('got on close')
 		serverStatus = 'off'
 	}
+	litchServer.onactivate = uuid => {
+		switchActiveOverlay(uuid)
+	}
 
 	publisher.subscribe('module.*.fail', async ({sourceTopic}) => {
 		console.log(sourceTopic)
@@ -143,6 +146,12 @@
 		$settings.activeOverlay = $settings.activeOverlay
 	}
 
+	function switchActiveOverlay(uuid: string) {
+		if ($overlays[uuid]) {
+			$settings.activeOverlay = uuid
+		}
+	}
+
 </script>
 
 <nav>
@@ -181,7 +190,7 @@
 		{#if showSettings}
 			<Settings/>
 		{/if}
-		<Overlays bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={$settings.activeOverlay} on:refresh={handleRefresh} modules={modules}/>
+		<Overlays litchURL={litchServer.url} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={$settings.activeOverlay} on:refresh={handleRefresh} modules={modules}/>
 	{:else}
 		{loadingMessage}
 	{/if}

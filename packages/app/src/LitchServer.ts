@@ -1,5 +1,5 @@
 // FIXME: Ideally we could just import express and use it, but Typescript + Svelte + Rollup + Electron + Node is causing issues. Mainly, afaik, it is that rollup cannot figure out how to bundle node(or electron) commonjs modules.
-import type { Express, NextFunction, Request } from 'express'
+import type { Express, NextFunction, Request, Response } from 'express'
 import type { Server } from 'http'
 const express = require('express')
 const expressWs = require('express-ws')
@@ -14,6 +14,7 @@ const httpTerminator = require('http-terminator')
 import type { OverlayInterface } from './interfaces/Overlay'
 
 const path = require('path')
+const fs = require('fs')
 
 // TODO: Replicate module publish topics to preview.
 /*import { publisher } from './modules'
@@ -37,6 +38,7 @@ export class LitchServer {
 	port : number = 8090
 	
 	onclose : (value: void) => void = () => {}
+	onactivate: (uuid: string) => void = () => {}
 
 	//
 	#activeOverlayUUID : string = ''
@@ -129,6 +131,28 @@ export class LitchServer {
 
 		this.#express.use('/modules', (express as any).static(this.#modulesPath))
 		console.log(`serving modules from ${this.#modulesPath}`)
+
+		// Handle URL-based overlay activation requests. This is done to allow OBS scenes to switch to also trigger a switch to a desired overlay.
+		this.#express.use('/overlays/:overlay', (req: Request, res: Response) => {
+			// TODO: Check if the overlay exists and if it does not, show a "invalid overlay" message, just so endusers know if something isn't working.
+			this.onactivate(req.params['overlay'])
+			let filepath = path.join(this.#filesPath, 'index.html')
+			fs.readFile(filepath, (err: any, data: any) => {
+				if (err) {
+					res.writeHead(500, {
+						'Content-Type': 'text/plain',
+					})
+					res.write(err+'\n')
+					res.end()
+					return
+				}
+				res.writeHead(200, {
+					'Content-Type': 'text/html',
+				})
+				res.write(data, 'utf8')
+				res.end()
+			})
+		})
 
 		this.#express.use('/', (express as any).static(this.#filesPath))
 		console.log(`serving files from ${this.#filesPath}`)

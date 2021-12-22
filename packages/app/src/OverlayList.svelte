@@ -7,6 +7,7 @@
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
 	import type { OverlayInterface } from './interfaces/Overlay'
+	export let litchURL: string = ''
 	export let currentOverlayUUID: string
 	export let activeOverlayUUID: string
 	export let focusedOverlayUUID: string
@@ -85,6 +86,20 @@
 			<span on:click={() => {currentOverlayUUID=uuid;focusedOverlayUUID=uuid}}>
 				{overlay.title}
 			</span>
+			<Button secondary invert disabled={true} draggable={true} on:dragstart={e => {
+				let width = 1920
+				let height = 1080
+				let o = overlays[uuid]
+				if (o) {
+					width = o.canvas.width
+					height = o.canvas.height
+				}
+				let url = `${litchURL}/overlays/${uuid}?layer-name=Litch (${o.title})&layer-width=${width}&layer-height=${height}`
+				e.dataTransfer?.setData('text/uri-list', url)
+				e.dataTransfer?.setData('text/plain', url)
+			}}>
+				<Icon icon='link'></Icon>
+			</Button>
 			<Button secondary invert on:click={(e)=>showOverlayMenu(e, uuid)}><Icon icon='burger'></Icon></Button>
 		</li>
 	{/each}
@@ -144,7 +159,7 @@
 	li {
 		list-style: none;
 		display: grid;
-		grid-template-columns: 3em minmax(0, 1fr) auto;
+		grid-template-columns: 3em minmax(0, 1fr) auto auto;
 		grid-template-rows: minmax(0, 1fr);
 		align-items: stretch;
 		border: 1px solid transparent;
