@@ -157,29 +157,31 @@
 <nav>
 	<h1>litch</h1>
 	<menu>
-		<Button primary on:click={toggleAssets}>
-			<Icon icon="assets"></Icon>
-		</Button>
-		<Button primary disabled={serverStatus==='pending'} on:click={toggleServer}>
-			<Icon icon={serverStatus==='on'?'stop':'start'}></Icon>
-		</Button>
-		<Button title='drag browser source to OBS' primary invert disabled={serverStatus!=='on'} draggable={true} on:dragstart={e => {
-			let width = 1920
-			let height = 1080
-			let o = $overlays[$settings.activeOverlay]
-			if (o) {
-				width = o.canvas.width
-				height = o.canvas.height
-			}
-			let url = `${litchServer.url}?layer-name=Litch&layer-width=${width}&layer-height=${height}`
-			e.dataTransfer?.setData('text/uri-list', url)
-			e.dataTransfer?.setData('text/plain', url)
-		}}>
-			<Icon icon='link'></Icon>
-		</Button>
-		<Button primary on:click={toggleSettings}>
-			<Icon icon="settings"></Icon>
-		</Button>
+		{#if !loading}
+			<Button primary on:click={toggleAssets}>
+				<Icon icon="assets"></Icon>
+			</Button>
+			<Button primary disabled={serverStatus==='pending'} on:click={toggleServer}>
+				<Icon icon={serverStatus==='on'?'stop':'start'}></Icon>
+			</Button>
+			<Button title={$_('overlays.obsSourceDragger')} primary invert disabled={serverStatus!=='on'} draggable={true} on:dragstart={e => {
+				let width = 1920
+				let height = 1080
+				let o = $overlays[$settings.activeOverlay]
+				if (o) {
+					width = o.canvas.width
+					height = o.canvas.height
+				}
+				let url = `${litchServer.url}?layer-name=Litch&layer-width=${width}&layer-height=${height}`
+				e.dataTransfer?.setData('text/uri-list', url)
+				e.dataTransfer?.setData('text/plain', url)
+			}}>
+				<Icon icon='link'></Icon>
+			</Button>
+			<Button primary on:click={toggleSettings}>
+				<Icon icon="settings"></Icon>
+			</Button>
+		{/if}
 	</menu>
 </nav>
 <main>

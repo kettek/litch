@@ -86,7 +86,7 @@
 			<span on:click={() => {currentOverlayUUID=uuid;focusedOverlayUUID=uuid}}>
 				{overlay.title}
 			</span>
-			<Button title='drag overlay activator & browser view source to OBS' secondary invert draggable={true} on:dragstart={e => {
+			<Button title={$_('overlays.obsActivatorSourceDragger')} secondary invert draggable={true} on:dragstart={e => {
 				let width = 1920
 				let height = 1080
 				let o = overlays[uuid]

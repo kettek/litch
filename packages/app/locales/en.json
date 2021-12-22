@@ -1,9 +1,11 @@
 {
-    "test": "Test!",
-    "overlays": {
-        "activateOverlay": "Activate an overlay!",
-        "createOverlay": "Create an overlay",
-        "selectOverlay": "Select an overlay",
-        "titleCreateOverlay": "New Overlay"
-    }
+	"test": "Test!",
+	"overlays": {
+		"activateOverlay": "Activate an overlay!",
+		"createOverlay": "Create an overlay",
+		"selectOverlay": "Select an overlay",
+		"titleCreateOverlay": "New Overlay",
+		"obsSourceDragger": "Drag Overlay as OBS Browser Source",
+		"obsActivatorSourceDragger": "Drag Overlay as OBS Browser Source & Activator"
+	}
 }
