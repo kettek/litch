@@ -211,13 +211,13 @@
 								<input type='text' bind:value={selectedCollection.name}/>
 								<span>{$_('collections.name')}</span>
 							</label>
-							<Button secondary on:click={importAsset}>
+							<Button secondary on:click={importAsset} title={$_('collections.importFiles')}>
 								<Icon icon="open"></Icon>
 							</Button>
-							<Button secondary on:click={importFolder}>
+							<Button secondary on:click={importFolder} title={$_('collections.importFolder')}>
 								<Icon icon="open-folder"></Icon>
 							</Button>
-							<Button secondary on:click={addAsset}>
+							<Button secondary on:click={addAsset} title={$_('collections.createAsset')}>
 								<Icon icon="add"></Icon>
 							</Button>
 						</article>

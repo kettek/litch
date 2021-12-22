@@ -23,6 +23,9 @@
 		"name": "Name",
 		"selectAnAsset": "Select an Asset",
 		"selectedAsset": "Selected Asset",
+		"importFiles": "Import file(s)",
+		"importFolder": "Import folder",
+		"createAsset": "Create empty asset",
 		"openFile": "Open file",
 		"duplicate": "Duplicate",
 		"delete": "Delete"
