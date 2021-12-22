@@ -52,15 +52,15 @@
 	<section>
 		<label>
 			<input type='text' placeholder='title' bind:value={title}>
-			<span>Title</span>
+			<span>{$_('overlays.title')}</span>
 		</label>
 		<label>
 			<input type='number' placeholder='1920' bind:value={width}>
-			<span>Width</span>
+			<span>{$_('overlays.width')}</span>
 		</label>
 		<label>
 			<input type='number' placeholder='1080' bind:value={height}>
-			<span>Height</span>
+			<span>{$_('overlays.height')}</span>
 		</label>
 		<footer>
 			<Button secondary on:click={createOverlay}>

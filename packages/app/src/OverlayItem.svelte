@@ -152,15 +152,15 @@
 	<article class:secondary={true}>
 		<label>
 			<input type='text' placeholder='title' bind:value={title}>
-			<span>Title</span>
+			<span>{$_('overlays.title')}</span>
 		</label>
 		<label>
 			<input type='number' placeholder='1920' bind:value={width}>
-			<span>Width</span>
+			<span>{$_('overlays.width')}</span>
 		</label>
 		<label>
 			<input type='number' placeholder='1080' bind:value={height}>
-			<span>Height</span>
+			<span>{$_('overlays.height')}</span>
 		</label>
 		<footer>
 			<Button secondary disabled={!changed} on:click={handleApply}>
@@ -170,7 +170,7 @@
 	</article>
 	<DropList bind:open={overlay.openAvailableModules} tertiary>
 		<svelte:fragment slot="heading">
-			Available Modules
+			{$_('overlays.availableModules')}
 		</svelte:fragment>
 		<svelte:fragment slot="content">
 			<ModuleList modules={modules} on:add={handleAddModule}/>
@@ -178,7 +178,7 @@
 	</DropList>
 	<DropList style="padding: 0 1em 1em 1em" bind:open={overlay.openActiveModules} tertiary>
 		<svelte:fragment slot="heading">
-			Active Modules
+			{$_('overlays.activeModules')}
 		</svelte:fragment>
 		<svelte:fragment slot="content">
 			<ul>
@@ -207,15 +207,15 @@
 {#if showMenu}
 	<Menu tertiary {...menuPos} on:click={closeModuleMenu} on:clickoutside={closeModuleMenu}>
 		<MenuOption tertiary on:click={()=>reloadModule(menuUUID)}>
-			<span>Reload</span>
+			<span>{$_('modules.reload')}</span>
 			<Icon icon='reload'></Icon>
 		</MenuOption>
 		<MenuOption tertiary on:click={()=>duplicateModule(menuUUID)}>
-			<span>Duplicate</span>
+			<span>{$_('modules.duplicate')}</span>
 			<Icon icon='duplicate'></Icon>
 		</MenuOption>
 		<MenuOption dangerous on:click={()=>deleteModule(menuUUID)}>
-			<span>Delete</span>
+			<span>{$_('modules.delete')}</span>
 			<Icon icon='delete'></Icon>
 		</MenuOption>
 	</Menu>

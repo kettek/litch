@@ -6,6 +6,16 @@
 		"selectOverlay": "Select an overlay",
 		"titleCreateOverlay": "New Overlay",
 		"obsSourceDragger": "Drag Overlay as OBS Browser Source",
-		"obsActivatorSourceDragger": "Drag Overlay as OBS Browser Source & Activator"
+		"obsActivatorSourceDragger": "Drag Overlay as OBS Browser Source & Activator",
+		"title": "Title",
+		"width": "Width",
+		"height": "Height",
+		"availableModules": "Available Modules",
+		"activeModules": "Active Modules"
+	},
+	"modules": {
+		"reload": "Reload",
+		"duplicate": "Duplicate",
+		"delete": "Delete"
 	}
 }
