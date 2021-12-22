@@ -1,4 +1,5 @@
 <script type='ts'>
+	import { _ } from 'svelte-i18n'
 	import type { Asset, Collection } from './interfaces/Asset'
 	import { getAsset, httpReference } from './assets'
 	import { collections, refreshCollections } from './stores/collections'
@@ -48,12 +49,12 @@
 		<Button on:click={()=>{dispatch('close', [])}}>
 			<Icon icon="back"></Icon>
 		</Button>
-		<header>Select an Asset</header>
+		<header>{$_('collections.selectAnAsset')}</header>
 	</nav>
 	<section>
 		<DropList secondary>
 			<svelte:fragment slot="heading">
-				Collections
+				{$_('collections.title')}
 			</svelte:fragment>
 			<svelte:fragment slot="content">
 				{#each $collections as collection}
@@ -67,7 +68,7 @@
 	<section class='assets'>
 		<DropList tertiary>
 			<svelte:fragment slot="heading">
-				Assets
+				{$_('assets.title')}
 			</svelte:fragment>
 			<svelte:fragment slot="content">
 				<AssetsListing multiple={multiple} selector assets={assets} bind:focused={focusedAssetUUID} bind:selected={selectedAssetUUIDs} filter={filter}></AssetsListing>

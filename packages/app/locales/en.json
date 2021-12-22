@@ -18,6 +18,27 @@
 		"duplicate": "Duplicate",
 		"delete": "Delete"
 	},
+	"collections": {
+		"title": "Collections",
+		"name": "Name",
+		"selectAnAsset": "Select an Asset",
+		"selectedAsset": "Selected Asset",
+		"openFile": "Open file",
+		"duplicate": "Duplicate",
+		"delete": "Delete"
+	},
+	"assets": {
+		"title": "Assets",
+		"viewTitle": "View"
+	},
+	"asset": {
+		"name": "Name",
+		"tags": "Tags",
+		"actions": {
+			"title": "Actions",
+			"delete": "Delete"
+		}
+	},
 	"settings": {
 		"title": "Settings",
 		"port": "Port"

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n'
 	import { createEventDispatcher } from 'svelte'
 	import { fly, FlyParams } from 'svelte/transition'
 	import { quintInOut } from 'svelte/easing'
@@ -154,7 +155,7 @@
 </script>
 
 <Window primary on:close>
-	<span slot="title">Collections</span>
+	<span slot="title">{$_('collections.title')}</span>
 	<article slot="content">
 		<SplitPane type="horizontal" pos=25>
 			<section slot='a' class='left'>
@@ -162,7 +163,7 @@
 					<article class='slider' transition:navAnimation="{{state: 'collections', delay: 0, duration: 200, x: -500, y: 0, easing: quintInOut}}">
 						<nav class='left__nav'>
 							<span></span>
-							<header style='text-align:center'>Collections</header>
+							<header style='text-align:center'>{$_('collections.title')}</header>
 						</nav>
 						<!-- Collections -->
 						<nav class='collections'>
@@ -176,7 +177,7 @@
 						<article>
 							<DropList secondary>
 								<svelte:fragment slot="heading">
-									Collections
+									{$_('collections.title')}
 								</svelte:fragment>
 								<svelte:fragment slot="content">
 									<ul>
@@ -208,7 +209,7 @@
 						<article class ='collection'>
 							<label>
 								<input type='text' bind:value={selectedCollection.name}/>
-								<span>Name</span>
+								<span>{$_('collections.name')}</span>
 							</label>
 							<Button secondary on:click={importAsset}>
 								<Icon icon="open"></Icon>
@@ -224,23 +225,24 @@
 						<article class='selected__asset'>
 							<DropList tertiary>
 								<svelte:fragment slot="heading">
-									Selected Asset
+									{$_('collections.selectedAsset')}
 								</svelte:fragment>
 								<svelte:fragment slot="content">
 									{#if !selectedAsset}
-										Select an Asset
+										{$_('collections.selectAnAsset')}
 									{:else}
 										<label>
 											<input disabled type='text' bind:value={selectedAsset.uuid}/>
 										</label>
 										<label>
-											<input type='text' bind:value={selectedAsset.name}/> name
+											<input type='text' bind:value={selectedAsset.name}/>
+											<span>{$_('asset.name')}</span>
 										</label>
 										<hr>
 										<section class='selectedAsset__source'>
 											<label class='selectedAsset__source__file'>
 												<input type='text' bind:value={selectedAsset.originalSource} placeholder='local file' />
-												<Button title='Open file' secondary on:click={()=>{openSourceDialog()}}>
+												<Button title={$_('collections.openFile')} secondary on:click={()=>{openSourceDialog()}}>
 													<Icon icon='open'></Icon>
 												</Button>
 											</label>
@@ -251,7 +253,7 @@
 									
 										<hr>
 										<section class='selectedAsset__tags'>
-											<header>tags</header>
+											<header>{$_('asset.tags')}</header>
 											<section class='selectedAsset__tags__content'>
 												<label class='selectedAsset__tags__tag'>
 													<input type='text' bind:value={pendingTagValue} on:submit={addTag}/>
@@ -274,11 +276,11 @@
 							</DropList>
 							<DropList tertiary>
 								<svelte:fragment slot="heading">
-									Actions
+									{$_('asset.actions.title')}
 								</svelte:fragment>
 								<svelte:fragment slot="content">
 									<Button dangerous on:click={()=>{removeAssets()}}>
-										delete
+										{$_('asset.actions.delete')}
 										<Icon icon='close'/>
 									</Button>
 								</svelte:fragment>
@@ -304,11 +306,11 @@
 		{#if showMenu}
 			<Menu tertiary {...menuPos} on:click={closeCollectionMenu} on:clickoutside={closeCollectionMenu}>
 				<MenuOption secondary on:click={()=>duplicateCollection(menuUUID)}>
-					<span>Duplicate</span>
+					<span>{$_('collections.duplicate')}</span>
 					<Icon icon='duplicate'></Icon>
 				</MenuOption>
 				<MenuOption dangerous on:click={()=>removeCollection(menuUUID)}>
-					<span>Delete</span>
+					<span>{$_('collections.delete')}</span>
 					<Icon icon='delete'></Icon>
 				</MenuOption>
 			</Menu>
@@ -406,5 +408,11 @@
 		border-color: var(--secondary);
 		border-style: solid;
 		width: calc(100% - 4em);
+	}
+	label > span {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding-left: .25em;
 	}
 </style>

@@ -2,6 +2,7 @@
 	import type { Asset } from "./interfaces/Asset"
 	import { isAssetFiltered } from './assets'
 
+	import { _ } from "svelte-i18n"
 	import { fly } from 'svelte/transition'
 	import { quintInOut } from 'svelte/easing'
 	import Button from './components/Button.svelte'
@@ -111,7 +112,7 @@
 				<Button tertiary on:click={()=>{showPopup=false}}>
 					<Icon icon='back'></Icon>
 				</Button>
-				<span> View </span>
+				<span> {$_('assets.viewTitle')} </span>
 			</header>
 			<section>
 				{#if focusedAsset}
