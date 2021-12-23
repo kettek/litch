@@ -1,6 +1,7 @@
 import SettingsComponent from './settings.svelte'
 import LiveComponent from './live.svelte'
 import PreviewComponent from './preview.svelte'
+import InstanceComponent from './instance.svelte'
 
 export default {
 	title: "PNGTuber",
@@ -27,4 +28,5 @@ export default {
 	settingsComponent: SettingsComponent,
 	liveComponent: LiveComponent,
 	previewComponent: PreviewComponent,
+	instanceComponent: InstanceComponent,
 }
