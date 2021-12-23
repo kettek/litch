@@ -11,6 +11,7 @@ export interface ModuleDefaultsInterface {
 export interface ModuleInterface {
 	uuid: string
 	title: string
+	instanceComponent?: SvelteComponent
 	settingsComponent?: SvelteComponent
 	previewComponent?: SvelteComponent
 	liveComponent?: SvelteComponent

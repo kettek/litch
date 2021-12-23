@@ -15,7 +15,8 @@
 	import { onMount } from 'svelte'
 	import { publisher } from './modules'
 	import type { Subscriber } from '@kettek/pubsub/dist/Subscriber'
-	import { addOverlay, removeOverlay, overlays } from './stores/overlays'
+	import { addOverlay, removeOverlay, overlays, refreshOverlays } from './stores/overlays'
+	import ModuleWrapper from './ModuleWrapper.svelte'
 	export let modules: Record<string, ModuleInterface> = {}
 
 	//export let overlays: Record<string, OverlayInterface> = {}
@@ -26,11 +27,12 @@
 	let showOverlaySelection: boolean = false
 	let showOverlayCreator: boolean = false
 
+	let activeOverlay: OverlayInterface
 	$: currentOverlay = $overlays[currentOverlayUUID]
 	$: activeOverlay = $overlays[activeOverlayUUID]
 	$: focusedOverlay = $overlays[focusedOverlayUUID]
 	$: displayedOverlay = focusedOverlay || activeOverlay
-	
+
 	function handleCreate(evt: CustomEvent<OverlayInterface>) {
 		addOverlay(evt.detail)
 
@@ -80,6 +82,23 @@
 		</section>
 	</SplitPane>
 </main>
+<!-- Create activeComponent for all active modules in the activeOverlay -->
+<aside>
+	{#if activeOverlay}
+		{#each activeOverlay.modules as module}
+			{#if module.active && modules[module.moduleUUID]?.instanceComponent}
+				<ModuleWrapper this={modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.channel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channel.publish('update', module.settings)}} />
+			{/if}
+		{/each}
+	{/if}
+	{#if focusedOverlay && activeOverlay !== focusedOverlay}
+		{#each focusedOverlay.modules as module}
+			{#if module.active && modules[module.moduleUUID]?.instanceComponent}
+				<ModuleWrapper this={modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.channel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channel.publish('update', module.settings)}} />
+			{/if}
+		{/each}
+	{/if}
+</aside>
 
 <style>
 	main {
@@ -100,5 +119,8 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr);
+	}
+	aside {
+		display: none;
 	}
 </style>
