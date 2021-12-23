@@ -7,6 +7,7 @@
 	import { isLitchTuber, isPuppeteerTuber } from './Settings'
 	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import { upgrade } from './upgrade'
+	import Visualizer from './visualizer.svelte'
 
 	export let settings: SettingsInterface
 
@@ -148,6 +149,52 @@
 			}
 		}
 	}
+	// Visualizer/microphone stuff
+	let audioFrame: Timer
+	let audioContext: AudioContext
+	let audioStream: MediaStreamAudioSourceNode
+	let audioAnalyser: AnalyserNode
+	let frequencyArray: Uint8Array
+	let frequencyData: number[]
+	let visualizer = {
+		start: async () => {
+			let stream = await navigator.mediaDevices.getUserMedia({audio: true})
+
+			audioContext = new AudioContext()
+
+			audioStream = audioContext.createMediaStreamSource(stream)
+			audioAnalyser = audioContext.createAnalyser()
+
+			let fftSize = 64
+			audioAnalyser.fftSize = fftSize
+			audioStream.connect(audioAnalyser)
+
+			let bufferLength = audioAnalyser.frequencyBinCount
+			frequencyArray = new Uint8Array(bufferLength)
+
+			audioFrame = setInterval(() => {
+				visualizer.loop()
+			}, 0)
+		},
+		stop: async () => {
+			if (audioContext) {
+				clearInterval(audioFrame)
+				audioAnalyser.disconnect()
+				audioStream.disconnect()
+				await audioContext.close()
+				audioContext = undefined
+			}
+		},
+		loop: () => {
+			audioAnalyser.getByteFrequencyData(frequencyArray)
+			frequencyData = Array.from(frequencyArray)
+		},
+	}
+	let showVisualizer = false
+	async function enableVisualizer() {
+		await visualizer.start()
+		showVisualizer = true
+	}
 </script>
 
 <div>
@@ -175,6 +222,7 @@
 				<input type='number' bind:value={settings.trigger}/>
 				trigger dB
 			</label>
+			<Button on:click={enableVisualizer}>configure sensitivity</Button>
 		</details>
 		{#if isLitchTuber(settings.tuber)}
 			<details>
@@ -271,6 +319,9 @@
 			{/each}
 		{/if}
 	</div>
+	{#if showVisualizer}
+		<Visualizer bind:shown={showVisualizer} frequencyData={frequencyData}/>
+	{/if}
 </div>
 
 <style>
