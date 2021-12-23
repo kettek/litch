@@ -14,7 +14,7 @@
 	let hasPermission = false
 	let permissionFailed = false
 
-	let audioFrame: number
+	let audioFrame: Timer
 	let audioContext: AudioContext
 	let audioStream: MediaStreamAudioSourceNode
 	let audioAnalyser: AnalyserNode
@@ -55,8 +55,6 @@
 		}
 
 		litchLoop(delta)
-
-		audioFrame = requestAnimationFrame(analyseLoop)
 	}
 
 	export let update: (value: any) => void
@@ -154,7 +152,7 @@
 	}
 
 	function stop() {
-		cancelAnimationFrame(audioFrame)
+		clearInterval(audioFrame)
 	}
 
 	async function start() {
@@ -175,7 +173,9 @@
 			let bufferLength = audioAnalyser.frequencyBinCount
 			frequencyArray = new Uint8Array(bufferLength)
 
-			analyseLoop()
+			audioFrame = setInterval(() => {
+				analyseLoop()
+			}, 0)
 		} catch(err: any) {
 			permissionFailed = true
 			console.log(err)
