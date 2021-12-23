@@ -95,6 +95,12 @@
 		})
 		pendingCollectionValue = ''
 	}
+	function handleCollectionAddKeyUp(e: any) {
+		if (e.code === 'Enter') {
+			e.preventDefault()
+			addCollection()
+		}
+	}
 
 	/* Tagging */
 	let pendingTagValue: string
@@ -168,7 +174,7 @@
 						<!-- Collections -->
 						<nav class='collections'>
 							<label>
-								<input type='text' placeholder='New Collection' bind:value={pendingCollectionValue}/>
+								<input type='text' placeholder='New Collection' bind:value={pendingCollectionValue} on:keyup|preventDefault={handleCollectionAddKeyUp}/>
 								<Button secondary on:click={addCollection}>
 									<Icon icon="add"></Icon>
 								</Button>
