@@ -13,7 +13,28 @@ export default {
 		},
 		settings: {
 			imageRendering: 'auto',
-			emotions: [],
+			tuber: {
+				type: 'litch',
+				masks: [
+					{
+						name: 'idle',
+						tags: {
+							'eyes': true,
+							'mouth': false,
+						},
+						frames: [],
+					},
+					{
+						name: 'talk',
+						tags: {
+							'eyes': true,
+							'mouth': true,
+						},
+						frames: [],
+					}
+				],
+				framerate: 100,
+			},
 			sampleRate: 10,
 			sampleLimit: 2,
 			trigger: 32
@@ -28,5 +49,5 @@ export default {
 	settingsComponent: SettingsComponent,
 	liveComponent: LiveComponent,
 	previewComponent: PreviewComponent,
-	instanceComponent: InstanceComponent,
+	//instanceComponent: InstanceComponent,
 }

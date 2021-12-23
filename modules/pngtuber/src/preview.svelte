@@ -4,7 +4,7 @@
 
 	import type { ModuleChannel } from "@kettek/litch-app/src/interfaces/ModuleInstance"
 
-	import { isLitchTuber, isPuppeteerTuber } from './Settings'
+	import { isLitchTuber, isPuppeteerTuber, LitchMask } from './Settings'
 	import type { SettingsInterface } from './Settings'
 	export let settings: SettingsInterface
 
@@ -54,6 +54,8 @@
 			accumulator = 0
 		}
 
+		litchLoop(delta)
+
 		audioFrame = requestAnimationFrame(analyseLoop)
 	}
 
@@ -69,6 +71,48 @@
 
 	let currentFace = ''
 
+	let litchAccumulator: number = 0
+	let litchFrameIndex: number = 0
+	let litchStates = {
+		'eyes': true,
+		'mouth': false,
+	}
+	function getLitchMask(): LitchMask {
+		if (!isLitchTuber(settings.tuber)) return undefined
+		for (let mask of settings.tuber.masks) {
+			let mismatch = false
+			for (let [tag, open] of Object.entries(litchStates)) {
+				if (mask.tags[tag] !== open) {
+					mismatch = true
+					break
+				}
+			}
+			if (!mismatch) {
+				return mask
+			}
+		}
+	}
+	function litchLoop(delta: number) {
+		if (!isLitchTuber(settings.tuber)) return
+
+		let mask = getLitchMask()
+		if (!mask) {
+			return
+		}
+
+		litchAccumulator += delta
+
+		while (litchAccumulator >= settings.tuber.framerate) {
+			litchFrameIndex = (litchFrameIndex+1) % mask.frames.length
+			channel.publish('setImage', {
+				reference: mask.frames[litchFrameIndex],
+				ts: Date.now(),
+			})
+
+			litchAccumulator -= settings.tuber.framerate
+		}
+	}
+
 	function refreshDb() {
 		let total = samples.reduce((previousValue: number, currentValue: number) => {
 			return previousValue + currentValue
@@ -80,7 +124,11 @@
 	}
 
 	function refreshLitch(db: number) {
-		// TODO
+		if (db >= settings.trigger) {
+			litchStates.mouth = true
+		} else {
+			litchStates.mouth = false
+		}
 	}
 
 	function refreshPuppeteer(db: number) {
@@ -155,7 +203,11 @@
 <div>
 	{#if hasPermission}
 		{#if isLitchTuber(settings.tuber)}
-			todo
+			{#if settings.tuber.masks.length === 0}
+				you're maskless
+			{:else}
+				<img alt='' src='{assets.source(live.reference)}'/>
+			{/if}
 		{:else if isPuppeteerTuber(settings.tuber)}
 			{#if settings.tuber.emotions.length === 0}
 				you're emotionless

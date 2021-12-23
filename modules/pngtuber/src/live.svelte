@@ -23,7 +23,7 @@
 
 <div>
 	{#if isLitchTuber(settings.tuber)}
-		TODO
+		<img class:visible={true} alt='' src='{assets.source(reference)}'/>
 	{:else if isPuppeteerTuber(settings.tuber)}
 		{#each settings.tuber.emotions as emotion}
 			{#each Object.entries(emotion.faces) as [key, face]}

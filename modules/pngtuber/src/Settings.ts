@@ -13,6 +13,7 @@ export interface SettingsInterface {
 export interface LitchTuber {
 	type: 'litch'
 	masks: LitchMask[]
+	framerate: number
 }
 export function isLitchTuber(object: any): object is LitchTuber {
 	return object.type === 'litch'
@@ -28,8 +29,13 @@ export function isPuppeteerTuber(object: any): object is PuppeteerTuber {
 
 export interface LitchMask {
 	name: string
-	faces: Faces
-	open: boolean
+	tags: Record<string, boolean>
+	frames: {
+		collection: string
+		asset: string
+		mimetype: string
+		name: string
+	}[]
 }
 
 export interface PuppeteerMask {

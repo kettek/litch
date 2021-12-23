@@ -3,7 +3,7 @@
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
 	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
 
-	import type { SettingsInterface } from './Settings'
+	import type { SettingsInterface, LitchMask } from './Settings'
 	import { isLitchTuber, isPuppeteerTuber } from './Settings'
 	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import { upgrade } from './upgrade'
@@ -50,6 +50,7 @@
 			settings.tuber = {
 				type: 'litch',
 				masks: [],
+				framerate: 12,
 			}
 		} else if (e.target.value === 'puppeteer') {
 			delete settings['tuber']
@@ -59,6 +60,57 @@
 			}
 		}
 		refresh()
+	}
+
+	let pendingTag: string = ''
+	let selectedMaskIndex: number = 0
+	$: selectedMask = isLitchTuber(settings.tuber) ? settings.tuber.masks[selectedMaskIndex] : null
+	let litch = {
+		addMask: () => {
+			if (!isLitchTuber(settings.tuber)) return
+			settings.tuber.masks.push({
+				name: `mask ${settings.tuber.masks.length+1}`,
+				tags: {},
+				frames: [],
+			})
+			refresh()
+		},
+		deleteMask: (index: number) => {
+			if (!isLitchTuber(settings.tuber)) return
+			settings.tuber.masks = settings.tuber.masks.filter((_, i) => i !== index)
+		},
+		selectMask: (index: number) => {
+			selectedMaskIndex = index
+		},
+		openFileDialog: async (mask: LitchMask, index: number) => {
+			console.log("TODO")
+		},
+		addFileDialog: async (mask: LitchMask) => {
+			let results = await assets.open({
+				multiple: true,
+			})
+			mask.frames = [
+				...mask.frames,
+				...results,
+			]
+			refresh()
+		},
+		addTag: (tag: string) => {
+			selectedMask.tags[tag] = true
+			refresh()
+		},
+		removeTag: (tag: string) => {
+			if (selectedMask.tags[tag]) {
+				delete selectedMask.tags[tag]
+			}
+			refresh()
+		},
+		changeTag: (e: any, tag: string) => {
+			if (e.target.value === selectedMask.tags[tag]) return
+			selectedMask.tags[e.target.value] = selectedMask.tags[tag]
+			delete selectedMask.tags[tag]
+			refresh()
+		},
 	}
 
 	let puppeteer = {
@@ -100,9 +152,6 @@
 
 <div>
 	<div class='emotions'>
-		<Button title='Add Emotion' tertiary on:click={puppeteer.addEmotion}>
-			<Icon icon='add'></Icon>
-		</Button>
 		<details>
 			<summary>
 				Settings
@@ -128,8 +177,72 @@
 			</label>
 		</details>
 		{#if isLitchTuber(settings.tuber)}
-			litch type
+			<details>
+				<summary>Litch Tuber Settings</summary>
+				<label>
+					<input type='number' bind:value={settings.tuber.framerate}/>
+					<span>framerate (ms)</span>
+				</label>
+			</details>
+			<nav>
+				{#each settings.tuber.masks as mask, index}
+					<Button tertiary border invert={index!==selectedMaskIndex} on:click={()=>{litch.selectMask(index)}}>
+						{index+1}
+					</Button>
+				{/each}
+				<Button tertiary on:click={litch.addMask}>
+					<Icon icon='add'></Icon>
+				</Button>
+			</nav>
+			<section>
+				{#if !selectedMask}
+					Select or create a mask
+				{:else}
+					<Button dangerous on:click={()=>{litch.deleteMask(selectedMaskIndex)}} title='Delete mask'>
+						<Icon icon='delete'></Icon>
+					</Button>
+					<Button title='Open file' tertiary on:click={()=>{litch.addFileDialog(selectedMask)}}>
+						<Icon icon='open'></Icon>
+					</Button>
+					<label>
+						<input bind:value={selectedMask.name}/>
+						Name
+					</label>
+					<details open>
+						<summary>tags</summary>
+						<input bind:value={pendingTag}/>
+						<Button tertiary on:click={()=>litch.addTag(pendingTag)}>
+							<Icon icon='add'></Icon>
+						</Button>
+						{#each Object.entries(selectedMask.tags) as [tag, checked]}
+							<article>
+								<input value={tag} on:change={(e)=>litch.changeTag(e, tag)}/>
+								<input type='checkbox' bind:checked={selectedMask.tags[tag]}/>
+								<Button dangerous on:click={()=>{litch.removeTag(tag)}}>
+									<Icon icon='delete'/>
+								</Button>
+							</article>
+						{/each}
+					</details>
+					<details>
+						<summary>frames</summary>
+						{#each selectedMask.frames as frame, index}
+							<article class='emotion__face'>
+								<Button title='Open file' tertiary on:click={()=>{litch.openFileDialog(selectedMask, index)}}>
+									<Icon icon='open'></Icon>
+								</Button>
+								<div class='face'>
+									<img alt='preview' src={assets.source(frame)}/>
+									</div>
+							</article>
+						{/each}
+					</details>
+				{/if}
+			</section>
 		{:else if isPuppeteerTuber(settings.tuber)}
+			<Button title='Add Emotion' tertiary on:click={puppeteer.addEmotion}>
+				<Icon icon='add'></Icon>
+			</Button>
 			{#each settings.tuber.emotions as emotion}
 				<details bind:open={emotion.open} class='emotion'>
 					<summary>
