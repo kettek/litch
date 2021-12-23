@@ -1,8 +1,10 @@
 <script type="ts">
 	import { onDestroy, onMount } from 'svelte'
+	import { upgrade } from './upgrade'
 
 	import type { ModuleChannel } from "@kettek/litch-app/src/interfaces/ModuleInstance"
 
+	import { isLitchTuber, isPuppeteerTuber } from './Settings'
 	import type { SettingsInterface } from './Settings'
 	export let settings: SettingsInterface
 
@@ -57,6 +59,11 @@
 
 	export let update: (value: any) => void
 
+	let [changed, settings_] = upgrade(settings)
+	if (changed) {
+		update(settings_)
+	}
+
 	export let channel: ModuleChannel
 	export let live: any = {}
 
@@ -68,12 +75,22 @@
 		}, 0)
 		db = total / samples.length
 
+		refreshLitch(db)
+		refreshPuppeteer(db)
+	}
+
+	function refreshLitch(db: number) {
+		// TODO
+	}
+
+	function refreshPuppeteer(db: number) {
+		if (!isPuppeteerTuber(settings.tuber)) return
 		// eh
 		if (db >= settings.trigger) {
 			if (currentFace !== 'eyesOpenMouthOpen') {
 				currentFace = 'eyesOpenMouthOpen'
 				channel.publish('setImage', {
-					reference: settings.emotions[0]?.faces[currentFace].reference,
+					reference: settings.tuber.emotions[0]?.faces[currentFace].reference,
 					ts: Date.now(),
 				})
 			}
@@ -81,7 +98,7 @@
 			if (currentFace !== 'eyesOpenMouthClosed') {
 				currentFace = 'eyesOpenMouthClosed'
 				channel.publish('setImage', {
-					reference: settings.emotions[0]?.faces[currentFace].reference,
+					reference: settings.tuber.emotions[0]?.faces[currentFace].reference,
 					ts: Date.now(),
 				})
 			}
@@ -122,7 +139,7 @@
 		channel.receive = async ({topic, message}) => {
 			if (topic === 'update') {
 				channel.publish('setImage', {
-					reference: message.emotions[0]?.faces[currentFace].reference,
+					reference: message.masks[0]?.faces[currentFace].reference,
 					ts: Date.now(),
 				})
 			} else if (topic === 'setImage') {
@@ -137,10 +154,14 @@
 
 <div>
 	{#if hasPermission}
-		{#if settings.emotions.length === 0}
-			you're emotionless
-		{:else}
-			<img alt='' src='{assets.source(live.reference)}'/>
+		{#if isLitchTuber(settings.tuber)}
+			todo
+		{:else if isPuppeteerTuber(settings.tuber)}
+			{#if settings.tuber.emotions.length === 0}
+				you're emotionless
+			{:else}
+				<img alt='' src='{assets.source(live.reference)}'/>
+			{/if}
 		{/if}
 	{:else}
 		plz grant permies
