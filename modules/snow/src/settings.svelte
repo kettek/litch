@@ -41,6 +41,11 @@
 	function selectGroup(index: number) {
 		selectedIndex = index
 	}
+	function duplicateGroup(index: number) {
+		let newGroup = JSON.parse(JSON.stringify(settings.groups[index]))
+		settings.groups.splice(index, 0, newGroup)
+		settings = settings
+	}
 </script>
 
 <main>
@@ -68,6 +73,9 @@
 		{#if !currentGroup}
 			{format('selectAGroup')}
 		{:else}
+			<Button tertiary on:click={()=>{duplicateGroup(selectedIndex)}} title={format('duplicateGroup')}>
+				<Icon icon='duplicate'></Icon>
+			</Button>
 			<Button dangerous on:click={()=>{removeGroup(selectedIndex)}} title={format('deleteGroup')}>
 				<Icon icon='delete'></Icon>
 			</Button>

@@ -6,6 +6,7 @@
 	"openAsset": "Open asset",
 	"addGroup": "Add group",
 	"deleteGroup": "Delete group",
+	"duplicateGroup": "Duplicate group",
 	"group": {
 		"emojiType": "Emoji",
 		"assetType": "Asset",
