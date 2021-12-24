@@ -64,7 +64,7 @@
 	$: realModule = modules[module.moduleUUID]
 </script>
 
-<Card tertiary on:close={()=>focusedUUID=''}>
+<Card tertiary on:close={()=>focusedUUID=''} doClose>
 	<svelte:fragment slot='title'>
 		{realModule.title}
 	</svelte:fragment>

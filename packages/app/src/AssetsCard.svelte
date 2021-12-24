@@ -42,7 +42,7 @@
 	let filter: string = ''
 </script>
 
-<Card secondary on:close>
+<Card secondary on:close doClose>
 	<svelte:fragment slot='title'>{$_('collections.selectAnAsset')}</svelte:fragment>
 	<svelte:fragment slot='content'>
 		<main>
