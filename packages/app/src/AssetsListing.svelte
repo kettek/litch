@@ -76,7 +76,7 @@
 	}
 </script>
 
-<section>
+<section class:selector>
 	{#if assets}
 		{#each assets.sort((a,b)=>a.name.localeCompare(b.name)) as asset (asset.uuid)}
 			{#if !isAssetFiltered(asset, filter)}
@@ -132,6 +132,9 @@
 		overflow: auto;
 		user-select: none;
 	}
+	section.selector {
+		padding: 0 .5em;
+	}
 	.asset {
 		width: 10em;
 		height: 10em;
@@ -148,6 +151,7 @@
 		width: 100%;
 		height: 3em;
 		display: grid;
+		margin: .5em 0;
 		grid-template-rows: minmax(0, 1fr);
 		grid-template-columns: 3em minmax(0, 1fr);
 	}
