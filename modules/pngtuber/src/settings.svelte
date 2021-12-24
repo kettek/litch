@@ -83,6 +83,10 @@
 		selectMask: (index: number) => {
 			selectedMaskIndex = index
 		},
+		clearMaskFrames: (index: number) => {
+			if (!isLitchTuber(settings.tuber)) return
+			settings.tuber.masks[index].frames = []
+		},
 		openFileDialog: async (mask: LitchMask, index: number) => {
 			console.log("TODO")
 		},
@@ -249,9 +253,6 @@
 					<Button dangerous on:click={()=>{litch.deleteMask(selectedMaskIndex)}} title='Delete mask'>
 						<Icon icon='delete'></Icon>
 					</Button>
-					<Button title='Open file' tertiary on:click={()=>{litch.addFileDialog(selectedMask)}}>
-						<Icon icon='open'></Icon>
-					</Button>
 					<label>
 						<input bind:value={selectedMask.name}/>
 						Name
@@ -274,6 +275,12 @@
 					</details>
 					<details>
 						<summary>frames</summary>
+						<Button title='Open file' tertiary on:click={()=>{litch.addFileDialog(selectedMask)}}>
+							<Icon icon='open'></Icon>
+						</Button>
+						<Button dangerous on:click={()=>{litch.clearMaskFrames(selectedMaskIndex)}} title='Clear mask frames'>
+							<Icon icon='delete'></Icon>
+						</Button>
 						{#each selectedMask.frames as frame, index}
 							<article class='emotion__face'>
 								<Button title='Open file' tertiary on:click={()=>{litch.openFileDialog(selectedMask, index)}}>
