@@ -87,6 +87,7 @@
 
 	let selectedAssetUUID = ''
 	$: selectedAsset = assets?.find((v: Asset)=>v.uuid===selectedAssetUUID)
+	let selectedAssetUUIDs: string[] = []
 	let pendingCollectionValue: string = ''
 
 	/* Collections */
@@ -131,7 +132,10 @@
 
 	/* Asset Deletion */
 	function removeAssets() {
-		removeAsset(selectedCollectionUUID, selectedAssetUUID)
+		for (let uuid of selectedAssetUUIDs) {
+			removeAsset(selectedCollectionUUID, uuid)
+		}
+		selectedAssetUUIDs = []
 	}
 	
 	function close() {
@@ -305,7 +309,7 @@
 					</label>
 				</nav>
 				<article class='assets tertiary'>
-					<AssetsListing bind:focused={selectedAssetUUID} assets={assets} filter={filterValue}/>
+					<AssetsListing multiple bind:selected={selectedAssetUUIDs} bind:focused={selectedAssetUUID} assets={assets} filter={filterValue}/>
 				</article>
 			</section>
 		</SplitPane>
