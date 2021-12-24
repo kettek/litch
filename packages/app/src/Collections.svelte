@@ -18,6 +18,7 @@
 	import MenuOption from './components/MenuOption.svelte'
 	import DropList from './components/DropList.svelte'
 	import AssetsListing from './AssetsListing.svelte'
+	import Card from './components/Card.svelte'
 
 	/* dispatch */
 	const dispatch = createEventDispatcher()
@@ -166,133 +167,132 @@
 		<SplitPane type="horizontal" pos=25>
 			<section slot='a' class='left'>
 				{#if navState === 'collections'}
-					<article class='slider' transition:navAnimation="{{state: 'collections', delay: 0, duration: 200, x: -500, y: 0, easing: quintInOut}}">
-						<nav class='left__nav'>
-							<span></span>
-							<header style='text-align:center'>{$_('collections.title')}</header>
-						</nav>
-						<!-- Collections -->
-						<nav class='collections'>
-							<label>
-								<input type='text' placeholder='New Collection' bind:value={pendingCollectionValue} on:keyup|preventDefault={handleCollectionAddKeyUp}/>
-								<Button secondary on:click={addCollection}>
+					<Card secondary noBack flyX={-500}>
+						<svelte:fragment slot='title'>
+							{$_('collections.title')}
+						</svelte:fragment>
+						<section class='collections__container' slot='content'>
+							<nav class='collections'>
+								<label>
+									<input type='text' placeholder='New Collection' bind:value={pendingCollectionValue} on:keyup|preventDefault={handleCollectionAddKeyUp}/>
+									<Button secondary on:click={addCollection}>
+										<Icon icon="add"></Icon>
+									</Button>
+								</label>
+							</nav>
+							<article>
+								<DropList secondary>
+									<svelte:fragment slot="heading">
+										{$_('collections.title')}
+									</svelte:fragment>
+									<svelte:fragment slot="content">
+										<ul>
+											{#each $collections as collection}
+												<li class='collection' class:selected={selectedCollectionUUID===collection.uuid} title={collection.uuid} on:click={()=>{selectedCollectionUUID=collection.uuid}}>
+													<span>{collection.name}</span>
+													<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid} on:click={(e)=>showCollectionMenu(e, collection.uuid)}>
+														<Icon icon='burger'></Icon>
+													</Button>
+													<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid} on:click={()=>{setNavState('collection');selectedCollectionUUID=collection.uuid}}>
+														<Icon icon='forward'></Icon>
+													</Button>
+												</li>
+											{/each}
+										</ul>
+									</svelte:fragment>
+								</DropList>
+							</article>
+						</section>
+					</Card>
+				{:else if navState === 'collection'}
+					<Card secondary on:close={()=>setNavState('collections')} flyX={-500}>
+						<svelte:fragment slot='title'>
+							{selectedCollection.name}
+						</svelte:fragment>
+						<section class='collection__container' slot='content'>
+							<!-- Selected Collection -->
+							<article class ='collection'>
+								<label>
+									<input type='text' bind:value={selectedCollection.name}/>
+									<span>{$_('collections.name')}</span>
+								</label>
+								<Button secondary on:click={importAsset} title={$_('collections.importFiles')}>
+									<Icon icon="open"></Icon>
+								</Button>
+								<Button secondary on:click={importFolder} title={$_('collections.importFolder')}>
+									<Icon icon="open-folder"></Icon>
+								</Button>
+								<Button secondary on:click={addAsset} title={$_('collections.createAsset')}>
 									<Icon icon="add"></Icon>
 								</Button>
-							</label>
-						</nav>
-						<article>
-							<DropList secondary>
-								<svelte:fragment slot="heading">
-									{$_('collections.title')}
-								</svelte:fragment>
-								<svelte:fragment slot="content">
-									<ul>
-										{#each $collections as collection}
-											<li class='collection' class:selected={selectedCollectionUUID===collection.uuid} title={collection.uuid} on:click={()=>{selectedCollectionUUID=collection.uuid}}>
-												<span>{collection.name}</span>
-												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid} on:click={(e)=>showCollectionMenu(e, collection.uuid)}>
-													<Icon icon='burger'></Icon>
-												</Button>
-												<Button nomargin secondary invert={selectedCollectionUUID!==collection.uuid} on:click={()=>{setNavState('collection');selectedCollectionUUID=collection.uuid}}>
-													<Icon icon='forward'></Icon>
-												</Button>
-											</li>
-										{/each}
-									</ul>
-								</svelte:fragment>
-							</DropList>
-						</article>
-					</article>
-				{:else if navState === 'collection'}
-					<article class='slider' transition:navAnimation="{{state: 'collection', delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
-						<nav class='left__nav'>
-							<Button nobg on:click={()=>{setNavState('collections')}}>
-								<Icon icon='back'></Icon>
-							</Button>
-							<header>{selectedCollection.name}</header>
-						</nav>
-						<!-- Selected Collection -->
-						<article class ='collection'>
-							<label>
-								<input type='text' bind:value={selectedCollection.name}/>
-								<span>{$_('collections.name')}</span>
-							</label>
-							<Button secondary on:click={importAsset} title={$_('collections.importFiles')}>
-								<Icon icon="open"></Icon>
-							</Button>
-							<Button secondary on:click={importFolder} title={$_('collections.importFolder')}>
-								<Icon icon="open-folder"></Icon>
-							</Button>
-							<Button secondary on:click={addAsset} title={$_('collections.createAsset')}>
-								<Icon icon="add"></Icon>
-							</Button>
-						</article>
-					<!-- Selected Asset -->
-						<article class='selected__asset'>
-							<DropList tertiary>
-								<svelte:fragment slot="heading">
-									{$_('collections.selectedAsset')}
-								</svelte:fragment>
-								<svelte:fragment slot="content">
-									{#if !selectedAsset}
-										{$_('collections.selectAnAsset')}
-									{:else}
-										<label>
-											<input disabled type='text' bind:value={selectedAsset.uuid}/>
-										</label>
-										<label>
-											<input type='text' bind:value={selectedAsset.name}/>
-											<span>{$_('asset.name')}</span>
-										</label>
-										<hr>
-										<section class='selectedAsset__source'>
-											<label class='selectedAsset__source__file'>
-												<input type='text' bind:value={selectedAsset.originalSource} placeholder='local file' />
-												<Button title={$_('collections.openFile')} secondary on:click={()=>{openSourceDialog()}}>
-													<Icon icon='open'></Icon>
-												</Button>
+							</article>
+							<!-- Selected Asset -->
+							<article class='selectedAsset'>
+								<DropList tertiary>
+									<svelte:fragment slot="heading">
+										{$_('collections.selectedAsset')}
+									</svelte:fragment>
+									<svelte:fragment slot="content">
+										{#if !selectedAsset}
+											{$_('collections.selectAnAsset')}
+										{:else}
+											<label>
+												<input disabled type='text' bind:value={selectedAsset.uuid}/>
 											</label>
-										</section>
-										<label class='selectedAsset__tags__tag'>
-											<input type='text' disabled value={selectedAsset.mimetype}/>
-										</label>
-									
-										<hr>
-										<section class='selectedAsset__tags'>
-											<header>{$_('asset.tags')}</header>
-											<section class='selectedAsset__tags__content'>
-												<label class='selectedAsset__tags__tag'>
-													<input type='text' bind:value={pendingTagValue} on:submit={addTag}/>
-													<Button secondary on:click={addTag} title={$_('asset.addTag')}>
-														<Icon icon='add'></Icon>
+											<label>
+												<input type='text' bind:value={selectedAsset.name}/>
+												<span>{$_('asset.name')}</span>
+											</label>
+											<hr>
+											<section class='selectedAsset__source'>
+												<label class='selectedAsset__source__file'>
+													<input type='text' bind:value={selectedAsset.originalSource} placeholder='local file' />
+													<Button title={$_('collections.openFile')} secondary on:click={()=>{openSourceDialog()}}>
+														<Icon icon='open'></Icon>
 													</Button>
 												</label>
-												{#each selectedAsset.tags as tag (tag)}
-													<label animate:flip="{{duration: 200}}" class='selectedAsset__tags__tag'>
-														<input type='text' bind:value={tag}/>
-														<Button dangerous on:click={()=>{removeTag(tag)}} title={$_('asset.removeTag')}>
-															<Icon icon='remove'></Icon>
+											</section>
+											<label class='selectedAsset__tags__tag'>
+												<input type='text' disabled value={selectedAsset.mimetype}/>
+											</label>
+										
+											<hr>
+											<section class='selectedAsset__tags'>
+												<header>{$_('asset.tags')}</header>
+												<section class='selectedAsset__tags__content'>
+													<label class='selectedAsset__tags__tag'>
+														<input type='text' bind:value={pendingTagValue} on:submit={addTag}/>
+														<Button secondary on:click={addTag} title={$_('asset.addTag')}>
+															<Icon icon='add'></Icon>
 														</Button>
 													</label>
-												{/each}
+													{#each selectedAsset.tags as tag (tag)}
+														<label animate:flip="{{duration: 200}}" class='selectedAsset__tags__tag'>
+															<input type='text' bind:value={tag}/>
+															<Button dangerous on:click={()=>{removeTag(tag)}} title={$_('asset.removeTag')}>
+																<Icon icon='remove'></Icon>
+															</Button>
+														</label>
+													{/each}
+												</section>
 											</section>
-										</section>
-									{/if}
-								</svelte:fragment>
-							</DropList>
-							<DropList tertiary>
-								<svelte:fragment slot="heading">
-									{$_('asset.actions.title')}
-								</svelte:fragment>
-								<svelte:fragment slot="content">
-									<Button dangerous on:click={()=>{removeAssets()}}>
-										{$_('asset.actions.delete')}
-										<Icon icon='close'/>
-									</Button>
-								</svelte:fragment>
-							</DropList>
-						</article>
-					</article>
+										{/if}
+									</svelte:fragment>
+								</DropList>
+								<DropList tertiary>
+									<svelte:fragment slot="heading">
+										{$_('asset.actions.title')}
+									</svelte:fragment>
+									<svelte:fragment slot="content">
+										<Button dangerous on:click={()=>{removeAssets()}}>
+											{$_('asset.actions.delete')}
+											<Icon icon='close'/>
+										</Button>
+									</svelte:fragment>
+								</DropList>
+							</article>
+						</section>
+					</Card>
 				{/if}
 			</section>
 			<section slot='b' class='content'>
@@ -336,26 +336,19 @@
 	article {
 		color: var(--secondary);
 	}
-	.left__nav {
+	.collections__container {
 		display: grid;
-		grid-template-columns: auto minmax(0, 1fr);
-		align-items: stretch;
-		justify-content: stretch;
-		background: var(--secondary);
-		color: var(--text);
+		grid-template-rows: auto minmax(0, 1fr);
+		height: 100%;
 	}
-	.left__nav > header {
-		font-weight: 600;
-		display: flex;
-		align-items: center;
-		padding-left: 0.5em ;
-		min-height: 3em;
+	.collections__container > article {
+		overflow: hidden;
+		display: grid;
+		grid-template-rows: minmax(0, 1fr);
 	}
-	.slider {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
+	.collection__container {
+		display: grid;
+		grid-template-rows: auto minmax(0, 1fr);
 		height: 100%;
 	}
 	.content {
@@ -367,6 +360,10 @@
 	.assets {
 		overflow: auto;
 		padding: 0 .5em;
+	}
+	.selectedAsset {
+		display: grid;
+		grid-template-rows: minmax(0, 1fr) auto;
 	}
 	.selectedAsset__source__file {
 		display: grid;
