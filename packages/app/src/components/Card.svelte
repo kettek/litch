@@ -10,19 +10,36 @@
 	export let tertiary: boolean = false
 	export let open: boolean = true
 	export let flyX: number = 500
+	export let noFlyIn: boolean = false
+	export let noBack: boolean = false
 
 	const dispatch = createEventDispatcher()
 	function close() {
 		dispatch('close')
 		open = false
 	}
+	let firstMount = true
+	const navAnimation = (node: Element, args: any) => {
+		if (noFlyIn && firstMount) {
+			firstMount = false
+			args = {
+				...args,
+				x: 0,
+			}
+		}
+		return fly(node, args)
+	}
 </script>
 
-<main class:primary class:secondary class:tertiary transition:fly="{{delay: 0, duration: 200, x: flyX, y: 0, easing: quintInOut}}">
+<main class:primary class:secondary class:tertiary transition:navAnimation="{{delay: 0, duration: 200, x: flyX, y: 0, easing: quintInOut}}">
 	<nav>
-		<Button on:click={close}>
-			<Icon icon="back"></Icon>
-		</Button>
+		{#if noBack}
+			<div></div>
+		{:else}
+			<Button on:click={close}>
+				<Icon icon="back"></Icon>
+			</Button>
+		{/if}
 		<header>
 			<slot name='title'></slot>
 		</header>
