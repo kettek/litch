@@ -20,10 +20,20 @@
 
 	$: pendingSettings = JSON.parse(JSON.stringify(module.settings)) // FIXME: Use a clone lib
 
-	let update: (value: any) => void = (value: any) => {
+	let update: (value: any) => Promise<void> = async (value: any) => {
 		module.settings = value
 		refreshOverlays()
-		module.channel.publish('update', module.settings)
+		try {
+			await module.channel.publish('update', module.settings)
+		} catch(e: any) {
+			if (e.errors) {
+				for (let err of e.errors) {
+					console.error(err)
+				}
+			} else {
+				console.error(e)
+			}
+		}
 	}
 
 	let updateBox: (value: any) => void = (value: any) => {
