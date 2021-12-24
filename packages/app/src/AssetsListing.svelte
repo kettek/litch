@@ -138,16 +138,28 @@
 		padding: 0 .5em;
 	}
 	.asset {
+		position: relative;
 		width: 10em;
 		height: 10em;
 		display: inline-grid;
 		grid-template-rows: auto minmax(0, 1fr);
 		margin: .5em;
+		padding: 2px;
 		background: var(--tertiary);
 		color: var(--text);
 		border-radius: .25em .75em;
 		border: 2px solid var(--tertiary);
-		outline: 2px solid var(--tertiary);
+	}
+	.asset::after {
+		display: block;
+		content: ' ';
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		width: calc(100% - 4px);
+		height: calc(100% - 4px);
+		border: 2px solid var(--tertiary);
+		border-radius: .25em .75em;
 	}
 	.asset.selector {
 		width: 100%;
@@ -160,7 +172,7 @@
 	.asset.selected {
 		background: var(--tertiary-focus);
 	}
-	.asset.selected.focused {
+	.asset.selected.focused::after {
 		border: 2px solid var(--text);
 	}
 	.asset > header {
