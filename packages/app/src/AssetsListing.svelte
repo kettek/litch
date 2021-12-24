@@ -23,19 +23,19 @@
 	}
 
 	function onAssetClick(e: MouseEvent, uuid: string) {
-		if (selected.includes(uuid)) return
+		if (!filteredAssets) return
 
 		if (multiple) {
 			if (e.shiftKey) {
-				let focusedIndex = selected.indexOf(focused)
-				let targetIndex = selected.indexOf(uuid)
+				let focusedIndex = filteredAssets.findIndex(v=>v.uuid===focused)
+				let targetIndex = filteredAssets.findIndex(v=>v.uuid===uuid)
 				// FIXME: lazy code duplication
 				if (targetIndex < focusedIndex) {
-					for (let i = focusedIndex; i > targetIndex; i--) {
-						let uuid = selected[i]
+					for (let i = focusedIndex; i >= targetIndex; i--) {
+						let uuid = filteredAssets[i].uuid
 						if (e.ctrlKey) {
 							if (selected.includes(uuid)) {
-								selected = selected.filter(v=>v===uuid)
+								selected = selected.filter(v=>v!==uuid)
 							} else {
 								selected = [ ...selected, uuid ]
 							}
@@ -46,11 +46,11 @@
 						}
 					}
 				} else if (targetIndex > focusedIndex) {
-					for (let i = focusedIndex; i < targetIndex; i++) {
-						let uuid = selected[i]
+					for (let i = focusedIndex; i <= targetIndex; i++) {
+						let uuid = filteredAssets[i].uuid
 						if (e.ctrlKey) {
 							if (selected.includes(uuid)) {
-								selected = selected.filter(v=>v===uuid)
+								selected = selected.filter(v=>v!==uuid)
 							} else {
 								selected = [ ...selected, uuid ]
 							}
@@ -63,7 +63,7 @@
 				}
 			} else if (e.ctrlKey) {
 				if (selected.includes(uuid)) {
-					selected = selected.filter(v=>v===uuid)
+					selected = selected.filter(v=>v!==uuid)
 				} else {
 					selected = [ ...selected, uuid ]
 				}
