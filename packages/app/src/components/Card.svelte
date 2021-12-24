@@ -82,6 +82,6 @@
 	}
 	footer {
 		display: grid;
-		justify-content: minmax(0, 1fr);
+		grid-auto-flow: column;
 	}
 </style>
