@@ -106,7 +106,7 @@
 		{/if}
 	{/if}
 	{#if showPopup}
-		<Card zIndex={1} tertiary on:close={()=>showPopup=false}>
+		<Card zIndex={1} tertiary on:close={()=>showPopup=false} doClose>
 			<svelte:fragment slot='title'>
 				{$_('assets.viewTitle')}
 			</svelte:fragment>
