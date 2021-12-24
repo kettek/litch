@@ -123,6 +123,7 @@
 	import MenuDivider from './components/MenuDivider.svelte'
 	import DropList from './components/DropList.svelte'
 	import { refreshOverlays } from './stores/overlays'
+	import Card from './components/Card.svelte'
 	let menuPos = {x: 0, y: 0}
 	let menuUUID: string
 	let showMenu = false
@@ -142,70 +143,69 @@
 	}
 </script>
 
-<main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
-	<nav>
-		<Button nobg on:click={()=>uuid=''}>
-			<Icon icon='back'></Icon>
+<Card secondary on:close={()=>uuid=''}>
+	<svelte:fragment slot='title'>
+		{overlay.title}
+	</svelte:fragment>
+	<section slot='content'>
+		<article class:secondary={true}>
+			<label>
+				<input type='text' placeholder='title' bind:value={title}>
+				<span>{$_('overlays.title')}</span>
+			</label>
+			<label>
+				<input type='number' placeholder='1920' bind:value={width}>
+				<span>{$_('overlays.width')}</span>
+			</label>
+			<label>
+				<input type='number' placeholder='1080' bind:value={height}>
+				<span>{$_('overlays.height')}</span>
+			</label>
+		</article>
+		<DropList bind:open={overlay.openAvailableModules} tertiary>
+			<svelte:fragment slot="heading">
+				{$_('overlays.availableModules')}
+			</svelte:fragment>
+			<svelte:fragment slot="content">
+				<ModuleList modules={modules} on:add={handleAddModule}/>
+			</svelte:fragment>
+		</DropList>
+		<DropList style="padding: 0 1em 1em 1em" bind:open={overlay.openActiveModules} tertiary>
+			<svelte:fragment slot="heading">
+				{$_('overlays.activeModules')}
+			</svelte:fragment>
+			<svelte:fragment slot="content">
+				<ul>
+					{#each [...overlay.modules].reverse() as module (module.uuid)}
+						<li
+							animate:flip="{{duration: 200}}"
+							draggable={true}
+							on:dragstart={e => handleModuleDragStart(e, module.uuid)}
+							on:drop|preventDefault={e => handleModuleDrop(e, module.uuid)}
+							ondragover="return false"
+							on:dragenter={() => hoveringModuleUUID = module.uuid}
+							class:active={hoveringModuleUUID === module.uuid}
+						>
+							<Button tertiary invert on:click={()=>handleModuleToggle(module.uuid)} title={module.active?$_('module.inactivate'):$_('module.activate')}>
+								<Icon icon={module.active?'active':'inactive'}></Icon>
+							</Button>
+							<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
+							<Button tertiary invert on:click={(e)=>showModuleMenu(e, module.uuid)}><Icon icon='burger'></Icon></Button>
+						</li>
+					{/each}
+				</ul>
+			</svelte:fragment>
+		</DropList>
+	</section>
+	<svelte:fragment slot="footer">
+		<Button secondary disabled={!changed} on:click={handleApply}>
+			<Icon icon='checkmark'></Icon>
 		</Button>
-		<header>{overlay.title}</header>
-	</nav>
-	<article class:secondary={true}>
-		<label>
-			<input type='text' placeholder='title' bind:value={title}>
-			<span>{$_('overlays.title')}</span>
-		</label>
-		<label>
-			<input type='number' placeholder='1920' bind:value={width}>
-			<span>{$_('overlays.width')}</span>
-		</label>
-		<label>
-			<input type='number' placeholder='1080' bind:value={height}>
-			<span>{$_('overlays.height')}</span>
-		</label>
-		<footer>
-			<Button secondary disabled={!changed} on:click={handleApply}>
-				<Icon icon='checkmark'></Icon>
-			</Button>
-		</footer>
-	</article>
-	<DropList bind:open={overlay.openAvailableModules} tertiary>
-		<svelte:fragment slot="heading">
-			{$_('overlays.availableModules')}
-		</svelte:fragment>
-		<svelte:fragment slot="content">
-			<ModuleList modules={modules} on:add={handleAddModule}/>
-		</svelte:fragment>
-	</DropList>
-	<DropList style="padding: 0 1em 1em 1em" bind:open={overlay.openActiveModules} tertiary>
-		<svelte:fragment slot="heading">
-			{$_('overlays.activeModules')}
-		</svelte:fragment>
-		<svelte:fragment slot="content">
-			<ul>
-				{#each [...overlay.modules].reverse() as module (module.uuid)}
-					<li
-						animate:flip="{{duration: 200}}"
-						draggable={true}
-						on:dragstart={e => handleModuleDragStart(e, module.uuid)}
-						on:drop|preventDefault={e => handleModuleDrop(e, module.uuid)}
-						ondragover="return false"
-						on:dragenter={() => hoveringModuleUUID = module.uuid}
-						class:active={hoveringModuleUUID === module.uuid}
-					>
-						<Button tertiary invert on:click={()=>handleModuleToggle(module.uuid)} title={module.active?$_('module.inactivate'):$_('module.activate')}>
-							<Icon icon={module.active?'active':'inactive'}></Icon>
-						</Button>
-						<button on:click={()=>focusedModuleUUID=module.uuid}>{module.title}</button>
-						<Button tertiary invert on:click={(e)=>showModuleMenu(e, module.uuid)}><Icon icon='burger'></Icon></Button>
-					</li>
-				{/each}
-			</ul>
-		</svelte:fragment>
-	</DropList>
-	{#if focusedModule}
-		<ModuleItem bind:module={focusedModule} modules={modules} bind:focusedUUID={focusedModuleUUID}/>
-	{/if}
-</main>
+	</svelte:fragment>
+</Card>
+{#if focusedModule}
+	<ModuleItem bind:module={focusedModule} modules={modules} bind:focusedUUID={focusedModuleUUID}/>
+{/if}
 {#if showMenu}
 	<Menu tertiary {...menuPos} on:click={closeModuleMenu} on:clickoutside={closeModuleMenu}>
 		<MenuOption tertiary on:click={()=>reloadModule(menuUUID)}>
@@ -224,33 +224,10 @@
 {/if}
 
 <style>
-	main {
-		position: absolute;
-		top: 0; left: 0;
-		width: 100%; height: 100%;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		grid-template-rows: auto auto auto minmax(0, 1fr);
-		overflow: hidden;
-	}
-	nav {
-		display: grid;
-		grid-template-columns: auto minmax(0, 1fr);
-		align-items: stretch;
-		justify-content: stretch;
-		background: var(--secondary);
-		color: var(--text);
-	}
-	nav header {
-		font-weight: 600;
-		display: flex;
-		align-items: center;
-		padding-left: .5em;
-	}
 	article {
 		overflow-y: auto;
 		color: var(--tertiary);
-		padding: 1.75em;
+		padding: 1em;
 	}
 	article.secondary {
 		color: var(--secondary);
@@ -293,5 +270,10 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+	section {
+		height: 100%;
+		display: grid;
+		grid-template-rows: auto auto minmax(0, 1fr);
 	}
 </style>
