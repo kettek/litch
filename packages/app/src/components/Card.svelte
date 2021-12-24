@@ -12,6 +12,7 @@
 	export let flyX: number = 500
 	export let noFlyIn: boolean = false
 	export let noBack: boolean = false
+	export let zIndex: number = 0
 
 	const dispatch = createEventDispatcher()
 	function close() {
@@ -31,7 +32,7 @@
 	}
 </script>
 
-<main class:primary class:secondary class:tertiary transition:navAnimation="{{delay: 0, duration: 200, x: flyX, y: 0, easing: quintInOut}}">
+<main style="{zIndex?'z-index:'+zIndex:''}" class:primary class:secondary class:tertiary transition:navAnimation="{{delay: 0, duration: 200, x: flyX, y: 0, easing: quintInOut}}">
 	<nav>
 		{#if noBack}
 			<div></div>
