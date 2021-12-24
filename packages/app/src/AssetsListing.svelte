@@ -12,6 +12,8 @@
 	export let assets: Asset[] | undefined = []
 	export let filter: string = ''
 
+	$: filteredAssets = assets?.sort((a,b)=>a.name.localeCompare(b.name)).filter(asset=>!isAssetFiltered(asset, filter))
+
 	let showPopup = false
 	$: focusedAsset = assets?.find(v=>v.uuid===focused)
 	$: selectedAssets = selected.map(v=>assets?.find(v2=>v2.uuid===v))
@@ -78,8 +80,8 @@
 
 <section class:selector>
 	{#if assets}
-		{#each assets.sort((a,b)=>a.name.localeCompare(b.name)) as asset (asset.uuid)}
-			{#if !isAssetFiltered(asset, filter)}
+		{#if filteredAssets}
+			{#each filteredAssets as asset (asset.uuid)}
 				<div on:click={(e)=>onAssetClick(e, asset.uuid)} on:dblclick={(e)=>onAssetDoubleClick(e, asset.uuid)} title='{asset.uuid}' class='asset' class:focused={focused===asset.uuid} class:selector={selector} class:selected={selected.includes(asset.uuid)}>
 					{#if !selector}
 						<header>{asset.name}</header>
@@ -100,8 +102,8 @@
 						<header>{asset.name}</header>
 					{/if}
 				</div>
-			{/if}
-		{/each}
+			{/each}
+		{/if}
 	{/if}
 	{#if showPopup}
 		<Card zIndex={1} tertiary on:close={()=>showPopup=false}>
