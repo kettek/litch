@@ -65,9 +65,15 @@
 					<svelte:fragment slot="heading">
 						{$_('assets.title')}
 					</svelte:fragment>
-					<svelte:fragment slot="content">
+					<section class='assets__listing' slot="content">
+						<label title={$_('collections.filterAssetsInfo')}>
+							<input placeholder='name, type, !tag, ...' type='text' bind:value={filter}/>
+							<Button tertiary invert>
+								<Icon icon='filter'></Icon>
+							</Button>
+						</label>
 						<AssetsListing multiple={multiple} selector assets={assets} bind:focused={focusedAssetUUID} bind:selected={selectedAssetUUIDs} filter={filter}></AssetsListing>
-					</svelte:fragment>
+					</section>
 				</DropList>
 			</section>
 		</main>
@@ -89,5 +95,14 @@
 		height: 100%;
 		display: grid;
 		grid-template-rows: auto minmax(0, 1fr);
+	}
+	.assets__listing {
+		display: grid;
+		grid-template-rows: auto minmax(0, 1fr);
+		height: 100%;
+	}
+	.assets__listing label {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
 	}
 </style>
