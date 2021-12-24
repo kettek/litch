@@ -87,6 +87,7 @@
 		grid-template-columns: auto minmax(0, 1fr);
 		align-items: stretch;
 		justify-content: stretch;
+		height: 3.25em;
 	}
 	header {
 		font-weight: 600;
