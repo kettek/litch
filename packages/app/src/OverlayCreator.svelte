@@ -11,6 +11,7 @@
 
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
+	import Card from './components/Card.svelte'
 
 	export let shown: boolean
 	let title: string
@@ -42,14 +43,9 @@
 	}
 </script>
 
-<main class:secondary={true} transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
-	<nav>
-		<Button nobg on:click={()=>shown=false}>
-			<Icon icon='back'></Icon>
-		</Button>
-		<header>{$_('overlays.titleCreateOverlay')}</header>
-	</nav>
-	<section>
+<Card secondary bind:open={shown}>
+	<svelte:fragment slot='title'>{$_('overlays.titleCreateOverlay')}</svelte:fragment>
+	<section slot='content'>
 		<label>
 			<input type='text' placeholder='title' bind:value={title}>
 			<span>{$_('overlays.title')}</span>
@@ -62,52 +58,15 @@
 			<input type='number' placeholder='1080' bind:value={height}>
 			<span>{$_('overlays.height')}</span>
 		</label>
-		<footer>
-			<Button secondary on:click={createOverlay}>
-				<Icon icon='add'></Icon>
-			</Button>
-		</footer>
 	</section>
-</main>
+	<svelte:fragment slot='footer'>
+		<Button secondary on:click={createOverlay}>
+			<Icon icon='add'></Icon>
+		</Button>
+	</svelte:fragment>
+</Card>
 
 <style>
-	main {
-		position: absolute;
-		top: 0; left: 0;
-		width: 100%; height: 100%;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		grid-template-rows: auto minmax(0, 1fr);
-	}
-	nav {
-		display: grid;
-		grid-template-columns: auto minmax(0, 1fr);
-		align-items: stretch;
-		justify-content: stretch;
-		background: var(--secondary);
-		color: var(--text);
-	}
-	nav > button {
-		height: 100%;
-		background: none;
-		border: 0;
-		border-radius: 0;
-		color: var(--text);
-	}
-	section {
-		color: var(--secondary);
-		padding: .5em;
-	}
-	header {
-		font-weight: 600;
-		display: flex;
-		align-items: center;
-		padding-left: .5em;
-		user-select: none;
-	}
-	footer {
-		float: right;
-	}
 	label {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
@@ -118,5 +77,9 @@
 		align-items: center;
 		justify-content: center;
 		padding: 0 .5em;
+		min-width: 8ch;
+	}
+	section {
+		padding: 1em;
 	}
 </style>
