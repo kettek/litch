@@ -5,6 +5,7 @@
 	import type { ModuleChannel } from "@kettek/litch-app/src/interfaces/ModuleInstance"
 
 	import { isLitchTuber, isPuppeteerTuber, LitchMask } from './Settings'
+	import { isLitchTuber, isPuppeteerTuber, LitchMask, LitchTuber } from './Settings'
 	import type { SettingsInterface } from './Settings'
 	export let settings: SettingsInterface
 
@@ -75,11 +76,10 @@
 		'eyes': true,
 		'mouth': false,
 	}
-	function getLitchMask(): LitchMask {
-		if (!isLitchTuber(settings.tuber)) return undefined
-		for (let mask of settings.tuber.masks) {
+	function getLitchMask(tuber: LitchTuber, states: any): LitchMask {
+		for (let mask of tuber.masks) {
 			let mismatch = false
-			for (let [tag, open] of Object.entries(litchStates)) {
+			for (let [tag, open] of Object.entries(states)) {
 				if (mask.tags[tag] !== open) {
 					mismatch = true
 					break
@@ -93,7 +93,7 @@
 	function litchLoop(delta: number) {
 		if (!isLitchTuber(settings.tuber)) return
 
-		let mask = getLitchMask()
+		let mask = getLitchMask(settings.tuber, litchStates)
 		if (!mask) {
 			return
 		}
@@ -186,10 +186,19 @@
 		start()
 		channel.receive = async ({topic, message}) => {
 			if (topic === 'update') {
-				channel.publish('setImage', {
-					reference: message.masks[0]?.faces[currentFace].reference,
-					ts: Date.now(),
-				})
+				if (isLitchTuber(message.tuber)) {
+					let mask = getLitchMask(message.tuber, {eyes: true, mouth: false})
+					if (!mask) return
+					channel.publish('setImage', {
+						reference: mask.frames[0],
+						ts: Date.now(),
+					})
+				} else if (isPuppeteerTuber(message.tuber)) {
+					channel.publish('setImage', {
+						reference: message.tuber?.emotions[0]?.faces[currentFace]?.reference,
+						ts: Date.now(),
+					})
+				}
 			} else if (topic === 'setImage') {
 				live.reference = message.reference
 			}
