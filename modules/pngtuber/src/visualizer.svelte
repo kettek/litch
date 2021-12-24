@@ -5,7 +5,7 @@
 	export let shown: boolean
 </script>
 
-<Card tertiary zIndex={1} bind:open={shown}>
+<Card tertiary zIndex={1} bind:open={shown} doClose>
 	<svelte:fragment slot='title'>
 		Sensitivity
 	</svelte:fragment>

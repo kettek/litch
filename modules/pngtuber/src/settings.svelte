@@ -319,9 +319,7 @@
 			{/each}
 		{/if}
 	</div>
-	{#if showVisualizer}
-		<Visualizer bind:shown={showVisualizer} frequencyData={frequencyData}/>
-	{/if}
+	<Visualizer bind:shown={showVisualizer} frequencyData={frequencyData}/>
 </div>
 
 <style>
