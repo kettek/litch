@@ -7,6 +7,7 @@
 	import { quintInOut } from 'svelte/easing'
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
+	import Card from "./components/Card.svelte"
 
 	export let selector: boolean = false
 	export let multiple: boolean = false
@@ -107,14 +108,11 @@
 		{/each}
 	{/if}
 	{#if showPopup}
-		<div class='popup' transition:fly="{{delay: 0, duration: 200, x: 1080, y: 0, easing: quintInOut}}">
-			<header>
-				<Button tertiary on:click={()=>{showPopup=false}}>
-					<Icon icon='back'></Icon>
-				</Button>
-				<span> {$_('assets.viewTitle')} </span>
-			</header>
-			<section>
+		<Card tertiary on:close={()=>showPopup=false}>
+			<svelte:fragment slot='title'>
+				{$_('assets.viewTitle')}
+			</svelte:fragment>
+			<section class='popup' slot='content'>
 				{#if focusedAsset}
 					{#if focusedAsset.mimetype.startsWith('image')}
 						<img alt={focusedAsset.uuid} src={focusedAsset.redirectedSource||focusedAsset.originalSource}/>
@@ -128,7 +126,7 @@
 					{/if}
 				{/if}
 			</section>
-		</div>
+		</Card>
 	{/if}
 </section>
 
@@ -181,28 +179,6 @@
 		justify-content: center;
 	}
 	.asset > article img, .asset > article video, .asset > article audio {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
-	}
-	.popup {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		display: grid;
-		grid-template-rows: auto minmax(0, 1fr);
-	}
-	.popup > header {
-		background: var(--tertiary);
-		color: var(--text);
-	}
-	.popup > section {
-		color: var(--tertiary);
-		background: var(--text);
-	}
-	.popup > section > img, .popup > section > video, .popup > section > audio {
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
