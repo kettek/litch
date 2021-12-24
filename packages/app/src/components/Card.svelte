@@ -80,4 +80,8 @@
 	section {
 		overflow: auto;
 	}
+	footer {
+		display: grid;
+		justify-content: minmax(0, 1fr);
+	}
 </style>
