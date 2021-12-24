@@ -9,6 +9,7 @@
 	import Icon from './components/Icon.svelte'
 	import Button from './components/Button.svelte'
 
+	import Card from './components/Card.svelte'
 	import AssetsCard from './AssetsCard.svelte'
 	import { getAssetSource } from './assets'
 	import { refreshOverlays } from './stores/overlays'
@@ -63,89 +64,71 @@
 	$: realModule = modules[module.moduleUUID]
 </script>
 
-<main transition:fly="{{delay: 0, duration: 200, x: 500, y: 0, easing: quintInOut}}">
-	<nav>
-		<Button nobg on:click={()=>focusedUUID=''}>
-			<Icon icon='back'></Icon>
-		</Button>
-		<header>{realModule.title}</header>
-	</nav>
-	<article class='title'>
-		<label>
-			<input type="text" bind:value={module.title}>
-			<span>{$_('module.title')}</span>
-		</label>
-	</article>
-	<article class='dimensions'>
-		<div class='dimensions__fields'>
-			<div>
-				<label>
-					<input type="number" bind:value={module.box.x}>
-				</label>
-				<span>x</span>
-				<label>
-					<input type="number" bind:value={module.box.y}>
-				</label>
+<Card tertiary on:close={()=>focusedUUID=''}>
+	<svelte:fragment slot='title'>
+		{realModule.title}
+	</svelte:fragment>
+	<section slot='content'>
+		<article class='title'>
+			<label>
+				<input type="text" bind:value={module.title}>
+				<span>{$_('module.title')}</span>
+			</label>
+		</article>
+		<article class='dimensions'>
+			<div class='dimensions__fields'>
+				<div>
+					<label>
+						<input type="number" bind:value={module.box.x}>
+					</label>
+					<span>x</span>
+					<label>
+						<input type="number" bind:value={module.box.y}>
+					</label>
+				</div>
+				<div>
+					<label>
+						<input type="number" bind:value={module.box.width}>
+					</label>
+					<span>x</span>
+					<label>
+						<input type="number" bind:value={module.box.height}>
+					</label>
+				</div>
+				<div>
+					<label>
+						<input type="number" bind:value={module.box.rotate}>
+						<span>{$_('module.rotation')}</span>
+					</label>
+				</div>
 			</div>
-			<div>
-				<label>
-					<input type="number" bind:value={module.box.width}>
-				</label>
-				<span>x</span>
-				<label>
-					<input type="number" bind:value={module.box.height}>
-				</label>
+			<div class='dimensions__icon' title='Left, Top, Width, and Height'>
+				<Icon cursor='default' icon='dimensions'></Icon>
 			</div>
-			<div>
-				<label>
-					<input type="number" bind:value={module.box.rotate}>
-					<span>{$_('module.rotation')}</span>
-				</label>
-			</div>
-		</div>
-		<div class='dimensions__icon' title='Left, Top, Width, and Height'>
-			<Icon cursor='default' icon='dimensions'></Icon>
-		</div>
-	</article>
-	<hr/>
-	<article class='module__wrapper'>
-		<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} channel={module.channel} assets={assets} format={localeFormat} />
-	</article>
-	<nav class='module__controls'>
+		</article>
+		<hr/>
+		<article class='module__wrapper'>
+			<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} channel={module.channel} assets={assets} format={localeFormat} />
+		</article>
+	</section>
+	<svelte:fragment slot="footer">
 		<Button tertiary on:click={()=>{module.channel.publish('reload', module.settings)}} title={$_('module.actions.reload')}>
 			<Icon icon='reload'></Icon>
 		</Button>
 		<Button tertiary on:click={()=>update(pendingSettings)} title={$_('module.actions.applyChanges')}>
 			<Icon icon='checkmark'></Icon>
 		</Button>
-	</nav>
-</main>
+	</svelte:fragment>
+</Card>
 {#if showAssets}
 	<AssetsCard multiple={showOptions.multiple} on:close={closeAssets}/>
 {/if}
 
 <style>
-	main {
-		position: absolute;
-		top: 0; left: 0;
-		width: 100%; height: 100%;
+	section {
+		height: 100%;
 		display: grid;
-		grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
-		background: var(--nav-bg);
-	}
-	nav {
-		display: grid;
-		grid-template-columns: auto minmax(0, 1fr);
-		align-items: stretch;
-		justify-content: stretch;
-		background: var(--tertiary);
-		color: var(--text);
-	}
-	nav header {
-		font-weight: 600;
-		display: flex;
-		align-items: center;
-		padding-left: .5em;
+		grid-template-rows: auto auto minmax(0, 1fr);
 	}
 	article {
 		color: var(--tertiary);
@@ -197,13 +180,4 @@
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr);
 	}
-	nav.module__controls {
-		display: grid;
-		grid-template-columns: auto auto;
-		align-items: stretch;
-		justify-content: stretch;
-		background: initial;
-		color: var(--tertiary);
-	}
-
 </style>
