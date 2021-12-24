@@ -13,6 +13,7 @@
 	export let noFlyIn: boolean = false
 	export let noBack: boolean = false
 	export let zIndex: number = 0
+	export let doClose: boolean = false
 
 	const dispatch = createEventDispatcher()
 	function close() {
@@ -32,26 +33,28 @@
 	}
 </script>
 
-<main style="{zIndex?'z-index:'+zIndex:''}" class:primary class:secondary class:tertiary transition:navAnimation="{{delay: 0, duration: 200, x: flyX, y: 0, easing: quintInOut}}">
-	<nav>
-		{#if noBack}
-			<div></div>
-		{:else}
-			<Button on:click={close}>
-				<Icon icon="back"></Icon>
-			</Button>
-		{/if}
-		<header>
-			<slot name='title'></slot>
-		</header>
-	</nav>
-	<section>
-		<slot name='content'></slot>
-	</section>
-	<footer>
-		<slot name='footer'></slot>
-	</footer>
-</main>
+{#if (doClose && open) || !doClose}
+	<main style="{zIndex?'z-index:'+zIndex:''}" class:primary class:secondary class:tertiary transition:navAnimation="{{delay: 0, duration: 200, x: flyX, y: 0, easing: quintInOut}}">
+		<nav>
+			{#if noBack}
+				<div></div>
+			{:else}
+				<Button on:click={close}>
+					<Icon icon="back"></Icon>
+				</Button>
+			{/if}
+			<header>
+				<slot name='title'></slot>
+			</header>
+		</nav>
+		<section>
+			<slot name='content'></slot>
+		</section>
+		<footer>
+			<slot name='footer'></slot>
+		</footer>
+	</main>
+{/if}
 
 <style>
 	main {
