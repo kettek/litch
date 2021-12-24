@@ -128,7 +128,7 @@
 	section {
 		height: 100%;
 		display: grid;
-		grid-template-rows: auto auto minmax(0, 1fr);
+		grid-template-rows: auto auto auto minmax(0, 1fr);
 	}
 	article {
 		color: var(--tertiary);
