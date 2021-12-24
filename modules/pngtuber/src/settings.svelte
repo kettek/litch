@@ -1,6 +1,7 @@
 <script type="ts">
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
+	import DropList from '@kettek/litch-app/src/components/DropList.svelte'
 	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
 
 	import type { SettingsInterface, LitchMask } from './Settings'
@@ -203,39 +204,40 @@
 
 <div>
 	<div class='emotions'>
-		<details>
-			<summary>
+		<DropList tertiary>
+			<svelte:fragment slot='heading'>
 				Settings
-			</summary>
-			<label>
-				<select value={settings.tuber.type} on:change={changeType}>
-					<option value='litch'>litch</option>
-					<option value='puppeteer'>puppeteer</option>
-				</select>
-				Tubular Type
-			</label>
-			<label>
-				<input type='number' bind:value={settings.sampleRate}/>
-				sample rate (ms)
-			</label>
-			<label>
-				<input type='number' bind:value={settings.sampleLimit}/>
-				sample limit
-			</label>
-			<label>
-				<input type='number' bind:value={settings.trigger}/>
-				trigger dB
-			</label>
-			<Button on:click={enableVisualizer}>configure sensitivity</Button>
-		</details>
-		{#if isLitchTuber(settings.tuber)}
-			<details>
-				<summary>Litch Tuber Settings</summary>
+			</svelte:fragment>
+			<section slot='content'>
 				<label>
-					<input type='number' bind:value={settings.tuber.framerate}/>
-					<span>framerate (ms)</span>
+					<select value={settings.tuber.type} on:change={changeType}>
+						<option value='litch'>litch</option>
+						<option value='puppeteer'>puppeteer</option>
+					</select>
+					<span> Tubular Type </span>
 				</label>
-			</details>
+				<label>
+					<input type='number' bind:value={settings.sampleRate}/>
+					<span>sample rate (ms)</span>
+				</label>
+				<label>
+					<input type='number' bind:value={settings.sampleLimit}/>
+					<span>sample limit</span>
+				</label>
+				<label>
+					<input type='number' bind:value={settings.trigger}/>
+					<span>trigger dB</span>
+				</label>
+				<Button on:click={enableVisualizer}>configure sensitivity</Button>
+				{#if isLitchTuber(settings.tuber)}
+					<label>
+						<input type='number' bind:value={settings.tuber.framerate}/>
+						<span>framerate (ms)</span>
+					</label>
+				{/if}
+			</section>
+		</DropList>
+		{#if isLitchTuber(settings.tuber)}
 			<nav>
 				{#each settings.tuber.masks as mask, index}
 					<Button tertiary border invert={index!==selectedMaskIndex} on:click={()=>{litch.selectMask(index)}}>
@@ -255,43 +257,57 @@
 					</Button>
 					<label>
 						<input bind:value={selectedMask.name}/>
-						Name
+						<span>Name</span>
 					</label>
-					<details open>
-						<summary>tags</summary>
-						<input bind:value={pendingTag}/>
-						<Button tertiary on:click={()=>litch.addTag(pendingTag)}>
-							<Icon icon='add'></Icon>
-						</Button>
-						{#each Object.entries(selectedMask.tags) as [tag, checked]}
-							<article>
-								<input value={tag} on:change={(e)=>litch.changeTag(e, tag)}/>
-								<input type='checkbox' bind:checked={selectedMask.tags[tag]}/>
-								<Button dangerous on:click={()=>{litch.removeTag(tag)}}>
-									<Icon icon='delete'/>
+					<DropList tertiary>
+						<svelte:fragment slot='heading'>
+							Tags
+						</svelte:fragment>
+						<section slot='content'>
+							<label>
+								<input bind:value={pendingTag}/>
+								<Button tertiary on:click={()=>litch.addTag(pendingTag)}>
+									<Icon icon='add'></Icon>
 								</Button>
-							</article>
-						{/each}
-					</details>
-					<details>
-						<summary>frames</summary>
-						<Button title='Open file' tertiary on:click={()=>{litch.addFileDialog(selectedMask)}}>
-							<Icon icon='open'></Icon>
-						</Button>
-						<Button dangerous on:click={()=>{litch.clearMaskFrames(selectedMaskIndex)}} title='Clear mask frames'>
-							<Icon icon='delete'></Icon>
-						</Button>
-						{#each selectedMask.frames as frame, index}
-							<article class='emotion__face'>
-								<Button title='Open file' tertiary on:click={()=>{litch.openFileDialog(selectedMask, index)}}>
+							</label>
+							{#each Object.entries(selectedMask.tags) as [tag, checked]}
+								<article class='input__tag'>
+									<input value={tag} on:change={(e)=>litch.changeTag(e, tag)}/>
+									<input type='checkbox' bind:checked={selectedMask.tags[tag]}/>
+									<Button dangerous on:click={()=>{litch.removeTag(tag)}}>
+										<Icon icon='delete'/>
+									</Button>
+								</article>
+							{/each}
+						</section>
+					</DropList>
+					<DropList tertiary>
+						<svelte:fragment slot='heading'>
+							Frames
+						</svelte:fragment>
+						<section slot='content'>
+							<section>
+								<Button title='Open file' tertiary on:click={()=>{litch.addFileDialog(selectedMask)}}>
 									<Icon icon='open'></Icon>
 								</Button>
-								<div class='face'>
-									<img alt='preview' src={assets.source(frame)}/>
-									</div>
-							</article>
-						{/each}
-					</details>
+								<Button dangerous on:click={()=>{litch.clearMaskFrames(selectedMaskIndex)}} title='Clear mask frames'>
+									<Icon icon='delete'></Icon>
+								</Button>
+							</section>
+							<section>
+							</section>
+								{#each selectedMask.frames as frame, index}
+									<article class='emotion__face'>
+										<Button title='Open file' tertiary on:click={()=>{litch.openFileDialog(selectedMask, index)}}>
+											<Icon icon='open'></Icon>
+										</Button>
+										<div class='face'>
+											<img alt='preview' src={assets.source(frame)}/>
+											</div>
+									</article>
+								{/each}
+						</section>
+					</DropList>
 				{/if}
 			</section>
 		{:else if isPuppeteerTuber(settings.tuber)}
@@ -333,9 +349,19 @@
 	summary > label {
 		display: inline-block;
 	}
-	label.file {
+	label {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+	label span {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.input__tag {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto auto;
+		align-items: center;
 	}
 	.emotion__container {
 		padding: .5em;
