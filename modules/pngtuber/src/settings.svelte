@@ -241,7 +241,7 @@
 			<nav>
 				{#each settings.tuber.masks as mask, index}
 					<Button tertiary border invert={index!==selectedMaskIndex} on:click={()=>{litch.selectMask(index)}}>
-						{index+1}
+						{mask.name}
 					</Button>
 				{/each}
 				<Button tertiary on:click={litch.addMask}>
