@@ -23,7 +23,7 @@ export interface ModuleInstanceInterface {
 export interface ModuleChannel {
 	handler: SubscriberHandler
 	receive: (msg: any) => Promise<void>
-	publish: (topic: string, msg: any) => void
+	publish: (topic: string, msg: any) => Promise<void>
 	subscribe: (topic: string) => () => void
 	unsubscribe: (topic?: string) => void
 }

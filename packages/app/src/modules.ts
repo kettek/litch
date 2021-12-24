@@ -26,10 +26,10 @@ export function createModuleChannel(overlayUUID: string, uuid: string): ModuleCh
 		receive: async (msg: PublishedMessage) => {
 			// To be overridden by the module.
 		},
-		publish: (topic: string, msg: any) => {
+		publish: async (topic: string, msg: any) => {
 			//publisher.publish(s, `${ctx}.${topic}`, msg)
 			// FIXME
-			publisher.publish(`${ctx}.${topic}`, msg)
+			await publisher.publish(`${ctx}.${topic}`, msg)
 		},
 		subscribe: (topic: string): ()=>void => {
 			// TODO: Limit topics to subscribe to
