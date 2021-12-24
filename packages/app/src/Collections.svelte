@@ -18,6 +18,7 @@
 	import AssetsListing from './AssetsListing.svelte'
 	import Card from './components/Card.svelte'
 	import CollectionsSelectedAsset from './CollectionsSelectedAsset.svelte'
+	import CollectionsSelectedAssets from './CollectionsSelectedAssets.svelte'
 
 	/* dispatch */
 	const dispatch = createEventDispatcher()
@@ -205,7 +206,11 @@
 								</Button>
 							</article>
 							<!-- Selected Asset -->
-							<CollectionsSelectedAsset bind:selectedAsset bind:selectedAssetUUID bind:selectedCollectionUUID on:remove={()=>removeAsset(selectedCollectionUUID, selectedAssetUUID)} />
+							{#if selectedAssetUUIDs.length > 1}
+								<CollectionsSelectedAssets selected={selectedAssetUUIDs} bind:collection={selectedCollection} />
+							{:else}
+								<CollectionsSelectedAsset bind:selectedAsset bind:selectedAssetUUID bind:selectedCollectionUUID on:remove={()=>removeAsset(selectedCollectionUUID, selectedAssetUUID)} />
+							{/if}
 						</section>
 					</Card>
 				{/if}
