@@ -3,10 +3,6 @@
 	import { isAssetFiltered } from './assets'
 
 	import { _ } from "svelte-i18n"
-	import { fly } from 'svelte/transition'
-	import { quintInOut } from 'svelte/easing'
-	import Button from './components/Button.svelte'
-	import Icon from './components/Icon.svelte'
 	import Card from "./components/Card.svelte"
 
 	export let selector: boolean = false
@@ -108,7 +104,7 @@
 		{/each}
 	{/if}
 	{#if showPopup}
-		<Card tertiary on:close={()=>showPopup=false}>
+		<Card zIndex={1} tertiary on:close={()=>showPopup=false}>
 			<svelte:fragment slot='title'>
 				{$_('assets.viewTitle')}
 			</svelte:fragment>
