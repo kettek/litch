@@ -4,6 +4,7 @@
 	import { flip } from 'svelte/animate'
 	import { quintInOut } from 'svelte/easing';
 
+	import Card from './components/Card.svelte'
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
 	import type { OverlayInterface } from './interfaces/Overlay'
@@ -64,47 +65,45 @@
 	}
 </script>
 
-<main transition:fly="{{delay: 0, duration: 200, x: -500, y: 0, easing: quintInOut}}">
-	<nav>
-		<button on:click={() => showOverlayCreator = true} class='nav__heading' >{$_('overlays.buttonNewOverlay')}</button>
-	</nav>
-	<ul>
-	{#each Object.entries(overlays) as [uuid, overlay] (uuid)}
-		<li
-			class:active={activeOverlayUUID===uuid} title="{uuid}"
-			animate:flip="{{duration: 200}}"
-			draggable={true}
-			on:dragstart={e => handleOverlayDragStart(e, uuid)}
-			on:drop|preventDefault={e => handleOverlayDrop(e, uuid)}
-			ondragover="return false"
-			on:dragenter={() => hoveringOverlayUUID = uuid}
-			class:hover={hoveringOverlayUUID === uuid}
-		>
-			<button class='activator' class:active={activeOverlayUUID===uuid} on:click={() => activeOverlayUUID=uuid} title={activeOverlayUUID===uuid?$_('overlay.inactivate'):$_('overlay.activate')}>
-				<Icon icon={activeOverlayUUID===uuid?'active':'inactive'}></Icon>
-			</button>
-			<span on:click={() => {currentOverlayUUID=uuid;focusedOverlayUUID=uuid}}>
-				{overlay.title}
-			</span>
-			<Button title={$_('overlays.obsActivatorSourceDragger')} secondary invert draggable={true} on:dragstart={e => {
-				let width = 1920
-				let height = 1080
-				let o = overlays[uuid]
-				if (o) {
-					width = o.canvas.width
-					height = o.canvas.height
-				}
-				let url = `${litchURL}/overlays/${uuid}?layer-name=Litch (${o.title})&layer-width=${width}&layer-height=${height}`
-				e.dataTransfer?.setData('text/uri-list', url)
-				e.dataTransfer?.setData('text/plain', url)
-			}}>
-				<Icon icon='link'></Icon>
-			</Button>
-			<Button secondary invert on:click={(e)=>showOverlayMenu(e, uuid)}><Icon icon='burger'></Icon></Button>
-		</li>
-	{/each}
+<Card secondary noBack flyX={-500}>
+	<button slot='title' on:click={() => showOverlayCreator = true} class='nav__heading' >{$_('overlays.buttonNewOverlay')}</button>
+	<ul slot='content'>
+		{#each Object.entries(overlays) as [uuid, overlay] (uuid)}
+			<li
+				class:active={activeOverlayUUID===uuid} title="{uuid}"
+				animate:flip="{{duration: 200}}"
+				draggable={true}
+				on:dragstart={e => handleOverlayDragStart(e, uuid)}
+				on:drop|preventDefault={e => handleOverlayDrop(e, uuid)}
+				ondragover="return false"
+				on:dragenter={() => hoveringOverlayUUID = uuid}
+				class:hover={hoveringOverlayUUID === uuid}
+			>
+				<button class='activator' class:active={activeOverlayUUID===uuid} on:click={() => activeOverlayUUID=uuid} title={activeOverlayUUID===uuid?$_('overlay.inactivate'):$_('overlay.activate')}>
+					<Icon icon={activeOverlayUUID===uuid?'active':'inactive'}></Icon>
+				</button>
+				<span on:click={() => {currentOverlayUUID=uuid;focusedOverlayUUID=uuid}}>
+					{overlay.title}
+				</span>
+				<Button title={$_('overlays.obsActivatorSourceDragger')} secondary invert draggable={true} on:dragstart={e => {
+					let width = 1920
+					let height = 1080
+					let o = overlays[uuid]
+					if (o) {
+						width = o.canvas.width
+						height = o.canvas.height
+					}
+					let url = `${litchURL}/overlays/${uuid}?layer-name=Litch (${o.title})&layer-width=${width}&layer-height=${height}`
+					e.dataTransfer?.setData('text/uri-list', url)
+					e.dataTransfer?.setData('text/plain', url)
+				}}>
+					<Icon icon='link'></Icon>
+				</Button>
+				<Button secondary invert on:click={(e)=>showOverlayMenu(e, uuid)}><Icon icon='burger'></Icon></Button>
+			</li>
+		{/each}
 	</ul>
-</main>
+</Card>
 {#if showMenu}
 	<Menu secondary {...menuPos} on:click={closeOverlayMenu} on:clickoutside={closeOverlayMenu}>
 		<MenuOption dangerous on:click={()=>dispatch('delete', menuUUID)}>
@@ -115,30 +114,9 @@
 {/if}
 
 <style>
-	main {
-		position: absolute;
-		top: 0;
-		left: 0;
+	button {
 		width: 100%;
 		height: 100%;
-		display: grid;
-		grid-template-rows: auto minmax(0, 1fr);
-		grid-template-columns: minmax(0, 1fr);
-	}
-	nav {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		align-items: stretch;
-		justify-content: stretch;
-		background: var(--secondary);
-		color: var(--text);
-	}
-	nav > button {
-		width: 100%;
-		height: 100%;
-		background: none;
-		border: 0;
-		color: var(--text);
 	}
 	.activator {
 		background: none;
