@@ -6,7 +6,7 @@
 	import { publisher } from './modules'
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
-import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from 'svelte'
 
 	export let selectedCollectionUUID: string
 	export let selectedAssetUUID: string
