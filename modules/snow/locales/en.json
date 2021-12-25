@@ -1,12 +1,13 @@
 {
-	"updateRate": "Update rate",
-	"maxAccumulator": "Max accumulator",
+	"updateRate": "Update rate (ms)",
+	"maxAccumulator": "Max accumulator (ms)",
 	"selectAGroup": "Select or create a group",
 	"unsupportedAsset": "Unsupported asset",
 	"openAsset": "Open asset",
 	"addGroup": "Add group",
 	"deleteGroup": "Delete group",
 	"duplicateGroup": "Duplicate group",
+	"positionDimensionInformation": "Position properties are percentages of the overlay view.",
 	"group": {
 		"emojiType": "Emoji",
 		"assetType": "Asset",
@@ -21,6 +22,7 @@
 		"randomYRate": "Y Random Rate (min, max)",
 		"randomizeStartingRotation": "Randomize Starting Rotation",
 		"randomRotationRate": "Rotation Random Rate (min, max)",
-		"reloadRequired": "Changing the following options require a reload:"
+		"reloadRequired": "Changing the following options require a reload.",
+		"randomizationInformation": "Random rates are percentages applied every update."
 	}
 }

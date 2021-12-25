@@ -1,4 +1,5 @@
 <script type="ts">
+	import Info from '@kettek/litch-app/src/components/Info.svelte'
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
 	import type { AssetManager, AssetResult } from '@kettek/litch-app/src/interfaces/Asset'
@@ -116,8 +117,13 @@
 				<input type='number' bind:value={currentGroup.size}/>
 				<span>{format('group.baseSize')}</span>
 			</label>
+			<Info tertiary>
+				{format('positionDimensionInformation')}
+			</Info>
 			<hr/>
-			<span>{format('group.reloadRequired')}</span>
+			<Info tertiary>
+				{format('group.reloadRequired')}
+			</Info>
 			<label>
 				<input type='number' bind:value={currentGroup.count}/>
 				<span>{format('group.count')}</span>
@@ -139,6 +145,13 @@
 				<span>{format('group.randomScale')}</span>
 			</label>
 			<label>
+				<input type='checkbox' bind:checked={currentGroup.rotate}/>
+				<span>{format('group.randomizeStartingRotation')}</span>
+			</label>
+			<Info tertiary>
+				{format('group.randomizationInformation')}
+			</Info>
+			<label>
 				<input type='number' bind:value={currentGroup.xRandomRate[0]}/>
 				<input type='number' bind:value={currentGroup.xRandomRate[1]}/>
 				<span>{format('group.randomXRate')}</span>
@@ -147,10 +160,6 @@
 				<input type='number' bind:value={currentGroup.yRandomRate[0]}/>
 				<input type='number' bind:value={currentGroup.yRandomRate[1]}/>
 				<span>{format('group.randomYRate')}</span>
-			</label>
-			<label>
-				<input type='checkbox' bind:checked={currentGroup.rotate}/>
-				<span>{format('group.randomizeStartingRotation')}</span>
 			</label>
 			<label>
 				<input type='number' bind:value={currentGroup.rotRandomRate[0]}/>
