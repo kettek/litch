@@ -120,9 +120,6 @@
 				<input type='number' bind:value={currentGroup.size}/>
 				<span>{format('group.baseSize')}</span>
 			</label>
-			<Info tertiary>
-				{format('positionDimensionInformation')}
-			</Info>
 			<hr/>
 			<Info tertiary>
 				{format('group.reloadRequired')}
@@ -131,6 +128,9 @@
 				<input type='number' bind:value={currentGroup.count}/>
 				<span>{format('group.count')}</span>
 			</label>
+			<Info tertiary>
+				{format('positionDimensionInformation')}
+			</Info>
 			<label>
 				<input type='number' bind:value={currentGroup.spawnX}/>
 				<span>{format('group.spawnX')}</span>
