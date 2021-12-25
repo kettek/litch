@@ -1,6 +1,7 @@
 <script type="ts">
 	import Info from '@kettek/litch-app/src/components/Info.svelte'
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
+	import ItemBar from '@kettek/litch-app/src/components/ItemBar.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
 	import type { AssetManager, AssetResult } from '@kettek/litch-app/src/interfaces/Asset'
 	import type { ModuleChannel, ModuleFormat } from '@kettek/litch-app/src/interfaces/ModuleInstance'
@@ -70,16 +71,18 @@
 			<Icon icon='add'></Icon>
 		</Button>
 	</nav>
+	<ItemBar>
+		<Button tertiary on:click={()=>{duplicateGroup(selectedIndex)}} title={format('duplicateGroup')}>
+			<Icon icon='duplicate'></Icon>
+		</Button>
+		<Button dangerous on:click={()=>{removeGroup(selectedIndex)}} title={format('deleteGroup')}>
+			<Icon icon='delete'></Icon>
+		</Button>
+	</ItemBar>
 	<section>
 		{#if !currentGroup}
 			{format('selectAGroup')}
 		{:else}
-			<Button tertiary on:click={()=>{duplicateGroup(selectedIndex)}} title={format('duplicateGroup')}>
-				<Icon icon='duplicate'></Icon>
-			</Button>
-			<Button dangerous on:click={()=>{removeGroup(selectedIndex)}} title={format('deleteGroup')}>
-				<Icon icon='delete'></Icon>
-			</Button>
 			<label>
 				<select bind:value={currentGroup.sourceType}>
 					<option value='emoji'>{format('group.emojiType')}</option>
@@ -173,7 +176,7 @@
 <style>
 	main {
 		display: grid;
-		grid-template-rows: auto auto minmax(0, 1fr);
+		grid-template-rows: auto auto auto minmax(0, 1fr);
 		overflow: auto;
 		height: 100%;
 	}
