@@ -54,7 +54,7 @@
 </script>
 
 <main>
-	<header>
+	<Section alt rounded padded>
 		<label>
 			<input type='number' bind:value={settings.updateRate}/>
 			{format('updateRate')}
@@ -63,7 +63,7 @@
 			<input type='number' bind:value={settings.maxAccumulator}/>
 			{format('maxAccumulator')}
 		</label>
-	</header>
+	</Section>
 	<TabBar>
 		{#each settings.groups as group, index}
 			<Tab tertiary selected={index===selectedIndex} on:click={()=>{selectGroup(index)}}>
