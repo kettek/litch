@@ -1,10 +1,11 @@
 <script lang="ts">
-	export let roundTop: boolean = false
+	export let round: string = ''
+	export let alt: boolean = false
 	let clazz: string = ''
 	export { clazz as class}
 </script>
 
-<nav class={`${clazz||''}`} class:roundTop >
+<nav class={`${clazz||''} ${$$props.class}`} class:roundTop={round==='top'} class:roundBottom={round==='bottom'} class:alt >
 	<slot></slot>
 </nav>
 
@@ -15,5 +16,11 @@
 	}
 	nav.roundTop {
 		border-radius: .75em .75em 0 0;
+	}
+	nav.roundBottom {
+		border-radius: 0 0 .75em .75em;
+	}
+	nav.alt {
+		background: var(--bar-bg);
 	}
 </style>
