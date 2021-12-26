@@ -70,9 +70,11 @@
 				{index+1}
 			</Tab>
 		{/each}
-		<Button tertiary small on:click={addGroup} title={format('addGroup')}>
-			<Icon icon='add'></Icon>
-		</Button>
+		<svelte:fragment slot='controls'>
+			<Button tertiary small on:click={addGroup} title={format('addGroup')}>
+				<Icon icon='add'></Icon>
+			</Button>
+		</svelte:fragment>
 	</TabBar>
 	<ItemBar alt round='top'>
 		<Button tertiary on:click={()=>{duplicateGroup(selectedIndex)}} title={format('duplicateGroup')}>
