@@ -62,7 +62,7 @@
 			{format('maxAccumulator')}
 		</label>
 	</header>
-	<nav>
+	<ItemBar flex>
 		{#each settings.groups as group, index}
 			<Button tertiary border invert={index!==selectedIndex} on:click={()=>{selectGroup(index)}}>
 				{index+1}
@@ -71,7 +71,7 @@
 		<Button tertiary on:click={addGroup} title={format('addGroup')}>
 			<Icon icon='add'></Icon>
 		</Button>
-	</nav>
+	</ItemBar>
 	<ItemBar alt round='top'>
 		<Button tertiary on:click={()=>{duplicateGroup(selectedIndex)}} title={format('duplicateGroup')}>
 			<Icon icon='duplicate'></Icon>
