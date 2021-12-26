@@ -3,6 +3,7 @@
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
 	import ItemBar from '@kettek/litch-app/src/components/ItemBar.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
+	import Section from '@kettek/litch-app/src/components/Section.svelte'
 	import type { AssetManager, AssetResult } from '@kettek/litch-app/src/interfaces/Asset'
 	import type { ModuleChannel, ModuleFormat } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import { defaultGroup, SettingsInterface } from './SettingsI'
@@ -71,7 +72,7 @@
 			<Icon icon='add'></Icon>
 		</Button>
 	</nav>
-	<ItemBar>
+	<ItemBar alt round='top'>
 		<Button tertiary on:click={()=>{duplicateGroup(selectedIndex)}} title={format('duplicateGroup')}>
 			<Icon icon='duplicate'></Icon>
 		</Button>
@@ -79,7 +80,7 @@
 			<Icon icon='delete'></Icon>
 		</Button>
 	</ItemBar>
-	<section>
+	<Section alt round='bottom' padded>
 		{#if !currentGroup}
 			{format('selectAGroup')}
 		{:else}
@@ -170,7 +171,7 @@
 				<span>{format('group.randomRotationRate')}</span>
 			</label>
 		{/if}
-	</section>
+	</Section>
 </main>
 
 <style>
@@ -179,9 +180,6 @@
 		grid-template-rows: auto auto auto minmax(0, 1fr);
 		overflow: auto;
 		height: 100%;
-	}
-	section {
-		overflow: auto;
 	}
 	input[type=number] {
 		width: 5em;
