@@ -10,12 +10,13 @@
 	export let dangerous: boolean = false
 	export let nomargin: boolean = false
 	export let draggable: boolean = false
+	export let small: boolean = false
 	export let title: string = ''
 	let clazz: string = ''
 	export { clazz as class}
 </script>
 
-<button draggable={draggable} title={title} class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class:nomargin class={`${clazz||''}`} class:nobg class:border class:disabled disabled={disabled} on:click on:dragstart on:dragenter on:dragover on:drop>
+<button draggable={draggable} title={title} class:invert class:primary class:secondary class:tertiary class:noround class:dangerous class:nomargin class={`${clazz||''}`} class:nobg class:border class:small class:disabled disabled={disabled} on:click on:dragstart on:dragenter on:dragover on:drop>
 	<slot></slot>
 </button>
 
@@ -32,6 +33,9 @@
 	}
 	.nomargin {
 		margin: 0;
+	}
+	.small {
+		font-size: 75%;
 	}
 	.primary {
 		background: var(--primary);
