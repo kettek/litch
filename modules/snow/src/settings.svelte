@@ -3,6 +3,8 @@
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
 	import ItemBar from '@kettek/litch-app/src/components/ItemBar.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
+	import Tab from '@kettek/litch-app/src/components/Tab.svelte'
+	import TabBar from '@kettek/litch-app/src/components/TabBar.svelte'
 	import Section from '@kettek/litch-app/src/components/Section.svelte'
 	import type { AssetManager, AssetResult } from '@kettek/litch-app/src/interfaces/Asset'
 	import type { ModuleChannel, ModuleFormat } from '@kettek/litch-app/src/interfaces/ModuleInstance'
@@ -62,16 +64,16 @@
 			{format('maxAccumulator')}
 		</label>
 	</header>
-	<ItemBar flex>
+	<TabBar>
 		{#each settings.groups as group, index}
-			<Button tertiary border invert={index!==selectedIndex} on:click={()=>{selectGroup(index)}}>
+			<Tab tertiary selected={index===selectedIndex} on:click={()=>{selectGroup(index)}}>
 				{index+1}
-			</Button>
+			</Tab>
 		{/each}
-		<Button tertiary on:click={addGroup} title={format('addGroup')}>
+		<Button tertiary small on:click={addGroup} title={format('addGroup')}>
 			<Icon icon='add'></Icon>
 		</Button>
-	</ItemBar>
+	</TabBar>
 	<ItemBar alt round='top'>
 		<Button tertiary on:click={()=>{duplicateGroup(selectedIndex)}} title={format('duplicateGroup')}>
 			<Icon icon='duplicate'></Icon>
