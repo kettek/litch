@@ -49,6 +49,14 @@ input, button, select, textarea {
 	border-radius: .25em;
 }
 
+.alt {
+	background: var(--bar-bg);
+}
+
+.alt input, .alt button, .alt select, .alt textarea {
+	background: var(--nav-bg);
+}
+
 input:disabled {
 	color: #ccc;
 }
