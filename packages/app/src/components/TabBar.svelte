@@ -14,7 +14,7 @@
 
 <style>
 	nav {
-		margin: 0 .25em;
+		margin: .25em .25em 0 .25em;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
 	}
