@@ -17,7 +17,6 @@
 	import DropList from './components/DropList.svelte'
 	import AssetsListing from './AssetsListing.svelte'
 	import Card from './components/Card.svelte'
-	import CollectionsSelectedAsset from './CollectionsSelectedAsset.svelte'
 	import CollectionsSelectedAssets from './CollectionsSelectedAssets.svelte'
 	import ItemBar from './components/ItemBar.svelte'
 	import ItemGroup from './components/ItemGroup.svelte'
@@ -145,7 +144,7 @@
 <Window primary on:close>
 	<span slot="title">{$_('collections.title')}</span>
 	<article slot="content">
-		<SplitPane type="horizontal" pos=25>
+		<SplitPane type="horizontal" pos={25}>
 			<section slot='a' class='left'>
 				{#if navState === 'collections'}
 					<Card secondary noBack flyX={-500}>
