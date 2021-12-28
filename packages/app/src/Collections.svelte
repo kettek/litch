@@ -19,6 +19,7 @@
 	import Card from './components/Card.svelte'
 	import CollectionsSelectedAsset from './CollectionsSelectedAsset.svelte'
 	import CollectionsSelectedAssets from './CollectionsSelectedAssets.svelte'
+import ItemBar from './components/ItemBar.svelte'
 
 	/* dispatch */
 	const dispatch = createEventDispatcher()
@@ -195,15 +196,17 @@
 									<input type='text' bind:value={selectedCollection.name}/>
 									<span>{$_('collections.name')}</span>
 								</label>
-								<Button secondary on:click={importAsset} title={$_('collections.importFiles')}>
-									<Icon icon="open"></Icon>
-								</Button>
-								<Button secondary on:click={importFolder} title={$_('collections.importFolder')}>
-									<Icon icon="open-folder"></Icon>
-								</Button>
-								<Button secondary on:click={addAsset} title={$_('collections.createAsset')}>
-									<Icon icon="add"></Icon>
-								</Button>
+								<ItemBar>
+									<Button tertiary on:click={importAsset} title={$_('collections.importFiles')}>
+										<Icon icon="open"></Icon>
+									</Button>
+									<Button tertiary on:click={importFolder} title={$_('collections.importFolder')}>
+										<Icon icon="open-folder"></Icon>
+									</Button>
+									<Button tertiary on:click={addAsset} title={$_('collections.createAsset')}>
+										<Icon icon="add"></Icon>
+									</Button>
+								</ItemBar>
 							</article>
 							<!-- Selected Asset -->
 							{#if selectedAssetUUIDs.length > 1}
@@ -270,6 +273,7 @@
 		display: grid;
 		grid-template-rows: auto minmax(0, 1fr);
 		height: 100%;
+		color: var(--tertiary);
 	}
 	.content {
 		display: grid;
@@ -314,11 +318,6 @@
 	/* window */
 	nav {
 		display: grid;
-	}
-	hr {
-		border-color: var(--secondary);
-		border-style: solid;
-		width: calc(100% - 4em);
 	}
 	label > span {
 		display: flex;
