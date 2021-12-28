@@ -51,14 +51,17 @@
 		"title": "Collections",
 		"name": "Name",
 		"selectAnAsset": "Select an Asset",
+		"selectOneOrMoreAssets": "Select one or more assets",
 		"selectedAsset": "Selected Asset",
+		"selectedAssets": "{count} assets selected",
 		"importFiles": "Import file(s)",
 		"importFolder": "Import folder",
 		"createAsset": "Create empty asset",
 		"openFile": "Open file",
 		"duplicate": "Duplicate",
 		"delete": "Delete",
-		"filterAssetsInfo": "Filter assets by name, type, tag, or more"
+		"filterAssetsInfo": "Filter assets by name, type, tag, or more",
+		"localFile": "local file"
 	},
 	"assets": {
 		"title": "Assets",

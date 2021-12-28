@@ -63,7 +63,7 @@
 		</ItemBar>
 		<Section alt round='bottom'>
 			{#if selectedAssets.length === 0}
-				<ItemGroup>Select one or more assets.</ItemGroup>
+				<ItemGroup>{$_('collections.selectOneOrMoreAssets')}</ItemGroup>
 			{:else if selectedAssets.length === 1}
 				<ItemGroup>
 					<input disabled type='text' bind:value={selectedAssets[0].uuid}/>
@@ -75,14 +75,14 @@
 					</svelte:fragment>
 				</ItemGroup>
 				<ItemGroup label>
-					<input type='text' bind:value={selectedAssets[0].originalSource} placeholder='local file' />
+					<input type='text' bind:value={selectedAssets[0].originalSource} placeholder={$_('collections.localFile')} />
 					<Button title={$_('collections.openFile')} secondary on:click={()=>{openSourceDialog()}}>
 						<Icon icon='open'></Icon>
 					</Button>
 				</ItemGroup>
 			{:else}
 				<ItemGroup>
-					{selected.length} assets selected.
+					{$_('collections.selectedAssets', {values: {count: selected.length}})}
 				</ItemGroup>
 			{/if}
 		</Section>
