@@ -8,10 +8,22 @@
 {#if label}
 	<label title={title} class:ItemGroup={true} style='--repeat: {repeatStr};'>
 		<slot></slot>
+		{#if $$slots.label}
+			<span>
+				<slot name='label'>
+				</slot>
+			</span>
+		{/if}
 	</label>
 {:else}
 	<article title={title} class:ItemGroup={true} style='--repeat: {repeatStr};'>
 		<slot></slot>
+		{#if $$slots.label}
+			<span>
+				<slot name='label'>
+				</slot>
+			</span>
+		{/if}
 	</article>
 {/if}
 
@@ -20,5 +32,10 @@
 		display: grid;
 		grid-template-columns: var(--repeat);
 		padding: .5em;
+	}
+	span {
+		display: flex;
+		align-items: center;
+		padding: 0 .5em;
 	}
 </style>
