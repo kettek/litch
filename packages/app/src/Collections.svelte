@@ -212,11 +212,7 @@
 								</ItemBar>
 							</article>
 							<!-- Selected Asset -->
-							{#if selectedAssetUUIDs.length > 1}
-								<CollectionsSelectedAssets selected={selectedAssetUUIDs} bind:collection={selectedCollection} />
-							{:else}
-								<CollectionsSelectedAsset bind:selectedAsset bind:selectedAssetUUID bind:selectedCollectionUUID on:remove={()=>removeAsset(selectedCollectionUUID, selectedAssetUUID)} />
-							{/if}
+							<CollectionsSelectedAssets selected={selectedAssetUUIDs} bind:collection={selectedCollection} />
 						</section>
 					</Card>
 				{/if}
