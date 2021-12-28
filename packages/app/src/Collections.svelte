@@ -195,7 +195,9 @@
 							<article class ='collection'>
 								<ItemGroup label>
 									<input type='text' bind:value={selectedCollection.name}/>
-									<span>{$_('collections.name')}</span>
+									<svelte:fragment slot='label'>
+										{$_('collections.name')}
+									</svelte:fragment>
 								</ItemGroup>
 								<ItemBar>
 									<Button tertiary on:click={importAsset} title={$_('collections.importFiles')}>
