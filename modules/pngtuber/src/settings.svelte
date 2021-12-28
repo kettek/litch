@@ -2,6 +2,11 @@
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
 	import DropList from '@kettek/litch-app/src/components/DropList.svelte'
+	import TabBar from '@kettek/litch-app/src/components/TabBar.svelte'
+	import Tab from '@kettek/litch-app/src/components/Tab.svelte'
+	import ItemGroup from '@kettek/litch-app/src/components/ItemGroup.svelte'
+	import ItemBar from '@kettek/litch-app/src/components/ItemBar.svelte'
+	import Section from '@kettek/litch-app/src/components/Section.svelte'
 	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
 
 	import type { SettingsInterface, LitchMask } from './Settings'
@@ -204,57 +209,56 @@
 
 <div>
 	<div class='emotions'>
-		<DropList tertiary>
-			<svelte:fragment slot='heading'>
-				Settings
-			</svelte:fragment>
-			<section slot='content'>
-				<label>
-					<select value={settings.tuber.type} on:change={changeType}>
-						<option value='litch'>litch</option>
-						<option value='puppeteer'>puppeteer</option>
-					</select>
-					<span> Tubular Type </span>
-				</label>
-				<label>
-					<input type='number' bind:value={settings.sampleRate}/>
-					<span>sample rate (ms)</span>
-				</label>
-				<label>
-					<input type='number' bind:value={settings.sampleLimit}/>
-					<span>sample limit</span>
-				</label>
-				<label>
-					<input type='number' bind:value={settings.trigger}/>
-					<span>trigger dB</span>
-				</label>
-				<Button on:click={enableVisualizer}>configure sensitivity</Button>
-				{#if isLitchTuber(settings.tuber)}
-					<label>
-						<input type='number' bind:value={settings.tuber.framerate}/>
-						<span>framerate (ms)</span>
-					</label>
-				{/if}
-			</section>
-		</DropList>
+		<Section alt padded rounded>
+			<ItemGroup label>
+				<select value={settings.tuber.type} on:change={changeType}>
+					<option value='litch'>litch</option>
+					<option value='puppeteer'>puppeteer</option>
+				</select>
+				<span> Tubular Type </span>
+			</ItemGroup>
+			<ItemGroup label>
+				<input type='number' bind:value={settings.sampleRate}/>
+				<span>sample rate (ms)</span>
+			</ItemGroup>
+			<ItemGroup label>
+				<input type='number' bind:value={settings.sampleLimit}/>
+				<span>sample limit</span>
+			</ItemGroup>
+			<ItemGroup label>
+				<input type='number' bind:value={settings.trigger}/>
+				<span>trigger dB</span>
+			</ItemGroup>
+			<Button on:click={enableVisualizer}>configure sensitivity</Button>
+			{#if isLitchTuber(settings.tuber)}
+				<ItemGroup label>
+					<input type='number' bind:value={settings.tuber.framerate}/>
+					<span>framerate (ms)</span>
+				</ItemGroup>
+			{/if}
+		</Section>
 		{#if isLitchTuber(settings.tuber)}
-			<nav>
+			<TabBar>
 				{#each settings.tuber.masks as mask, index}
-					<Button tertiary border invert={index!==selectedMaskIndex} on:click={()=>{litch.selectMask(index)}}>
+					<Tab tertiary selected={index===selectedMaskIndex} on:click={()=>{litch.selectMask(index)}}>
 						{mask.name}
-					</Button>
+					</Tab>
 				{/each}
-				<Button tertiary on:click={litch.addMask}>
-					<Icon icon='add'></Icon>
+				<svelte:fragment slot='controls'>
+					<Button tertiary small on:click={litch.addMask}>
+						<Icon icon='add'></Icon>
+					</Button>
+				</svelte:fragment>
+			</TabBar>
+			<ItemBar alt round='top'>
+				<Button disabled={!selectedMask} dangerous on:click={()=>{litch.deleteMask(selectedMaskIndex)}} title='Delete mask'>
+					<Icon icon='delete'></Icon>
 				</Button>
-			</nav>
-			<section>
+			</ItemBar>
+			<Section alt round='bottom' padded>
 				{#if !selectedMask}
 					Select or create a mask
 				{:else}
-					<Button dangerous on:click={()=>{litch.deleteMask(selectedMaskIndex)}} title='Delete mask'>
-						<Icon icon='delete'></Icon>
-					</Button>
 					<label>
 						<input bind:value={selectedMask.name}/>
 						<span>Name</span>
@@ -309,7 +313,7 @@
 						</section>
 					</DropList>
 				{/if}
-			</section>
+			</Section>
 		{:else if isPuppeteerTuber(settings.tuber)}
 			<Button title='Add Emotion' tertiary on:click={puppeteer.addEmotion}>
 				<Icon icon='add'></Icon>
