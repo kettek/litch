@@ -31,7 +31,7 @@
 	.ItemGroup {
 		display: grid;
 		grid-template-columns: var(--repeat);
-		padding: .5em;
+		padding: 0 .5em;
 	}
 	span {
 		display: flex;
