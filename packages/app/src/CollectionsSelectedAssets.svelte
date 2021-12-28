@@ -76,7 +76,7 @@
 				</ItemGroup>
 				<ItemGroup label>
 					<input type='text' bind:value={selectedAssets[0].originalSource} placeholder={$_('collections.localFile')} />
-					<Button title={$_('collections.openFile')} secondary on:click={()=>{openSourceDialog()}}>
+					<Button title={$_('collections.openFile')} tertiary on:click={()=>{openSourceDialog()}}>
 						<Icon icon='open'></Icon>
 					</Button>
 				</ItemGroup>
@@ -95,7 +95,7 @@
 			<section slot='content' class='selectedAssets__tags__content'>
 				<ItemGroup label>
 					<input type='text' bind:value={pendingTagValue} on:submit={addTag}/>
-					<Button secondary on:click={addTag} title={$_('asset.addTag')}>
+					<Button tertiary on:click={addTag} title={$_('asset.addTag')}>
 						<Icon icon='add'></Icon>
 					</Button>
 				</ItemGroup>
@@ -117,7 +117,7 @@
 			<section slot='content' class='selectedAssets__tags__content'>
 				<ItemGroup label>
 					<input type='text' bind:value={pendingTagValue} on:submit={addTag}/>
-					<Button secondary on:click={addTag} title={$_('asset.addTag')}>
+					<Button tertiary on:click={addTag} title={$_('asset.addTag')}>
 						<Icon icon='add'></Icon>
 					</Button>
 				</ItemGroup>
