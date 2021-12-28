@@ -18,7 +18,7 @@
 
 <style>
 	main {
-		padding: 1em;
+		padding: .5em;
 		margin: 0.25em 0;
 		display: grid;
 		grid-template-rows: auto minmax(0, 1fr);
