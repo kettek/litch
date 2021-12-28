@@ -19,7 +19,8 @@
 	import Card from './components/Card.svelte'
 	import CollectionsSelectedAsset from './CollectionsSelectedAsset.svelte'
 	import CollectionsSelectedAssets from './CollectionsSelectedAssets.svelte'
-import ItemBar from './components/ItemBar.svelte'
+	import ItemBar from './components/ItemBar.svelte'
+	import ItemGroup from './components/ItemGroup.svelte'
 
 	/* dispatch */
 	const dispatch = createEventDispatcher()
@@ -153,12 +154,12 @@ import ItemBar from './components/ItemBar.svelte'
 						</svelte:fragment>
 						<section class='collections__container' slot='content'>
 							<nav class='collections'>
-								<label>
+								<ItemGroup label>
 									<input type='text' placeholder='New Collection' bind:value={pendingCollectionValue} on:keyup|preventDefault={handleCollectionAddKeyUp}/>
 									<Button secondary on:click={addCollection}>
 										<Icon icon="add"></Icon>
 									</Button>
-								</label>
+								</ItemGroup>
 							</nav>
 							<article>
 								<DropList secondary>
@@ -192,10 +193,10 @@ import ItemBar from './components/ItemBar.svelte'
 						<section class='collection__container' slot='content'>
 							<!-- Selected Collection -->
 							<article class ='collection'>
-								<label>
+								<ItemGroup label>
 									<input type='text' bind:value={selectedCollection.name}/>
 									<span>{$_('collections.name')}</span>
-								</label>
+								</ItemGroup>
 								<ItemBar>
 									<Button tertiary on:click={importAsset} title={$_('collections.importFiles')}>
 										<Icon icon="open"></Icon>
@@ -220,12 +221,12 @@ import ItemBar from './components/ItemBar.svelte'
 			</section>
 			<section slot='b' class='content'>
 				<nav class='filter'>
-					<label title={$_('collections.filterAssetsInfo')}>
+					<ItemGroup label count={2} title={$_('collections.filterAssetsInfo')}>
 						<input placeholder='name, type, !tag, ...' type='text' bind:value={filterValue}/>
 						<Button tertiary invert>
 							<Icon icon='filter'></Icon>
 						</Button>
-					</label>
+					</ItemGroup>
 				</nav>
 				<article class='assets tertiary'>
 					<AssetsListing multiple bind:selected={selectedAssetUUIDs} bind:focused={selectedAssetUUID} assets={assets} filter={filterValue}/>
@@ -287,11 +288,6 @@ import ItemBar from './components/ItemBar.svelte'
 	}
 	.filter {
 		display: grid;
-	}
-	.filter > label, .collections > label, .collection > label {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-		padding: .5em;
 	}
 	/* */
 	ul {
