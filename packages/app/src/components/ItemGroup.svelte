@@ -2,7 +2,6 @@
 	export let label: boolean = false
 	export let count: number = 2
 	export let title: string = ''
-	console.log(count, new Array(count).fill('auto').join(' '))
 	$: repeatStr = 'minmax(0, 1fr) ' + new Array(count-1).fill('auto').join(' ')
 </script>
 
