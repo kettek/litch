@@ -11,7 +11,7 @@
 		<Icon icon={open?'down':'forward'}></Icon>
 		<slot name="heading"/>
 	</header>
-	<section class:open>
+	<section class:open class:alt={true}>
 		<slot name="content"/>
 	</section>
 </main>
