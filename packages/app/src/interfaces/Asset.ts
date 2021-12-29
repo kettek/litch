@@ -39,4 +39,5 @@ export type AssetResults = AssetResult[]
 export interface AssetManager {
 	open: (options: any) => Promise<AssetResults>
 	source: (reference: AssetResult) => string
+	get: (reference: AssetResult) => Asset | undefined
 }

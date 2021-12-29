@@ -244,8 +244,13 @@ let sourceAdjuster = publisher.subscribe('collections.collection.*.assets.asset.
 	setAssetSource(collectionUUID, uuid, m.message)
 })
 
-export function getAsset(collectionUUID: string, uuid: string): Asset|undefined {
-	return get(collections).find(v=>v.uuid===collectionUUID)?.assets.find(v=>v.uuid===uuid)
+export function getAsset(ref: AssetResult): Asset|undefined
+export function getAsset(collectionUUID: string, uuid: string): Asset|undefined
+export function getAsset(query: string|AssetResult, uuid?: string): Asset|undefined {
+	if (typeof query === 'string') {
+		return get(collections).find(v=>v.uuid===query)?.assets.find(v=>v.uuid===uuid)
+	}
+	return get(collections).find(v=>v.uuid===query.collection)?.assets.find(v=>v.uuid===query.asset)
 }
 
 export let subscriber = publisher.subscribe('assets.*', handler)
