@@ -2,11 +2,12 @@
 	export let label: boolean = false
 	export let count: number = 2
 	export let title: string = ''
+	export let padded: boolean = true
 	$: repeatStr = 'minmax(0, 1fr) ' + new Array(count-1).fill('auto').join(' ')
 </script>
 
 {#if label}
-	<label title={title} class:ItemGroup={true} style='--repeat: {repeatStr};'>
+	<label title={title} class:ItemGroup={true} class:padded style='--repeat: {repeatStr};'>
 		<slot></slot>
 		{#if $$slots.label}
 			<span>
@@ -16,7 +17,7 @@
 		{/if}
 	</label>
 {:else}
-	<article title={title} class:ItemGroup={true} style='--repeat: {repeatStr};'>
+	<article title={title} class:ItemGroup={true} class:padded style='--repeat: {repeatStr};'>
 		<slot></slot>
 		{#if $$slots.label}
 			<span>
@@ -31,6 +32,8 @@
 	.ItemGroup {
 		display: grid;
 		grid-template-columns: var(--repeat);
+	}
+	.padded {
 		padding: 0 .5em;
 	}
 	span {
