@@ -1,9 +1,10 @@
 <script lang='ts'>
 	export let label: boolean = false
 	export let count: number = 2
+	export let maxedCount: number = 1
 	export let title: string = ''
 	export let padded: boolean = true
-	$: repeatStr = 'minmax(0, 1fr) ' + new Array(count-1).fill('auto').join(' ')
+	$: repeatStr = new Array(maxedCount).fill('minmax(0, 1fr)').join(' ') + new Array(count-1).fill('auto').join(' ')
 </script>
 
 {#if label}
