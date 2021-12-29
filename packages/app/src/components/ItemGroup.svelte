@@ -33,6 +33,7 @@
 	.ItemGroup {
 		display: grid;
 		grid-template-columns: var(--repeat);
+		align-items: center;
 	}
 	.padded {
 		padding: 0 .5em;
