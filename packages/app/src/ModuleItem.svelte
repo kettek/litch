@@ -4,14 +4,14 @@
 	import { quintInOut } from 'svelte/easing'
 	import type { ModuleFormat, FormatMessageObject, ModuleInstanceInterface } from "./interfaces/ModuleInstance"
 	import type { ModuleInterface } from './interfaces/Module'
-	import type { AssetManager, AssetResult, AssetResults } from './interfaces/Asset'
+	import type { Asset, AssetManager, AssetResult, AssetResults } from './interfaces/Asset'
 	import ModuleWrapper from "./ModuleWrapper.svelte"
 	import Icon from './components/Icon.svelte'
 	import Button from './components/Button.svelte'
 
 	import Card from './components/Card.svelte'
 	import AssetsCard from './AssetsCard.svelte'
-	import { getAssetSource } from './assets'
+	import { getAsset, getAssetSource } from './assets'
 	import { refreshOverlays } from './stores/overlays'
 
 	export let modules: Record<string, ModuleInterface> = {}
@@ -68,6 +68,9 @@
 		},
 		source: (ref: AssetResult): string => {
 			return getAssetSource(ref)
+		},
+		get: (ref: AssetResult): Asset | undefined => {
+			return getAsset(ref)
 		}
 	}
 
