@@ -12,11 +12,12 @@
 
 	import type { SettingsInterface, LitchMask } from './Settings'
 	import { isLitchTuber, isPuppeteerTuber } from './Settings'
-	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
+	import type { ModuleChannel, ModuleFormat } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import { upgrade } from './upgrade'
 	import Visualizer from './visualizer.svelte'
 
 	export let settings: SettingsInterface
+	export let format: ModuleFormat
 
 	export let update: (v: any) => void
 
@@ -221,33 +222,35 @@
 					<option value='puppeteer'>puppeteer</option>
 				</select>
 				<svelte:fragment slot='label'>
-					Tubular Type
+					{format('tuberType')}
 				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='number' bind:value={settings.sampleRate}/>
 				<svelte:fragment slot='label'>
-					sample rate (ms)
+					{format('sampleRate')}
 				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='number' bind:value={settings.sampleLimit}/>
 				<svelte:fragment slot='label'>
-					sample limit
+					{format('sampleLimit')}
 				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='number' bind:value={settings.trigger}/>
 				<svelte:fragment slot='label'>
-					trigger dB
+					{format('triggerdB')}
 				</svelte:fragment>
 			</ItemGroup>
-			<Button on:click={enableVisualizer}>configure sensitivity</Button>
+			<Button on:click={enableVisualizer}>
+				{format('configureSensitivity')}
+			</Button>
 			{#if isLitchTuber(settings.tuber)}
 				<ItemGroup label>
 					<input type='number' bind:value={settings.tuber.framerate}/>
 					<svelte:fragment slot='label'>
-						framerate (ms)
+						{format('framerate')}
 					</svelte:fragment>
 				</ItemGroup>
 			{/if}
@@ -266,23 +269,23 @@
 				</svelte:fragment>
 			</TabBar>
 			<ItemBar alt round='top'>
-				<Button disabled={!selectedMask} dangerous on:click={()=>{litch.deleteMask(selectedMaskIndex)}} title='Delete mask'>
+				<Button disabled={!selectedMask} dangerous on:click={()=>{litch.deleteMask(selectedMaskIndex)}} title={format('deleteMask')}>
 					<Icon icon='delete'></Icon>
 				</Button>
 			</ItemBar>
 			<Section alt round='bottom' padded>
 				{#if !selectedMask}
-					Select or create a mask
+					{format('selectOrCreateAMask')}
 				{:else}
 					<ItemGroup label>
 						<input bind:value={selectedMask.name}/>
 						<svelte:fragment slot='label'>
-							Name
+							{format('name')}
 						</svelte:fragment>
 					</ItemGroup>
 					<DropList tertiary>
 						<svelte:fragment slot='heading'>
-							Tags
+							{format('tags')}
 						</svelte:fragment>
 						<section slot='content'>
 							<ItemGroup label>
@@ -304,14 +307,14 @@
 					</DropList>
 					<DropList tertiary>
 						<svelte:fragment slot='heading'>
-							Frames
+							{format('frames')}
 						</svelte:fragment>
 						<section slot='content'>
 							<section>
-								<Button title='Open file' tertiary on:click={()=>{litch.addFileDialog(selectedMask)}}>
+								<Button title={format('openFile')} tertiary on:click={()=>{litch.addFileDialog(selectedMask)}}>
 									<Icon icon='open'></Icon>
 								</Button>
-								<Button dangerous on:click={()=>{litch.clearMaskFrames(selectedMaskIndex)}} title='Clear mask frames'>
+								<Button dangerous on:click={()=>{litch.clearMaskFrames(selectedMaskIndex)}} title={format('clearFrames')}>
 									<Icon icon='delete'></Icon>
 								</Button>
 							</section>
@@ -319,7 +322,7 @@
 							</section>
 								{#each selectedMask.frames as frame, index}
 									<article class='emotion__face'>
-										<Button title='Open file' tertiary on:click={()=>{litch.openFileDialog(selectedMask, index)}}>
+										<Button title={format('openFile')} tertiary on:click={()=>{litch.openFileDialog(selectedMask, index)}}>
 											<Icon icon='open'></Icon>
 										</Button>
 										<AssetViewer asset={assets.get(frame)} contained bg/>
@@ -330,14 +333,14 @@
 				{/if}
 			</Section>
 		{:else if isPuppeteerTuber(settings.tuber)}
-			<Button title='Add Emotion' tertiary on:click={puppeteer.addEmotion}>
+			<Button title={format('addEmotion')} tertiary on:click={puppeteer.addEmotion}>
 				<Icon icon='add'></Icon>
 			</Button>
 			{#each settings.tuber.emotions as emotion}
 				<details bind:open={emotion.open} class='emotion'>
 					<summary>
 						<label>
-							<input type='text' placeholder='emotion name' bind:value={emotion.name}/>
+							<input type='text' placeholder={format('emotionName')} bind:value={emotion.name}/>
 						</label>
 					</summary>
 					<section class='emotion__container'>
@@ -347,7 +350,7 @@
 									{emotionFace}
 								</summary>
 								<article class='emotion__face'>
-									<Button title='Open file' tertiary on:click={()=>{openFileDialog(emotion.name, emotionFace)}}>
+									<Button title={format('openFile')} tertiary on:click={()=>{openFileDialog(emotion.name, emotionFace)}}>
 										<Icon icon='open'></Icon>
 									</Button>
 									<div class='face'>

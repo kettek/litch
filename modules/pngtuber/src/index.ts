@@ -2,6 +2,7 @@ import SettingsComponent from './settings.svelte'
 import LiveComponent from './live.svelte'
 import PreviewComponent from './preview.svelte'
 import InstanceComponent from './instance.svelte'
+import en from '../locales/en.json'
 
 export default {
 	title: "PNGTuber",
@@ -50,4 +51,7 @@ export default {
 	liveComponent: LiveComponent,
 	previewComponent: PreviewComponent,
 	//instanceComponent: InstanceComponent,
+	locales: {
+		"en": en,
+	}
 }

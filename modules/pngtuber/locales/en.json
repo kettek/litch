@@ -1,0 +1,20 @@
+{
+	"tuberType": "PNGTuber Type",
+	"sampleRate": "Sample Rate (ms)",
+	"sampleLimit": "Sample Limit",
+	"triggerdB": "Trigger dB",
+	"framerate": "Framerate (ms)",
+	"configureSensitivity": "Configure Sensitivity",
+	"addMask": "Add Mask",
+	"deleteMask": "Delete Mask",
+	"selectOrCreateAMask": "Select or create mask",
+	"name": "Name",
+	"tags": "Tags",
+	"addTag": "Add Tag",
+	"deleteTag": "Delete Tag",
+	"frames": "Frames",
+	"openFile": "Open File",
+	"clearFrames": "Clear frames",
+	"addEmotion": "Add Emotion",
+	"emotionName": "Emotion Name"
+}

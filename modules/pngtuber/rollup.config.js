@@ -4,6 +4,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
+import json from '@rollup/plugin-json';
 import css from 'rollup-plugin-css-only';
 import path from 'path'
 
@@ -20,6 +21,7 @@ export default {
 		sourcemap: true
 	},
 	plugins: [
+		json(),
 		svelte({
 			emitCss,
 			preprocess: sveltePreprocess({ sourceMap: !production }),
@@ -46,7 +48,8 @@ export default {
 			include: [
 				'src/**',
 				'../../src/interfaces/**/*'
-			]
+			],
+			resolveJsonModule: true,
 		}),
 
 		// If we're building for production (npm run build
