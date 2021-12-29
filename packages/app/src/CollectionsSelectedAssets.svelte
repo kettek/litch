@@ -93,7 +93,7 @@
 				{$_('asset.tags')}
 			</svelte:fragment>
 			<section slot='content' class='selectedAssets__tags__content'>
-				<ItemGroup label>
+				<ItemGroup label padded={false}>
 					<input type='text' bind:value={pendingTagValue} on:submit={addTag}/>
 					<Button tertiary on:click={addTag} title={$_('asset.addTag')}>
 						<Icon icon='add'></Icon>
@@ -115,7 +115,7 @@
 				{$_('asset.tags')}
 			</svelte:fragment>
 			<section slot='content' class='selectedAssets__tags__content'>
-				<ItemGroup label>
+				<ItemGroup label padded={false}>
 					<input type='text' bind:value={pendingTagValue} on:submit={addTag}/>
 					<Button tertiary on:click={addTag} title={$_('asset.addTag')}>
 						<Icon icon='add'></Icon>
