@@ -1,6 +1,6 @@
 import type { SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
 import { v4 } from 'uuid'
-import type { Asset, AssetResult, Collection } from './interfaces/Asset'
+import type { Asset, AssetManager, AssetResult, AssetResults, Collection } from './interfaces/Asset'
 import { collections, addCollection, removeCollection, addAsset, refreshCollections } from './stores/collections'
 import { get } from 'svelte/store'
 
@@ -251,6 +251,24 @@ export function getAsset(query: string|AssetResult, uuid?: string): Asset|undefi
 		return get(collections).find(v=>v.uuid===query)?.assets.find(v=>v.uuid===uuid)
 	}
 	return get(collections).find(v=>v.uuid===query.collection)?.assets.find(v=>v.uuid===query.asset)
+}
+
+/**
+ * This creates an asset manager for passing to non-live plugin components.
+ * @returns AssetManager
+ */
+export function createAssetManager(): AssetManager {
+	return {
+		open: async (options: any): Promise<AssetResults> => {
+			return []
+		},
+		source: (ref: AssetResult): string => {
+			return getAssetSource(ref)
+		},
+		get: (ref: AssetResult): Asset | undefined => {
+			return getAsset(ref)
+		}
+	}
 }
 
 export let subscriber = publisher.subscribe('assets.*', handler)

@@ -1,17 +1,15 @@
 <script type="ts">
 	import { _ } from 'svelte-i18n'
-	import { fly } from 'svelte/transition'
-	import { quintInOut } from 'svelte/easing'
 	import type { ModuleFormat, FormatMessageObject, ModuleInstanceInterface } from "./interfaces/ModuleInstance"
 	import type { ModuleInterface } from './interfaces/Module'
-	import type { Asset, AssetManager, AssetResult, AssetResults } from './interfaces/Asset'
+	import type { AssetManager, AssetResults } from './interfaces/Asset'
 	import ModuleWrapper from "./ModuleWrapper.svelte"
 	import Icon from './components/Icon.svelte'
 	import Button from './components/Button.svelte'
 
 	import Card from './components/Card.svelte'
 	import AssetsCard from './AssetsCard.svelte'
-	import { getAsset, getAssetSource } from './assets'
+	import { createAssetManager } from './assets'
 	import { refreshOverlays } from './stores/overlays'
 
 	export let modules: Record<string, ModuleInterface> = {}
@@ -57,22 +55,15 @@
 		assetResolve = undefined
 		assetReject = undefined
 	}
-	let assets: AssetManager = {
-		open: (options: any): Promise<AssetResults> => {
-			return new Promise((resolve, reject) => {
-				assetResolve = resolve
-				assetReject = reject
-				showOptions = options
-				showAssets = true
-			})
-		},
-		source: (ref: AssetResult): string => {
-			return getAssetSource(ref)
-		},
-		get: (ref: AssetResult): Asset | undefined => {
-			return getAsset(ref)
-		}
-	}
+
+	// Create our assets and override the open property.
+	let assets: AssetManager = createAssetManager()
+	assets.open = (options: any): Promise<AssetResults> => new Promise((resolve, reject) => {
+		assetResolve = resolve
+		assetReject = reject
+		showOptions = options
+		showAssets = true
+	})
 
 	$: realModule = modules[module.moduleUUID]
 </script>

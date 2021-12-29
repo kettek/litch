@@ -4,8 +4,8 @@
 	import type { ModuleInterface } from './interfaces/Module'
 	import ModuleWrapper from "./ModuleWrapper.svelte"
 	import { onMount } from 'svelte'
-	import type { AssetManager, AssetResult, AssetResults } from './interfaces/Asset'
-	import { getAsset, getAssetSource } from './assets'
+	import type { AssetManager } from './interfaces/Asset'
+	import { createAssetManager } from './assets'
 	import { refreshOverlays } from './stores/overlays'
 
 	export let modules: Record<string, ModuleInterface> = {}
@@ -38,17 +38,7 @@
 
 	$: (width??height??zoom) ? renderCanvas() : null
 
-	let assets: AssetManager = {
-		open: async (options: any): Promise<AssetResults> => {
-			return []
-		},
-		source: (ref: AssetResult): string => {
-			return getAssetSource(ref)
-		},
-		get: (ref: AssetResult): Asset | undefined => {
-			return getAsset(ref)
-		}
-	}
+	let assets: AssetManager = createAssetManager()
 
 	function move(node: HTMLElement) {
 		const mousedown = (e: MouseEvent) => {
