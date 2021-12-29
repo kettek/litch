@@ -95,7 +95,11 @@
 			settings.tuber.masks[index].frames = []
 		},
 		openFileDialog: async (mask: LitchMask, index: number) => {
-			console.log("TODO")
+			let results = await assets.open({
+				multiple: false,
+			})
+			mask.frames[index] = results[0]
+			refresh()
 		},
 		addFileDialog: async (mask: LitchMask) => {
 			let results = await assets.open({
