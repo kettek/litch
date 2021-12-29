@@ -7,6 +7,7 @@
 	import TabBar from '@kettek/litch-app/src/components/TabBar.svelte'
 	import Section from '@kettek/litch-app/src/components/Section.svelte'
 	import type { AssetManager, AssetResult } from '@kettek/litch-app/src/interfaces/Asset'
+	import AssetViewer from '@kettek/litch-app/src/components/AssetViewer.svelte'
 	import type { ModuleChannel, ModuleFormat } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import { defaultGroup, SettingsInterface } from './SettingsI'
 	import { upgrade } from './upgrade'
@@ -109,16 +110,7 @@
 					</Button>
 				</label>
 				<div class='preview'>
-					{#if currentGroup.reference?.mimetype?.startsWith('image')}
-						<img alt='preview' src={assets.source(currentGroup.reference)}/>
-					{:else if currentGroup.reference?.mimetype?.startsWith('video')}
-						<video autoplay loop>
-							<track kind="captions"/>
-							<source src="{assets.source(currentGroup.reference)}" type="{currentGroup.reference.mimetype}">
-						</video>
-					{:else}
-						{format('unsupportedAsset')}
-					{/if}
+					<AssetViewer asset={assets.get(currentGroup.reference)} displayed contained bg/>
 				</div>
 			{/if}
 			<label>
@@ -188,10 +180,9 @@
 	input[type=number] {
 		width: 5em;
 	}
-	.preview > * {
+	.preview {
 		max-height: 8em;
 		max-width: 8em;
-		object-fit: contain;
 	}
 	hr {
 		width: 100%;
