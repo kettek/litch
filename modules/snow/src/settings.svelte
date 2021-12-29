@@ -2,6 +2,7 @@
 	import Info from '@kettek/litch-app/src/components/Info.svelte'
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
 	import ItemBar from '@kettek/litch-app/src/components/ItemBar.svelte'
+	import ItemGroup from '@kettek/litch-app/src/components/ItemGroup.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
 	import Tab from '@kettek/litch-app/src/components/Tab.svelte'
 	import TabBar from '@kettek/litch-app/src/components/TabBar.svelte'
@@ -56,14 +57,18 @@
 
 <main>
 	<Section alt rounded padded>
-		<label>
+		<ItemGroup label>
 			<input type='number' bind:value={settings.updateRate}/>
-			{format('updateRate')}
-		</label>
-		<label>
+			<svelte:fragment slot='label'>
+				{format('updateRate')}
+			</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
 			<input type='number' bind:value={settings.maxAccumulator}/>
-			{format('maxAccumulator')}
-		</label>
+			<svelte:fragment slot='label'>
+				{format('maxAccumulator')}
+			</svelte:fragment>
+		</ItemGroup>
 	</Section>
 	<TabBar>
 		{#each settings.groups as group, index}
@@ -89,83 +94,103 @@
 		{#if !currentGroup}
 			{format('selectAGroup')}
 		{:else}
-			<label>
+			<ItemGroup label>
 				<select bind:value={currentGroup.sourceType}>
 					<option value='emoji'>{format('group.emojiType')}</option>
 					<option value='asset'>{format('group.assetType')}</option>
 				</select>
-				{format('group.type')}
-			</label>
+				<svelte:fragment slot='label'>
+					{format('group.type')}
+				</svelte:fragment>
+			</ItemGroup>
 			{#if currentGroup.sourceType === 'emoji'}
-				<label>
+				<ItemGroup label>
 					<input type='text' bind:value={currentGroup.emoji}/>
-					{format('group.emojiType')}
-				</label>
+					<svelte:fragment slot='label'>
+						{format('group.emojiType')}
+				</svelte:fragment>
+				</ItemGroup>
 			{:else if currentGroup.sourceType === 'asset'}
-				<label>
-					<input type='hidden'/>
-					{format('group.assetType')}
+				<ItemGroup>
+					<div class='preview'>
+						<AssetViewer asset={assets.get(currentGroup.reference)} displayed contained bg/>
+					</div>
 					<Button title={format('openAsset')} tertiary on:click={()=>{openFileDialog(selectedIndex)}}>
 						<Icon icon='open'></Icon>
 					</Button>
-				</label>
-				<div class='preview'>
-					<AssetViewer asset={assets.get(currentGroup.reference)} displayed contained bg/>
-				</div>
+				</ItemGroup>
 			{/if}
-			<label>
+			<ItemGroup label>
 				<input type='number' bind:value={currentGroup.size}/>
-				<span>{format('group.baseSize')}</span>
-			</label>
+				<svelte:fragment slot='label'>
+					{format('group.baseSize')}
+				</svelte:fragment>
+			</ItemGroup>
 			<hr/>
 			<Info tertiary>
 				{format('group.reloadRequired')}
 			</Info>
-			<label>
+			<ItemGroup label>
 				<input type='number' bind:value={currentGroup.count}/>
-				<span>{format('group.count')}</span>
-			</label>
+				<svelte:fragment slot='label'>
+					{format('group.count')}
+				</svelte:fragment>
+			</ItemGroup>
 			<Info tertiary>
 				{format('positionDimensionInformation')}
 			</Info>
-			<label>
+			<ItemGroup label>
 				<input type='number' bind:value={currentGroup.spawnX}/>
-				<span>{format('group.spawnX')}</span>
-			</label>
-			<label>
+				<svelte:fragment slot='label'>
+					{format('group.spawnX')}
+				</svelte:fragment>
+			</ItemGroup>
+			<ItemGroup label>
 				<input type='number' bind:value={currentGroup.spawnY}/>
-				<span>{format('group.spawnY')}</span>
-			</label>
-			<label>
+				<svelte:fragment slot='label'>
+					{format('group.spawnY')}
+				</svelte:fragment>
+			</ItemGroup>
+			<ItemGroup label>
 				<input type='number' bind:value={currentGroup.minScale}/>
-				<span>{format('group.minScale')}</span>
-			</label>
-			<label>
+				<svelte:fragment slot='label'>
+					{format('group.minScale')}
+				</svelte:fragment>
+			</ItemGroup>
+			<ItemGroup label>
 				<input type='number' bind:value={currentGroup.scaleRandom}/>
-				<span>{format('group.randomScale')}</span>
-			</label>
-			<label>
+				<svelte:fragment slot='label'>
+					{format('group.randomScale')}
+				</svelte:fragment>
+			</ItemGroup>
+			<ItemGroup label>
 				<input type='checkbox' bind:checked={currentGroup.rotate}/>
-				<span>{format('group.randomizeStartingRotation')}</span>
-			</label>
+				<svelte:fragment slot='label'>
+					{format('group.randomizeStartingRotation')}
+				</svelte:fragment>
+			</ItemGroup>
 			<Info tertiary>
 				{format('group.randomizationInformation')}
 			</Info>
-			<label>
+			<ItemGroup label maxedCount={2} count={3}>
 				<input type='number' bind:value={currentGroup.xRandomRate[0]}/>
 				<input type='number' bind:value={currentGroup.xRandomRate[1]}/>
-				<span>{format('group.randomXRate')}</span>
-			</label>
-			<label>
+				<svelte:fragment slot='label'>{format('group.randomXRate')}</svelte:fragment>
+			</ItemGroup>
+			<ItemGroup label maxedCount={2} count={3}>
 				<input type='number' bind:value={currentGroup.yRandomRate[0]}/>
 				<input type='number' bind:value={currentGroup.yRandomRate[1]}/>
-				<span>{format('group.randomYRate')}</span>
-			</label>
-			<label>
+				<svelte:fragment slot='label'>
+					{format('group.randomYRate')}
+				</svelte:fragment>
+			</ItemGroup>
+			<ItemGroup label maxedCount={2} count={3}>
 				<input type='number' bind:value={currentGroup.rotRandomRate[0]}/>
 				<input type='number' bind:value={currentGroup.rotRandomRate[1]}/>
-				<span>{format('group.randomRotationRate')}</span>
-			</label>
+				<svelte:fragment slot='label'>
+					{format('group.randomRotationRate')}
+				</svelte:fragment>
+			</ItemGroup>
 		{/if}
 	</Section>
 </main>
