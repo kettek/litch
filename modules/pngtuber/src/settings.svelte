@@ -220,25 +220,35 @@
 					<option value='litch'>litch</option>
 					<option value='puppeteer'>puppeteer</option>
 				</select>
-				<span> Tubular Type </span>
+				<svelte:fragment slot='label'>
+					Tubular Type
+				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='number' bind:value={settings.sampleRate}/>
-				<span>sample rate (ms)</span>
+				<svelte:fragment slot='label'>
+					sample rate (ms)
+				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='number' bind:value={settings.sampleLimit}/>
-				<span>sample limit</span>
+				<svelte:fragment slot='label'>
+					sample limit
+				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='number' bind:value={settings.trigger}/>
-				<span>trigger dB</span>
+				<svelte:fragment slot='label'>
+					trigger dB
+				</svelte:fragment>
 			</ItemGroup>
 			<Button on:click={enableVisualizer}>configure sensitivity</Button>
 			{#if isLitchTuber(settings.tuber)}
 				<ItemGroup label>
 					<input type='number' bind:value={settings.tuber.framerate}/>
-					<span>framerate (ms)</span>
+					<svelte:fragment slot='label'>
+						framerate (ms)
+					</svelte:fragment>
 				</ItemGroup>
 			{/if}
 		</Section>
@@ -264,29 +274,31 @@
 				{#if !selectedMask}
 					Select or create a mask
 				{:else}
-					<label>
+					<ItemGroup label>
 						<input bind:value={selectedMask.name}/>
-						<span>Name</span>
-					</label>
+						<svelte:fragment slot='label'>
+							Name
+						</svelte:fragment>
+					</ItemGroup>
 					<DropList tertiary>
 						<svelte:fragment slot='heading'>
 							Tags
 						</svelte:fragment>
 						<section slot='content'>
-							<label>
+							<ItemGroup label>
 								<input bind:value={pendingTag}/>
 								<Button tertiary on:click={()=>litch.addTag(pendingTag)}>
 									<Icon icon='add'></Icon>
 								</Button>
-							</label>
+							</ItemGroup>
 							{#each Object.entries(selectedMask.tags) as [tag, checked]}
-								<article class='input__tag'>
+								<ItemGroup label count={3}>
 									<input value={tag} on:change={(e)=>litch.changeTag(e, tag)}/>
 									<input type='checkbox' bind:checked={selectedMask.tags[tag]}/>
 									<Button dangerous on:click={()=>{litch.removeTag(tag)}}>
 										<Icon icon='delete'/>
 									</Button>
-								</article>
+								</ItemGroup>
 							{/each}
 						</section>
 					</DropList>
