@@ -7,6 +7,7 @@
 	import ItemGroup from '@kettek/litch-app/src/components/ItemGroup.svelte'
 	import ItemBar from '@kettek/litch-app/src/components/ItemBar.svelte'
 	import Section from '@kettek/litch-app/src/components/Section.svelte'
+	import AssetViewer from '@kettek/litch-app/src/components/AssetViewer.svelte'
 	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
 
 	import type { SettingsInterface, LitchMask } from './Settings'
@@ -305,9 +306,7 @@
 										<Button title='Open file' tertiary on:click={()=>{litch.openFileDialog(selectedMask, index)}}>
 											<Icon icon='open'></Icon>
 										</Button>
-										<div class='face'>
-											<img alt='preview' src={assets.source(frame)}/>
-											</div>
+										<AssetViewer asset={assets.get(frame)} contained bg/>
 									</article>
 								{/each}
 						</section>
