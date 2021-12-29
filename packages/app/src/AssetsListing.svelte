@@ -4,6 +4,7 @@
 
 	import { _ } from "svelte-i18n"
 	import Card from "./components/Card.svelte"
+	import AssetViewer from "./components/AssetViewer.svelte"
 
 	export let selector: boolean = false
 	export let multiple: boolean = false
@@ -86,18 +87,7 @@
 					{#if !selector}
 						<header>{asset.name}</header>
 					{/if}
-					<article>
-						{#if asset.mimetype.startsWith('image')}
-							<img alt={asset.uuid} src={asset.redirectedSource||asset.originalSource}/>
-						{:else if asset.mimetype.startsWith('video')}
-							<video controls src={asset.redirectedSource||asset.originalSource}>
-								<track kind="captions" />
-							</video>
-						{:else if asset.mimetype.startsWith('audio')}
-							<audio controls src={asset.redirectedSource||asset.originalSource}>
-							</audio>
-						{/if}
-					</article>
+					<AssetViewer asset={asset} contained displayed></AssetViewer>
 					{#if selector}
 						<header>{asset.name}</header>
 					{/if}
@@ -110,20 +100,7 @@
 			<svelte:fragment slot='title'>
 				{$_('assets.viewTitle')}
 			</svelte:fragment>
-			<section class='popup' slot='content'>
-				{#if focusedAsset}
-					{#if focusedAsset.mimetype.startsWith('image')}
-						<img alt={focusedAsset.uuid} src={focusedAsset.redirectedSource||focusedAsset.originalSource}/>
-					{:else if focusedAsset.mimetype.startsWith('video')}
-						<video controls src={focusedAsset.redirectedSource||focusedAsset.originalSource}>
-							<track kind="captions" />
-						</video>
-					{:else if focusedAsset.mimetype.startsWith('audio')}
-						<audio controls src={focusedAsset.redirectedSource||focusedAsset.originalSource}>
-						</audio>
-					{/if}
-				{/if}
-			</section>
+			<AssetViewer slot='content' asset={focusedAsset}></AssetViewer>
 		</Card>
 	{/if}
 </section>
@@ -185,16 +162,5 @@
 		display: grid;
 		align-items: center;
 		justify-content: center;
-	}
-	.asset > article {
-		padding: .25em;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.asset > article img, .asset > article video, .asset > article audio {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
 	}
 </style>
