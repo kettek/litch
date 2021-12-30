@@ -5,6 +5,7 @@ require('electron-app-settings')
 
 app.on("ready", async () => {
   const mainWindow = new BrowserWindow({
+    icon: path.join(__dirname, 'public/app.png'),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
