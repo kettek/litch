@@ -6,6 +6,9 @@
 		"openSettings": "Open settings",
 		"openServices": "Open services"
 	},
+	"services": {
+		"title": "Services"
+	},
 	"overlays": {
 		"activateOverlay": "Activate an overlay!",
 		"createOverlay": "Create an overlay",

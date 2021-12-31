@@ -122,9 +122,15 @@
 	}
 
 	import Collections from './Collections.svelte'
+	import Window from './components/Window.svelte'
 	let showAssets = false
 	function toggleAssets() {
 		showAssets = !showAssets
+	}
+
+	let showServices = false
+	function toggleServices() {
+		showServices = !showServices
 	}
 
 	async function toggleServer() {
@@ -168,7 +174,7 @@
 	<h1>litch</h1>
 	<menu>
 		{#if !loading}
-			<Button primary title={$_('litch.openServices')}>
+			<Button primary on:click={toggleServices} title={$_('litch.openServices')}>
 				<Icon icon="service"></Icon>
 			</Button>
 			<Button primary on:click={toggleAssets} title={$_('litch.openCollections')}>
@@ -201,6 +207,13 @@
 	{#if !loading}
 		{#if showAssets}
 			<Collections on:close={()=>showAssets=false}/>
+		{/if}
+		{#if showServices}
+			<Window primary on:close={()=>showServices=false}>
+				<span slot='title'>{$_('services.title')}</span>
+				<article slot='content'>
+				</article>
+			</Window>
 		{/if}
 		{#if showSettings}
 			<Settings/>
