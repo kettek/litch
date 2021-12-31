@@ -128,6 +128,7 @@
 		showAssets = !showAssets
 	}
 
+	import Services from './Services.svelte'
 	let showServices = false
 	function toggleServices() {
 		showServices = !showServices
@@ -212,6 +213,7 @@
 			<Window primary on:close={()=>showServices=false}>
 				<span slot='title'>{$_('services.title')}</span>
 				<article slot='content'>
+					<Services/>
 				</article>
 			</Window>
 		{/if}
