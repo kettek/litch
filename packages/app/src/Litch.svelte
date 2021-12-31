@@ -168,6 +168,9 @@
 	<h1>litch</h1>
 	<menu>
 		{#if !loading}
+			<Button primary title={$_('litch.openServices')}>
+				<Icon icon="service"></Icon>
+			</Button>
 			<Button primary on:click={toggleAssets} title={$_('litch.openCollections')}>
 				<Icon icon="assets"></Icon>
 			</Button>

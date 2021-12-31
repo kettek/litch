@@ -3,7 +3,8 @@
 		"startServer": "Start server",
 		"stopServer": "Stop server",
 		"openCollections": "Open collections",
-		"openSettings": "Open settings"
+		"openSettings": "Open settings",
+		"openServices": "Open services"
 	},
 	"overlays": {
 		"activateOverlay": "Activate an overlay!",
