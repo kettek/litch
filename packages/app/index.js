@@ -28,6 +28,7 @@ app.on("ready", async () => {
     return await fs.readdir('../../modules')
   })
   ipcMain.handle('getServices', async () => {
+    services = []
     let files = await fs.readdir('../../services', {withFileTypes: true})
     for (let file of files) {
       if (file.isDirectory()) {
@@ -38,6 +39,7 @@ app.on("ready", async () => {
         })
       }
     }
+    return services
   })
 })
 
