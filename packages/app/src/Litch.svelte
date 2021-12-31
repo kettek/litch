@@ -23,6 +23,7 @@
 	let assets: Asset[] = []
 	let modules: Record<string, ModuleInterface> = {}
 	let modulesMap: Record<string, string> = {}
+	let serviceSources: ServiceSourceInterface[] = []
 	let currentOverlayUUID: string = ''
 	let litchServer: LitchServer = new LitchServer($settings.port)
 	let serverStatus: string = 'off'
@@ -55,6 +56,12 @@
 		console.log(sourceTopic)
 	})
 
+	let serviceEndpoint = publisher.connect('service.*', async (r: EndpointMessage): Promise<number> => {
+		ipcRenderer.invoke('publish', r)
+		return 0
+	})
+	publisher.connect('services.*', serviceEndpoint)
+
 	onMount(async () => {
 		loadingMessage = "Gathering basic information"
 		const appDir = await ipcRenderer.invoke('getPath', 'userData')
@@ -79,12 +86,15 @@
 
 		// Load services
 		loadingMessage = "Winding services"
-		const services = await ipcRenderer.invoke('getServices')
-		for (let service of services) {
-			let full = `/services/${service.dir}/dist/index.js`
+		serviceSources = await ipcRenderer.invoke('getServices')
+		for (let service of serviceSources) {
+			await ipcRenderer.invoke('loadService', service.uuid)
+			let full = `/services/${service.dir}/${service.render}`
 			let url = `../../../..${full}`
 			try {
 				let s: ServiceInterface = (await import(url)).default as unknown as ServiceInterface
+				addService(s)
+				publisher.publish('service.'+s.uuid+'.load', {})
 				// TODO: ???
 			} catch(e: any) {
 				console.error(`error in ${service}: ${e}`)
@@ -144,7 +154,9 @@
 	}
 
 	import Services from './Services.svelte'
-import type { ServiceInterface } from './interfaces/Service';
+	import { addService, removeService } from './stores/services'
+	import type { ServiceInterface, ServiceSourceInterface } from './interfaces/Service'
+	import type { EndpointMessage } from '@kettek/pubsub/dist/Endpoint'
 	let showServices = false
 	function toggleServices() {
 		showServices = !showServices
