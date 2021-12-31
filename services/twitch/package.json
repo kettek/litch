@@ -1,6 +1,13 @@
 {
   "name": "@kettek/litch-service-twitch",
+  "exports": {
+    "main": "dist/main.js",
+    "render": "dist/index.js"
+  },
   "version": "1.0.0",
+  "litch": {
+    "uuid": "00000000-0000-0000-0000-000000000001"
+  },
   "private": true,
   "scripts": {
     "build": "rollup -c",

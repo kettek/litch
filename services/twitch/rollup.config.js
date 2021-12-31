@@ -13,7 +13,9 @@ const production = !process.env.ROLLUP_WATCH;
 const emitCss = false
 const cmp = path.basename(__dirname)
 
-export default {
+export default [
+// RENDERER
+{
 	input: 'src/index.ts',
 	output: {
 		format: 'es',
@@ -59,4 +61,33 @@ export default {
 	watch: {
 		clearScreen: false
 	}
-};
+},
+// MAIN
+{
+	input: 'src/main/index.ts',
+	output: {
+		format: 'cjs',
+		file: 'dist/main.js',
+		sourcemap: true
+	},
+	plugins: [
+		json(),
+		resolve(),
+		commonjs(),
+		typescript({
+			sourceMap: !production,
+			inlineSources: !production,
+			include: [
+				'src/**',
+				'../../src/interfaces/**/*'
+			],
+			resolveJsonModule: true,
+		}),
+		// If we're building for production (npm run build
+		// instead of npm run dev), minify
+		production && terser()
+	],
+	watch: {
+		clearScreen: false
+	}
+}];
