@@ -1,6 +1,14 @@
 import type { SvelteComponent } from "svelte"
 import type { SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
 
+export interface ServiceSourceInterface {
+	uuid: string
+	version: string
+	dir: string
+	main: string
+	render: string
+}
+
 /**
  * ServiceInterface provides the generic interface for services.
  */
@@ -9,6 +17,8 @@ export interface ServiceInterface {
 	uuid: string
 	// Friendly name.
 	title: string
+	//
+	enabled: boolean
 	// Channel is used to manage service<->module passing.
 	channel: ServiceChannel
 	// Settings is stored to disk.
@@ -17,7 +27,6 @@ export interface ServiceInterface {
 	InstanceComponent: SvelteComponent
 	// SettingsComponent provides the component used for the service's settings page.
 	SettingsComponent: SvelteComponent
-	main?: ServiceMainInterface
 	//
 	locales: Record<string, any>
 	//
