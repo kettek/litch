@@ -5,6 +5,7 @@
   "main": "index.js",
   "workspaces": [
     "modules/*",
+    "services/*",
     "packages/client",
     "packages/app"
   ],
