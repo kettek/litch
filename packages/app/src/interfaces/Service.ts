@@ -17,11 +17,21 @@ export interface ServiceInterface {
 	InstanceComponent: SvelteComponent
 	// SettingsComponent provides the component used for the service's settings page.
 	SettingsComponent: SvelteComponent
+	main?: ServiceMainInterface
+	//
 	locales: Record<string, any>
 	//
 	defaults: {
 		settings: {[key: string]: any}
 	}
+}
+
+export interface ServiceMainInterface {
+	load?: (settings: any) => Promise<void>
+	enable?: () => Promise<void>
+	disable?: () => Promise<void>
+	receive?: (msg: any) => Promise<any>
+	send?: (msg: any) => Promise<any>
 }
 
 export interface ServiceChannel {
