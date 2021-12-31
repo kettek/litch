@@ -8,6 +8,9 @@
 	import Card from './components/Card.svelte'
 	import ItemBar from './components/ItemBar.svelte'
 	import ItemGroup from './components/ItemGroup.svelte'
+	import type { ServiceSourceInterface } from './interfaces/Service'
+	import { services } from './stores/services'
+
 </script>
 
 <SplitPane type='horizontal' pos={25}>
@@ -17,7 +20,14 @@
 				{$_('services.title')}
 			</svelte:fragment>
 			<section slot='content'>
-				List of available/enabled goes here
+				<nav>
+					{#each $services as service}
+						<article>
+							{service.title}
+							<input type='checkbox' bind:checked={service.enabled}/>
+						</article>
+					{/each}
+				</nav>
 			</section>
 		</Card>
 	</section>
@@ -25,3 +35,12 @@
 		Selected service settings here
 	</section>
 </SplitPane>
+
+<style>
+	nav {
+		display: flex;
+		flex-direction: column;
+	}
+	article {
+	}
+</style>
