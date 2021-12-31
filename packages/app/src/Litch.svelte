@@ -77,6 +77,21 @@
 		//$overlays = await eap.promises.get('overlays') || {}
 		currentOverlayUUID = await eap.promises.get('currentOverlayUUID') || ''
 
+		// Load services
+		loadingMessage = "Winding services"
+		const services = await ipcRenderer.invoke('getServices')
+		for (let service of services) {
+			let full = `/services/${service.dir}/dist/index.js`
+			let url = `../../../..${full}`
+			try {
+				let s: ServiceInterface = (await import(url)).default as unknown as ServiceInterface
+				// TODO: ???
+			} catch(e: any) {
+				console.error(`error in ${service}: ${e}`)
+				publisher.publish('service.'+service+'.fail', {})
+			}
+		}
+
 		// Load modules (this should bes a separate model)
 		loadingMessage = "Loading modules"
 		const mods = await ipcRenderer.invoke('getModules')
@@ -129,6 +144,7 @@
 	}
 
 	import Services from './Services.svelte'
+import type { ServiceInterface } from './interfaces/Service';
 	let showServices = false
 	function toggleServices() {
 		showServices = !showServices
