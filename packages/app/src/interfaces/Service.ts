@@ -5,6 +5,10 @@ import type { SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
  * ServiceInterface provides the generic interface for services.
  */
 export interface ServiceInterface {
+	// UUID
+	uuid: string
+	// Friendly name.
+	title: string
 	// Channel is used to manage service<->module passing.
 	channel: ServiceChannel
 	// Settings is stored to disk.
