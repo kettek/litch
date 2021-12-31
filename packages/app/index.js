@@ -3,6 +3,8 @@ const { promises: fs } = require('fs')
 const path = require("path")
 require('electron-app-settings')
 
+let services = []
+
 app.on("ready", async () => {
   const mainWindow = new BrowserWindow({
     icon: path.join(__dirname, 'public/app.png'),
@@ -22,11 +24,22 @@ app.on("ready", async () => {
   ipcMain.handle('getDisplaySize', async () => {
     return screen.getPrimaryDisplay().size
   })
-  ipcMain.handle('getModules', async() => {
+  ipcMain.handle('getModules', async () => {
     return await fs.readdir('../../modules')
   })
+  ipcMain.handle('getServices', async () => {
+    let files = await fs.readdir('../../services', {withFileTypes: true})
+    for (let file of files) {
+      if (file.isDirectory()) {
+        services.push({
+          dir: file.name,
+          channel: {}, // TODO
+          main: {}, // TODO
+        })
+      }
+    }
+  })
 })
-
 
 //
 /*const express = require('express')
