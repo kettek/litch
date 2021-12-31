@@ -93,8 +93,11 @@
 			let url = `../../../..${full}`
 			try {
 				let s: ServiceInterface = (await import(url)).default as unknown as ServiceInterface
-				addService(s)
-				publisher.publish('service.'+s.uuid+'.load', {})
+				addService({
+					...s,
+					uuid: service.uuid,
+				})
+				publisher.publish('service.'+service.uuid+'.load', {})
 				// TODO: ???
 			} catch(e: any) {
 				console.error(`error in ${service}: ${e}`)
