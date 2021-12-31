@@ -2,14 +2,22 @@
 	import { _ } from 'svelte-i18n'
 
 	import SplitPane from './components/SplitPane.svelte'
-	import Menu from './components/Menu.svelte'
-	import MenuOption from './components/MenuOption.svelte'
-	import DropList from './components/DropList.svelte'
 	import Card from './components/Card.svelte'
-	import ItemBar from './components/ItemBar.svelte'
-	import ItemGroup from './components/ItemGroup.svelte'
-	import type { ServiceSourceInterface } from './interfaces/Service'
-	import { services } from './stores/services'
+	import Button from './components/Button.svelte'
+	import Icon from './components/Icon.svelte'
+	import type { ServiceInterface, ServiceSourceInterface } from './interfaces/Service'
+	import { refreshServices, services } from './stores/services'
+	import { publisher } from './modules'
+
+	function toggleService(s: ServiceInterface) {
+		s.enabled = !s.enabled
+		if (s.enabled) {
+			publisher.publish(`service.${s.uuid}.enable`, {})
+		} else {
+			publisher.publish(`service.${s.uuid}.disable`, {})
+		}
+		refreshServices()
+	}
 
 </script>
 
@@ -20,14 +28,18 @@
 				{$_('services.title')}
 			</svelte:fragment>
 			<section slot='content'>
-				<nav>
+				<ul>
 					{#each $services as service}
-						<article>
-							{service.title}
-							<input type='checkbox' bind:checked={service.enabled}/>
-						</article>
+						<li
+							class:enabled={service.enabled} title="{service.uuid}"
+						>
+							<Button on:click={() => toggleService(service)} title={service.enabled?$_('service.disable'):$_('service.enable')}>
+								<Icon icon={service.enabled?'active':'inactive'}></Icon>
+							</Button>
+							<span>{service.title}</span>
+						</li>
 					{/each}
-				</nav>
+				</ul>
 			</section>
 		</Card>
 	</section>
@@ -37,10 +49,17 @@
 </SplitPane>
 
 <style>
-	nav {
-		display: flex;
-		flex-direction: column;
+	ul {
+		margin: 0;
+		padding: 0;
 	}
-	article {
+	li {
+		list-style: none;
+		display: grid;
+		grid-template-columns: 3em minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr);
+		align-items: stretch;
+		border: 1px solid transparent;
+		color: var(--secondary);
 	}
 </style>
