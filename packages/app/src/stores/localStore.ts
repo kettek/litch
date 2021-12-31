@@ -1,9 +1,10 @@
 // localStore.ts
 import { writable } from 'svelte/store'
 import type { OverlayInterface } from '../interfaces/Overlay'
+import type { ServiceInterface } from '../interfaces/Service'
 import type { Collection } from '../interfaces/Asset'
 
-export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue } | Record<string, OverlayInterface> | Collection[]
+export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue } | Record<string, OverlayInterface> | Collection[] | ServiceInterface[]
 
 export const localStore = <T extends JsonValue>(key: string, initial: T) => {
 	const toString = (value: T) => JSON.stringify(value, null, 2)
