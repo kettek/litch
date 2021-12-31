@@ -2,10 +2,56 @@ const { app, screen, BrowserWindow, ipcMain } = require("electron")
 const { promises: fs } = require('fs')
 const path = require("path")
 require('electron-app-settings')
+const { Publisher } = require('@kettek/pubsub')
 
+const publisher = new Publisher()
+
+let serviceSources = []
 let services = []
+async function createService(src) {
+  let full = `../../services/${src.dir}/${src.main}`
+  let module = (await import(full)).default
+
+  let ctx = `service.${src.uuid}`
+  let sub = publisher.subscribe(`${ctx}.*`)
+
+  let s = {
+    uuid: src.uuid,
+    handler: async (msg) => {
+        // strip the topics
+        msg = {
+          ...msg,
+          sourceTopic: msg.sourceTopic.substring(ctx.length+1),
+          topic: msg.sourceTopic.substring(ctx.length+1),
+        }
+        if (msg.sourceTopic === 'disable' || msg.topic === 'disable') {
+          if (module.disable) {
+            await module.disable()
+          }
+        } else if (msg.sourceTopic === 'enable' || msg.sourceTopic === 'enable') {
+          if (module.enable) {
+            await module.enable()
+          }
+        }
+        if (module.receive) {
+          await module.receive(msg)
+        }
+    },
+    module,
+  }
+
+  sub.handler = s.handler
+
+  return s
+}
 
 app.on("ready", async () => {
+  // Set up our pubsub endpoints.
+  const serviceEndpoint = publisher.connect('service.*', async (msg) => {
+  })
+  publisher.connect('services.*', serviceEndpoint)
+
+  // Create our window.
   const mainWindow = new BrowserWindow({
     icon: path.join(__dirname, 'public/app.png'),
     webPreferences: {
@@ -15,6 +61,8 @@ app.on("ready", async () => {
   })
   mainWindow.loadFile(path.join(__dirname, "public/index.html"))
   mainWindow.webContents.openDevTools()
+
+  // Set up our various IPC.
   ipcMain.handle('getPath', async (e, w) => {
     return app.getPath(w)
   })
@@ -28,18 +76,36 @@ app.on("ready", async () => {
     return await fs.readdir('../../modules')
   })
   ipcMain.handle('getServices', async () => {
-    services = []
+    serviceSources = []
     let files = await fs.readdir('../../services', {withFileTypes: true})
     for (let file of files) {
       if (file.isDirectory()) {
-        services.push({
+        let pkgsrc = `../../services/${file.name}/package.json`
+        let pkg = JSON.parse(await fs.readFile(pkgsrc))
+        serviceSources.push({
           dir: file.name,
-          channel: {}, // TODO
-          main: {}, // TODO
+          version: pkg.version,
+          uuid: pkg.litch.uuid,
+          main: pkg.exports.main,
+          render: pkg.exports.render,
         })
       }
     }
-    return services
+    return serviceSources
+  })
+  ipcMain.handle('loadService', async (event, uuid) => {
+    if (services.find(v=>v.uuid===uuid)) return false
+    let src = serviceSources.find(v=>v.uuid===uuid)
+    if (!src) return false
+    let s = await createService(src)
+
+    services.push(s)
+    if (s.module.load) {
+      await s.module.load()
+    }
+  })
+  ipcMain.handle('publish', async (event, msg) => {
+    publisher.publish(msg.topic, msg.message)
   })
 })
 
@@ -77,10 +143,10 @@ console.log('uh...', authProvider)
 
 setTimeout(async () => {
   const user = await apiClient.users.getUserByName("kts_kettek");
-	if (!user) {
-		return false;
-	}
-	console.log('kts', await user.getStream() !== null);
+  if (!user) {
+    return false;
+  }
+  console.log('kts', await user.getStream() !== null);
 
   console.log("time to try chatbot")
   const chatClient = new ChatClient({ authProvider, channels: ['kts_kettek'] });
