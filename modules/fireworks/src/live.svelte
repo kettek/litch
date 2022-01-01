@@ -98,20 +98,18 @@
 							for (let i = 0; i < particleCount; i++) {
 								let particle = {
 									payload: p,
-									vx: Math.random() * p.force + .5,
-									vy: Math.random() * p.force + .5,
+									vx: Math.random() * (p.force - -p.force) + -p.force,
+									vy: Math.random() * (p.force - -p.force) + -p.force,
 									sx: v.x,
 									sy: v.y,
 									x: v.x,
 									y: v.y,
 									age: 0,
-									weight: Math.random() * (p.weightMax - p.weightMin) + p.weightMin,
+									weight: (Math.random() * (p.weightMax - p.weightMin) + p.weightMin) / 2,
 									birth: currFrame,
 									lifetime: Math.random() * (p.lifetimeMax - p.lifetimeMin) + p.lifetimeMin,
 									opacity: 1,
 								}
-								if (Math.random() > .5) particle.vx = -particle.vx
-								if (Math.random() > .5) particle.vy = -particle.vy
 								particles.push(particle)
 							}
 						}
@@ -156,6 +154,8 @@
 		<div style="left: {rocket.x}%; top: {rocket.y}%; transform: scale({settings.groups[rocket.rocketIndex].rocket.size});" class='item'>
 			{#if rocket.group.rocket.sourceType === 'emoji'}
 				{rocket.group.rocket.emoji}️
+			{:else if rocket.group.rocket.sourceType === 'particle'}
+				<div class='particle' style="background: {rocket.group.rocket.color}"></div>
 			{:else if rocket.group.rocket.sourceType === 'asset'}
 				{#if rocket.group.rocket.reference?.mimetype?.startsWith('image')}
 					<img alt="" src={assets.source(rocket.group.rocket.reference)}/>
@@ -169,9 +169,11 @@
 		</div>
 	{/each}
 	{#each particles as particle}
-		<div style="left: {particle.x}%; top: {particle.y}%; opacity: {particle.opacity}; transform: scale({particle.payload.size});" class='item'>
+		<div style="left: {particle.x}%; top: {particle.y}%; opacity: {particle.opacity}; transform: scale({particle.payload.size}); color: {particle.payload.color};" class='item'>
 			{#if particle.payload.sourceType === 'emoji'}
 				{particle.payload.emoji}️
+			{:else if particle.payload.sourceType === 'particle'}
+				<div class='particle' style="background: {particle.payload.color}"></div>
 			{:else if particle.payload.sourceType === 'asset'}
 				{#if particle.payload.reference?.mimetype?.startsWith('image')}
 					<img alt="" src={assets.source(particle.payload.reference)}/>
@@ -196,5 +198,11 @@
 	}
 	.item {
 		position: absolute;
+	}
+	.particle {
+		position: absolute;
+		width: 1em;
+		height: 1em;
+		border-radius: 10em;
 	}
 </style>

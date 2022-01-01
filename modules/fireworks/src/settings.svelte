@@ -115,6 +115,7 @@
 				<select bind:value={currentGroup.rocket.sourceType}>
 					<option value='emoji'>{format('group.emojiType')}</option>
 					<option value='asset'>{format('group.assetType')}</option>
+					<option value='particle'>{format('group.particleType')}</option>
 				</select>
 				<svelte:fragment slot='label'>
 					{format('group.type')}
@@ -201,6 +202,7 @@
 						<select bind:value={currentPayload.sourceType}>
 							<option value='emoji'>{format('group.emojiType')}</option>
 							<option value='asset'>{format('group.assetType')}</option>
+							<option value='particle'>{format('group.particleType')}</option>
 						</select>
 						<svelte:fragment slot='label'>
 							{format('group.type')}
@@ -227,6 +229,12 @@
 						<input type='number' bind:value={currentPayload.size}/>
 						<svelte:fragment slot='label'>
 							{format('group.baseSize')}
+						</svelte:fragment>
+					</ItemGroup>
+					<ItemGroup label>
+						<input type='color' bind:value={currentPayload.color}/>
+						<svelte:fragment slot='label'>
+							Color
 						</svelte:fragment>
 					</ItemGroup>
 					<ItemGroup label>

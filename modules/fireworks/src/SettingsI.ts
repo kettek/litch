@@ -16,8 +16,9 @@ export interface SpawnGroup {
 }
 
 export interface SpawnItem {
-	sourceType: 'emoji' | 'asset'
+	sourceType: 'emoji' | 'asset' | 'particle'
 	emoji: string
+	color: string
 	reference: {
 		collection: string
 		asset: string
@@ -37,6 +38,7 @@ export interface SpawnItem {
 export const defaultRocket: SpawnItem = {
 	sourceType: 'emoji',
 	emoji: '💮',
+	color: '#ff0000',
 	reference: {
 		collection: '',
 		asset: '',
@@ -50,6 +52,7 @@ export const defaultRocket: SpawnItem = {
 export const defaultPayload: SpawnItem = {
 	sourceType: 'emoji',
 	emoji: '✨',
+	color: '#ffaabb',
 	reference: {
 		collection: '',
 		asset: '',
