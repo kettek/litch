@@ -14,6 +14,7 @@
 	nav {
 		display: grid;
 		grid-auto-flow: column;
+		background: var(--nav-bg);
 	}
 	nav.roundTop {
 		border-radius: .75em .75em 0 0;

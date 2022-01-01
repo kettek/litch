@@ -14,6 +14,7 @@
 <style>
 	section {
 		overflow: auto;
+		background: var(--nav-bg);
 	}
 	section.padded {
 		padding: .5em;

@@ -9,12 +9,13 @@
 	export let nomargin: boolean = false
 	export let draggable: boolean = false
 	export let selected: boolean = false
+	export let alt: boolean = false
 	export let title: string = ''
 	let clazz: string = ''
 	export { clazz as class}
 </script>
 
-<button draggable={draggable} title={title} class:primary class:secondary class:tertiary class:noround class:dangerous class:nomargin class={`${clazz||''}`} class:nobg class:selected class:disabled disabled={disabled} on:click on:dragstart on:dragenter on:dragover on:drop>
+<button draggable={draggable} title={title} class:primary class:secondary class:tertiary class:noround class:dangerous class:nomargin class={`${clazz||''}`} class:nobg class:selected class:alt class:disabled disabled={disabled} on:click on:dragstart on:dragenter on:dragover on:drop>
 	<slot></slot>
 </button>
 
@@ -36,6 +37,13 @@
 	}
 	.selected {
 		background: var(--bar-bg);
+	}
+	.alt {
+		background: var(--bar-bg);
+		border-color: var(--nav-bg);
+	}
+	.alt.selected {
+		background: var(--nav-bg);
 	}
 	.nomargin {
 		margin: 0;
