@@ -46,7 +46,7 @@
 <main>
 	<Section alt rounded padded>
 		<ItemGroup>
-			<Button secondary small on:click={revoke}>
+			<Button dangerous on:click={revoke}>
 				{format('revoke')}
 			</Button>
 		</ItemGroup>
