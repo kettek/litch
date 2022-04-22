@@ -1,6 +1,7 @@
 //const { ElectronAuthProvider } = require('@twurple/auth-electron')
 import type { Express, Application, NextFunction, Request, Response } from 'express'
 import type { Server } from 'http'
+import electron from 'electron'
 const express = require('express')
 import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 import { ElectronAuthProvider } from '@twurple/auth-electron'
@@ -42,6 +43,19 @@ export async function enable() {
 	authProvider = new ElectronAuthProvider({
 		clientId: settings.clientID,
 		redirectUri: redirectUri,
+	}, {
+		windowOptions: {
+			width: 400,
+			height: 600,
+			center: true,
+			parent: electron.BrowserWindow.getAllWindows()[0], // Is this a safe assumption...?
+			show: false,
+			modal: true,
+			autoHideMenuBar: true,
+			webPreferences: {
+				nodeIntegration: false,
+			}
+		}
 	})
 
 	if (shouldLogout) {
