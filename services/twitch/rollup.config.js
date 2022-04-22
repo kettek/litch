@@ -87,6 +87,15 @@ export default [
 		// instead of npm run dev), minify
 		production && terser()
 	],
+	external: [
+		"electron",
+		"fetch",
+		"websocket",
+		"websockets",
+		"net",
+		"Headers",
+		"node-fetch"
+	],
 	watch: {
 		clearScreen: false
 	}

@@ -5,6 +5,16 @@ export default {
 	title: "Twitch Integration",
 	defaults: {
 		settings: {
+			clientID: '',
+			chatBot: {
+				enabled: false,
+				prefix: '[BOT]',
+				suffix: '',
+				name: 'Gregory',
+				channels: [],
+				joinMessage: 'Gregory\'s bones are ready to rumble!',
+				leaveMessage: 'Sayonara, suckers!',
+			}
 		},
 	},
 	SettingsComponent: SettingsComponent,
