@@ -1,8 +1,4 @@
-//const { ElectronAuthProvider } = require('@twurple/auth-electron')
-import type { Express, Application, NextFunction, Request, Response } from 'express'
-import type { Server } from 'http'
 import electron from 'electron'
-const express = require('express')
 import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 import { ElectronAuthProvider } from '@twurple/auth-electron'
 import { ApiClient } from '@twurple/api'
@@ -11,35 +7,17 @@ import type { SettingsInterface } from '../Settings'
 
 let settings : SettingsInterface
 
-let port = '8099'
-let redirectUri = `http://localhost:${port}/login`
-let loginServer : Express
-let loginApp : Server
+let redirectUri = `http://localhost/nowherefast`
 let shouldLogout: boolean
-let authProvider : ElectronAuthProvider
-let apiClient : ApiClient
+let authProvider: ElectronAuthProvider
+let apiClient: ApiClient
+let running: boolean
 
 export async function load() {
 	console.log('load')
 }
 
 export async function enable() {
-	// Spin up login service.
-	loginServer = express()
-
-	loginServer.get('/login', (req, res) => {
-		console.log('oh snap', req, res)
-	})
-
-	loginServer.get('/', (req, res) => {
-		console.log('oh root', req, res)
-	})
-
-
-	loginApp = loginServer.listen(port, () => {
-		console.log('twitch listening')
-	})
-
 	authProvider = new ElectronAuthProvider({
 		clientId: settings.clientID,
 		redirectUri: redirectUri,
@@ -72,21 +50,16 @@ export async function enable() {
 	}
 
 	console.log('enable')
+	running = true
 }
 
 export async function disable() {
-	await new Promise((resolve, reject) => {
-		if (!loginApp || !loginApp.listening) {
+	/*await new Promise((resolve, reject) => {
 			resolve({})
-			return
-		}
-		loginApp.close(() => {
-			resolve({})
-		})
-	})
+	})*/
 	await stopChatbot()
-	loginApp = null
 	console.log('disable')
+	running = false
 }
 
 //export async function receive(msg: any) {
@@ -96,7 +69,7 @@ export async function receive(msg: PublishedMessage) {
 		await syncSettings(msg.message as SettingsInterface)
 	} else if (msg.topic === 'logout') {
 		shouldLogout = true
-		if (loginApp) {
+		if (running) {
 			await disable()
 			await enable()
 		}
