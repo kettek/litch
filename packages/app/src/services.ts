@@ -24,7 +24,6 @@ export function createServiceChannel(uuid: string): ServiceChannel {
 		publish: async (topic: string, msg: any) => {
 			//publisher.publish(s, `${ctx}.${topic}`, msg)
 			// FIXME
-			console.log("servicve publish", ctx, topic, msg)
 			await publisher.publish(`${ctx}.${topic}`, msg)
 		},
 		subscribe: (topic: string): ()=>void => {
