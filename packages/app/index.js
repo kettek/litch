@@ -4,6 +4,10 @@ const path = require("path")
 require('electron-app-settings')
 const { Publisher } = require('@kettek/pubsub')
 
+// NOTE: The twitch service breaks if we don't have a global Headers defined.
+const { Headers } = require('node-fetch')
+global.Headers = Headers
+
 const publisher = new Publisher()
 
 let serviceSources = []
@@ -18,24 +22,24 @@ async function createService(src) {
   let s = {
     uuid: src.uuid,
     handler: async (msg) => {
-        // strip the topics
-        msg = {
-          ...msg,
-          sourceTopic: msg.sourceTopic.substring(ctx.length+1),
-          topic: msg.sourceTopic.substring(ctx.length+1),
+      // strip the topics
+      msg = {
+        ...msg,
+        sourceTopic: msg.sourceTopic.substring(ctx.length+1),
+        topic: msg.sourceTopic.substring(ctx.length+1),
+      }
+      if (msg.sourceTopic === 'disable' || msg.topic === 'disable') {
+        if (module.disable) {
+          await module.disable()
         }
-        if (msg.sourceTopic === 'disable' || msg.topic === 'disable') {
-          if (module.disable) {
-            await module.disable()
-          }
-        } else if (msg.sourceTopic === 'enable' || msg.sourceTopic === 'enable') {
-          if (module.enable) {
-            await module.enable()
-          }
+      } else if (msg.sourceTopic === 'enable' || msg.sourceTopic === 'enable') {
+        if (module.enable) {
+          await module.enable()
         }
-        if (module.receive) {
-          await module.receive(msg)
-        }
+      }
+      if (module.receive) {
+        await module.receive(msg)
+      }
     },
     module,
   }
@@ -49,7 +53,7 @@ app.on("ready", async () => {
   // Set up our pubsub endpoints.
   const serviceEndpoint = publisher.connect('service.*', async (msg) => {
   })
-  publisher.connect('services.*', serviceEndpoint)
+  publisher.connect('service.*', serviceEndpoint)
 
   // Create our window.
   const mainWindow = new BrowserWindow({
