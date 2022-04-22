@@ -12,12 +12,13 @@
 
 	import type { SettingsInterface, LitchMask } from './Settings'
 	import { isLitchTuber, isPuppeteerTuber } from './Settings'
-	import type { ModuleChannel, ModuleFormat } from '@kettek/litch-app/src/interfaces/ModuleInstance'
+	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
+	import type { Format } from '@kettek/litch-app/src/interfaces/Format'
 	import { upgrade } from './upgrade'
 	import Visualizer from './visualizer.svelte'
 
 	export let settings: SettingsInterface
-	export let format: ModuleFormat
+	export let format: Format
 
 	export let update: (v: any) => void
 

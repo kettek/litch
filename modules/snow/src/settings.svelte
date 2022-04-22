@@ -9,11 +9,12 @@
 	import Section from '@kettek/litch-app/src/components/Section.svelte'
 	import type { AssetManager, AssetResult } from '@kettek/litch-app/src/interfaces/Asset'
 	import AssetViewer from '@kettek/litch-app/src/components/AssetViewer.svelte'
-	import type { ModuleChannel, ModuleFormat } from '@kettek/litch-app/src/interfaces/ModuleInstance'
+	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
+	import type { Format } from '@kettek/litch-app/src/interfaces/Format'
 	import { defaultGroup, SettingsInterface } from './SettingsI'
 	import { upgrade } from './upgrade'
 
-	export let format: ModuleFormat
+	export let format: Format
 
 	export let settings: SettingsInterface
 

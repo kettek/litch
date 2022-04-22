@@ -1,6 +1,7 @@
 <script type="ts">
 	import { _ } from 'svelte-i18n'
-	import type { ModuleFormat, FormatMessageObject, ModuleInstanceInterface } from "./interfaces/ModuleInstance"
+	import type { ModuleInstanceInterface } from "./interfaces/ModuleInstance"
+	import type { Format, FormatMessageObject } from "./interfaces/Format"
 	import type { ModuleInterface } from './interfaces/Module'
 	import type { AssetManager, AssetResults } from './interfaces/Asset'
 	import ModuleWrapper from "./ModuleWrapper.svelte"
@@ -38,7 +39,7 @@
 		module.box = value
 	}
 
-	let localeFormat: ModuleFormat = (messageId: string, options?: FormatMessageObject): string => {
+	let localeFormat: Format = (messageId: string, options?: FormatMessageObject): string => {
 		return $_(`modules.${module.moduleUUID}.${messageId}`, options)
 	}
 
