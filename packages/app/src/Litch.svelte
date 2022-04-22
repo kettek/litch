@@ -107,6 +107,17 @@
 					publisher.publish('service.'+service.uuid+'.update', realService.settings)
 					servicesToEnable.push(realService)
 				}
+
+				if (s.locales) {
+					for (let [lang, dictionary] of Object.entries(s.locales)) {
+						let o = {
+							'service': {}
+						} as any
+						o.service[service.uuid] = dictionary
+						addMessages(lang, o)
+					}
+				}
+
 			} catch(e: any) {
 				console.error(`error in ${service}: ${e}`)
 				publisher.publish('service.'+service+'.fail', {})
