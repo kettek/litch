@@ -8,6 +8,8 @@
 	import type { ServiceInterface, ServiceSourceInterface } from './interfaces/Service'
 	import { refreshServices, services } from './stores/services'
 	import { publisher } from './modules'
+	import ModuleWrapper from './ModuleWrapper.svelte'
+	import type { Format, FormatMessageObject } from "./interfaces/Format"
 
 	function toggleService(s: ServiceInterface) {
 		s.enabled = !s.enabled
@@ -15,6 +17,31 @@
 			publisher.publish(`service.${s.uuid}.enable`, {})
 		} else {
 			publisher.publish(`service.${s.uuid}.disable`, {})
+		}
+		refreshServices()
+	}
+
+	let selectedUUID: string
+	$: focusedService = $services.find(v=>v.uuid===selectedUUID)
+	$: pendingSettings = focusedService ? JSON.parse(JSON.stringify(focusedService.settings)) : {} // FIXME: Use a clone lib
+
+	let localeFormat: Format = (messageId: string, options?: FormatMessageObject): string => {
+		return $_(`modules.${selectedUUID}.${messageId}`, options)
+	}
+
+	let update: (value: any) => Promise<void> = async (value: any) => {
+		if (!focusedService) return
+		focusedService.settings = value
+		try {
+			await focusedService.channel.publish('update', focusedService.settings)
+		} catch(e: any) {
+			if (e.errors) {
+				for (let err of e.errors) {
+					console.error(err)
+				}
+			} else {
+				console.error(e)
+			}
 		}
 		refreshServices()
 	}
@@ -31,7 +58,7 @@
 				<ul>
 					{#each $services as service}
 						<li
-							class:enabled={service.enabled} title="{service.uuid}"
+							class:enabled={service.enabled} title="{service.uuid}" on:click={()=>selectedUUID=service.uuid}
 						>
 							<Button on:click={() => toggleService(service)} title={service.enabled?$_('service.disable'):$_('service.enable')}>
 								<Icon icon={service.enabled?'active':'inactive'}></Icon>
@@ -43,8 +70,20 @@
 			</section>
 		</Card>
 	</section>
-	<section slot='b'>
-		Selected service settings here
+	<section slot='b' class='serviceSettings'>
+		{#if focusedService}
+			<main>
+				<ModuleWrapper this={focusedService.SettingsComponent} bind:settings={pendingSettings} channel={focusedService.channel} format={localeFormat} />
+			</main>
+			<footer>
+				<Button tertiary on:click={()=>{focusedService.channel.publish('reload', focusedService.settings)}} title={$_('service.actions.reload')}>
+					<Icon icon='reload'></Icon>
+				</Button>
+				<Button tertiary on:click={()=>update(pendingSettings)} title={$_('service.actions.applyChanges')}>
+					<Icon icon='checkmark'></Icon>
+				</Button>
+			</footer>
+		{/if}
 	</section>
 </SplitPane>
 
@@ -61,5 +100,13 @@
 		align-items: stretch;
 		border: 1px solid transparent;
 		color: var(--secondary);
+	}
+	section.serviceSettings {
+		display: grid;
+		grid-template-rows: minmax(0, 1fr) auto;
+	}
+	footer {
+		display: grid;
+		grid-auto-flow: column
 	}
 </style>

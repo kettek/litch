@@ -15,6 +15,7 @@
 
 	import { settings } from './stores/settings'
 	import { overlays } from './stores/overlays'
+	import { services } from './stores/services'
 
 	import { publisher } from './modules'
 </script>
@@ -60,7 +61,6 @@
 		ipcRenderer.invoke('publish', r)
 		return 0
 	})
-	publisher.connect('services.*', serviceEndpoint)
 
 	onMount(async () => {
 		loadingMessage = "Gathering basic information"
@@ -87,6 +87,7 @@
 		// Load services
 		loadingMessage = "Winding services"
 		serviceSources = await ipcRenderer.invoke('getServices')
+		let servicesToEnable : ServiceInterface[] = []
 		for (let service of serviceSources) {
 			await ipcRenderer.invoke('loadService', service.uuid)
 			let full = `/services/${service.dir}/${service.render}`
@@ -98,11 +99,21 @@
 					uuid: service.uuid,
 				})
 				publisher.publish('service.'+service.uuid+'.load', {})
-				// TODO: ???
+
+				// Send settings state.
+				let ss = get(services)
+				let realService = ss.find(v=>v.uuid === service.uuid)
+				if (realService) {
+					publisher.publish('service.'+service.uuid+'.update', realService.settings)
+					servicesToEnable.push(realService)
+				}
 			} catch(e: any) {
 				console.error(`error in ${service}: ${e}`)
 				publisher.publish('service.'+service+'.fail', {})
 			}
+		}
+		for (let service of servicesToEnable) {
+			publisher.publish(`service.${service.uuid}.enable`, {})
 		}
 
 		// Load modules (this should bes a separate model)
@@ -160,6 +171,7 @@
 	import { addService, removeService } from './stores/services'
 	import type { ServiceInterface, ServiceSourceInterface } from './interfaces/Service'
 	import type { EndpointMessage } from '@kettek/pubsub/dist/Endpoint'
+	import { get } from 'svelte/store'
 	let showServices = false
 	function toggleServices() {
 		showServices = !showServices
