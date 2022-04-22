@@ -1,17 +1,25 @@
 import type { ServiceInterface } from '../interfaces/Service'
 import { localStore } from "./localStore"
 import { get } from 'svelte/store'
+import { createServiceChannel } from '../services'
+import merge from 'ts-deepmerge'
 
 export function addService(s: ServiceInterface) {
 	services.update((v: any) => {
 		let existing = v.findIndex((v2: any) => v2.uuid === s.uuid)
 		if (existing !== -1) {
+
 			v[existing] = {
 				...v[existing],
 				...s,
+				settings: merge({...s.defaults.settings}, v[existing].settings),
 			}
 		} else {
-			v.push(s)
+			v.push({
+				...s,
+				settings: {...s.defaults.settings},
+				channel: createServiceChannel(s.uuid),
+			})
 		}
 		return v
 	})
@@ -27,17 +35,11 @@ export function refreshServices() {
 }
 
 function deserializeServices() {
-	// Remove duplicates.
 	let ss = get(services)
-	let ss2: ServiceInterface[] = []
 	for (let s of ss) {
-		if (ss2.find(v=>v.uuid!==s.uuid)) {
-			ss2.push(s)
-		}
+		s.channel = createServiceChannel(s.uuid)
 	}
-
-	// TODO: Add channel.
-	services.set(ss2)
+	services.set(ss)
 }
 
 export const services = localStore<ServiceInterface[]>('services', [])
