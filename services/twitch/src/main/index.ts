@@ -84,8 +84,7 @@ export async function receive(msg: PublishedMessage) {
 		await enable()
 	} else if (msg.topic === 'say') {
 		if (chatClient) {
-			console.log('say', msg.message)
-			chatClient.say(msg.message.channel, msg.message.message)
+			say(msg.message.channel, `${msg.message.message}`)
 		}
 	}
 }
@@ -113,7 +112,7 @@ async function syncSettings(s : SettingsInterface) {
 		}
 		for (let channel of newChannels) {
 			chatClient.join(channel)
-			chatClient.say(channel, `${settings.chatBot.prefix}${settings.chatBot.name}'s bones are ready to rumble!${settings.chatBot.suffix}`)
+			say(channel, `${settings.chatBot.name}'s bones are ready to rumble!`)
 		}
 	}
 }
@@ -150,11 +149,11 @@ async function startChatbot() {
 					}
 				}
 				if (results.length > 0) {
-					chatClient.say(channel, `Results: ${results.join(', ')}`)
+					say(channel, `Results: ${results.join(', ')}`)
 					if (crits === 1) {
-						chatClient.say(channel, `Wow, you got ${crits} crits!`)
+						say(channel, `Wow, you got a crit!`)
 					} else if (crits > 1) {
-						chatClient.say(channel, `Wow, you got a crit!`)
+						say(channel, `Wow, you got ${crits} crits!`)
 					}
 				}
 			}
@@ -168,7 +167,7 @@ async function startChatbot() {
 			// Greet our lord.
 		} else if (user === chatClient.currentNick) {
 			if (settings.chatBot.joinMessage) {
-				chatClient.say(channel, `${settings.chatBot.prefix}${settings.chatBot.joinMessage}${settings.chatBot.suffix}`)
+				say(channel, `${settings.chatBot.joinMessage}`)
 			}
 		}
 	})
@@ -187,10 +186,14 @@ async function stopChatbot() {
 	if (!chatClient) return
 	if (settings.chatBot.leaveMessage) {
 		for (let channel of settings.chatBot.channels) {
-			chatClient.say(channel, `${settings.chatBot.prefix}${settings.chatBot.leaveMessage}${settings.chatBot.suffix}`)
+			say(channel, `${settings.chatBot.leaveMessage}`)
 		}
 	}
 	await chatClient.quit()
 	chatClient = null
 	console.log('chatbot quit')
+}
+
+function say(channel: string, message: string) {
+	chatClient.say(channel, `${settings.chatBot.prefix}${message}${settings.chatBot.suffix}`)
 }
