@@ -76,10 +76,10 @@
 				<ModuleWrapper this={focusedService.SettingsComponent} bind:settings={pendingSettings} channel={focusedService.channel} format={localeFormat} />
 			</main>
 			<footer>
-				<Button tertiary on:click={()=>{focusedService.channel.publish('reload', focusedService.settings)}} title={$_('service.actions.reload')}>
+				<Button secondary on:click={()=>{focusedService.channel.publish('reload', focusedService.settings)}} title={$_('service.actions.reload')}>
 					<Icon icon='reload'></Icon>
 				</Button>
-				<Button tertiary on:click={()=>update(pendingSettings)} title={$_('service.actions.applyChanges')}>
+				<Button secondary on:click={()=>update(pendingSettings)} title={$_('service.actions.applyChanges')}>
 					<Icon icon='checkmark'></Icon>
 				</Button>
 			</footer>
