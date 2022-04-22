@@ -53,6 +53,7 @@ export async function enable() {
 			modal: true,
 			autoHideMenuBar: true,
 			webPreferences: {
+				devTools: false,
 				nodeIntegration: false,
 			}
 		}
