@@ -26,7 +26,7 @@
 	$: pendingSettings = focusedService ? JSON.parse(JSON.stringify(focusedService.settings)) : {} // FIXME: Use a clone lib
 
 	let localeFormat: Format = (messageId: string, options?: FormatMessageObject): string => {
-		return $_(`modules.${selectedUUID}.${messageId}`, options)
+		return $_(`service.${selectedUUID}.${messageId}`, options)
 	}
 
 	let update: (value: any) => Promise<void> = async (value: any) => {
