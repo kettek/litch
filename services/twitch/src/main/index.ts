@@ -84,6 +84,7 @@ export async function disable() {
 		})
 	})
 	await stopChatbot()
+	loginApp = null
 	console.log('disable')
 }
 
@@ -94,8 +95,10 @@ export async function receive(msg: PublishedMessage) {
 		await syncSettings(msg.message as SettingsInterface)
 	} else if (msg.topic === 'logout') {
 		shouldLogout = true
-		await disable()
-		await enable()
+		if (loginApp) {
+			await disable()
+			await enable()
+		}
 	} else if (msg.topic === 'say') {
 		if (chatClient) {
 			say(msg.message.channel, `${msg.message.message}`)
