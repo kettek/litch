@@ -1,2 +1,19 @@
 {
+	"revoke": "Revoke Auth (logout)",
+	"clientID": "Client ID",
+	"clientID_desc": "The ClientID that should be used for authorization.",
+	"chatBot": "Chat Bot",
+	"name": "Name",
+	"prefix": "prefix",
+	"prefix_desc": "Text that comes before every message that the bot says.",
+	"suffix": "suffix",
+	"suffix_desc": "Text that comes after every message that the bot says.",
+	"channels": "Channels",
+	"addChannel": "Add Channel",
+	"addChannel_desc": "Join the specified channel.",
+	"removeChannel": "Remove Channel",
+	"removeChannel_desc": "Leave the given channel.",
+	"joinMessage": "Join Message",
+	"leaveMessage": "Leave Message",
+	"say": "Say"
 }

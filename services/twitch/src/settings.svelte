@@ -47,59 +47,59 @@
 	<Section alt rounded padded>
 		<ItemGroup>
 			<Button secondary small on:click={revoke}>
-				revoke
+				{format('revoke')}
 			</Button>
 		</ItemGroup>
 		<ItemGroup label>
 			<input type='text' bind:value={settings.clientID}>
 			<svelte:fragment slot='label'>
-				clientID
+				{format('clientID')}
 			</svelte:fragment>
 		</ItemGroup>
 		<ItemGroup label>
 			<input type='checkbox' bind:checked={settings.chatBot.enabled}>
 			<svelte:fragment slot='label'>
-				Chat Bot
+				{format('chatBot')}
 			</svelte:fragment>
 		</ItemGroup>
 		{#if settings.chatBot.enabled}
 			<ItemGroup label>
 				<input type='text' bind:value={settings.chatBot.name}>
 				<svelte:fragment slot='label'>
-					name
+					{format('name')}
 				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='text' bind:value={settings.chatBot.prefix}>
 				<svelte:fragment slot='label'>
-					prefix
+					{format('prefix')}
 				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='text' bind:value={settings.chatBot.suffix}>
 				<svelte:fragment slot='label'>
-					suffix
+					{format('suffix')}
 				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='text' bind:value={settings.chatBot.joinMessage}>
 				<svelte:fragment slot='label'>
-					join message
+					{format('joinMessage')}
 				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='text' bind:value={settings.chatBot.leaveMessage}>
 				<svelte:fragment slot='label'>
-					leave message
+					{format('leaveMessage')}
 				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
 				<input type='text' bind:value={addingChannel}>
-				<Button tertiary on:click={()=>addChannel(addingChannel)} title={format('addChannel')}>
+				<Button tertiary on:click={()=>addChannel(addingChannel)} title={format('addChannel_desc')}>
 					<Icon icon='add'></Icon>
 				</Button>
 				<svelte:fragment slot='label'>
-					Add Channel
+					{format('addChannel')}
 				</svelte:fragment>
 			</ItemGroup>
 
@@ -112,7 +112,7 @@
 					{#each settings.chatBot.channels as channel (channel)}
 						<li animate:flip="{{duration: 200}}">
 							<span>{channel}</span>
-							<Button tertiary on:click={()=>removeChannel(channel)} title={format('removeChannel')}>
+							<Button tertiary on:click={()=>removeChannel(channel)} title={format('removeChannel_desc')}>
 								<Icon icon='remove'></Icon>
 							</Button>
 						</li>
@@ -126,8 +126,8 @@
 	<Section alt rounded padded>
 		<ItemGroup>
 			<input type='text' bind:value={saying}>
-			<Button secondary small on:click={say}>
-				say
+			<Button secondary on:click={say}>
+				{format('say')}
 			</Button>
 		</ItemGroup>
 	</Section>
