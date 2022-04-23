@@ -1,5 +1,6 @@
 import type { SvelteComponent } from "svelte"
-import type { SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
+import type { Subscriber, SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
+import type { Publisher } from "@kettek/pubsub/dist/Publisher"
 
 export interface ServiceSourceInterface {
 	uuid: string
@@ -19,6 +20,8 @@ export interface ServiceInterface {
 	title: string
 	//
 	enabled: boolean
+	// Whether the service is in the process of enabling or disabling.
+	pending: boolean
 	// Channel is used to manage service<->module passing.
 	channel: ServiceChannel
 	// Settings is stored to disk.
@@ -49,4 +52,11 @@ export interface ServiceChannel {
 	publish: (topic: string, msg: any) => Promise<void>
 	subscribe: (topic: string) => () => void
 	unsubscribe: (topic?: string) => void
+}
+
+export interface ServiceContext {
+	publisher?: Publisher
+	subscriber?: Subscriber
+	publish?: (topic: string, msg?: any) => Promise<void> // publishes within the service's context. The sending topic equates to `service.<UUID>.<topic>`.
+	publishToAll?: (topic: string, msg?: any) => Promise<void> // publishes a topic to all topic subscribers. The sending equates to `<topic>`.
 }
