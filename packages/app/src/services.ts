@@ -4,6 +4,9 @@ import type { ServiceChannel } from "./interfaces/Service"
 
 import { publisher } from './modules'
 
+import { get } from 'svelte/store'
+import { refreshServices, services } from './stores/services'
+
 export function createServiceChannel(uuid: string): ServiceChannel {
 	let ctx = `service.${uuid}`
 	let s = publisher.subscribe(`${ctx}.*`)
@@ -49,3 +52,65 @@ export function createServiceChannel(uuid: string): ServiceChannel {
 
 	return m
 }
+
+// Add various subscriptions for managing service enable/disable/reload
+function getUUIDFromTopic(topic: string) {
+	let split = topic.split('.')
+	if (split.length < 2) {
+		return ''
+	}
+	return split[1]
+}
+function getServiceFromTopic(topic: string) {
+	let uuid = getUUIDFromTopic(topic)
+	return get(services).find(v=>v.uuid === uuid)
+}
+publisher.subscribe('service.*.reload', async ({topic, sourceTopic}) => {
+	if (!sourceTopic) return
+	let uuid = getUUIDFromTopic(sourceTopic)
+	publisher.publish(`service.${uuid}.disable`, {})
+	publisher.publish(`service.${uuid}.enable`, {})
+})
+publisher.subscribe('service.*.enable', async ({topic, sourceTopic}) => {
+	if (!sourceTopic) return
+	let service = getServiceFromTopic(sourceTopic)
+	if (service) {
+		service.pending = true
+		refreshServices()
+	}
+})
+publisher.subscribe('service.*.disable', async ({topic, sourceTopic}) => {
+	if (!sourceTopic) return
+	let service = getServiceFromTopic(sourceTopic)
+	if (service) {
+		service.pending = false
+		refreshServices()
+	}
+})
+publisher.subscribe('service.*.enabled', async ({topic, sourceTopic}) => {
+	if (!sourceTopic) return
+	let service = getServiceFromTopic(sourceTopic)
+	if (service) {
+		service.enabled = true
+		service.pending = false
+		refreshServices()
+	}
+})
+publisher.subscribe('service.*.disabled', async ({topic, sourceTopic}) => {
+	if (!sourceTopic) return
+	let service = getServiceFromTopic(sourceTopic)
+	if (service) {
+		service.enabled = false
+		service.pending = false
+		refreshServices()
+	}
+})
+publisher.subscribe('service.*.failed', async ({topic, sourceTopic}) => {
+	if (!sourceTopic) return
+	let service = getServiceFromTopic(sourceTopic)
+	if (service) {
+		service.enabled = false
+		service.pending = false
+		refreshServices()
+	}
+})

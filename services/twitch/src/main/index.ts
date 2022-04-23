@@ -4,6 +4,7 @@ import { ElectronAuthProvider } from '@twurple/auth-electron'
 import { ApiClient } from '@twurple/api'
 import { ChatClient } from '@twurple/chat'
 import type { SettingsInterface } from '../Settings'
+import type { ServiceContext } from '@kettek/litch-app/src/interfaces/Service'
 
 let settings : SettingsInterface
 
@@ -13,65 +14,67 @@ let authProvider: ElectronAuthProvider
 let apiClient: ApiClient
 let running: boolean
 
-export async function load() {
-	console.log('load')
-}
+export let context: ServiceContext = {}
 
 export async function enable() {
-	authProvider = new ElectronAuthProvider({
-		clientId: settings.clientID,
-		redirectUri: redirectUri,
-	}, {
-		windowOptions: {
-			width: 400,
-			height: 600,
-			center: true,
-			parent: electron.BrowserWindow.getAllWindows()[0], // Is this a safe assumption...?
-			show: false,
-			modal: true,
-			autoHideMenuBar: true,
-			webPreferences: {
-				devTools: false,
-				nodeIntegration: false,
+	try {
+		authProvider = new ElectronAuthProvider({
+			clientId: settings.clientID,
+			redirectUri: redirectUri,
+		}, {
+			windowOptions: {
+				width: 400,
+				height: 600,
+				center: true,
+				parent: electron.BrowserWindow.getAllWindows()[0], // Is this a safe assumption...?
+				show: false,
+				modal: true,
+				autoHideMenuBar: true,
+				webPreferences: {
+					devTools: false,
+					nodeIntegration: false,
+				}
 			}
+		})
+
+		if (shouldLogout) {
+			authProvider.allowUserChange()
+			authProvider.getAccessToken(authProvider.currentScopes)
+			shouldLogout = false
 		}
-	})
 
-	if (shouldLogout) {
-		authProvider.allowUserChange()
-		authProvider.getAccessToken(authProvider.currentScopes)
-		shouldLogout = false
+		apiClient = new ApiClient({ authProvider })
+
+		if (settings.chatBot.enabled) {
+			await startChatbot()
+		}
+
+		context.publish('enabled')
+		running = true
+	} catch(err) {
+		context.publish('failed', err)
+		running = false
 	}
-
-	apiClient = new ApiClient({ authProvider })
-
-	if (settings.chatBot.enabled) {
-		await startChatbot()
-	}
-
-	console.log('enable')
-	running = true
 }
 
 export async function disable() {
-	/*await new Promise((resolve, reject) => {
-			resolve({})
-	})*/
-	await stopChatbot()
-	console.log('disable')
+	try {
+		await stopChatbot()
+	} catch(err) {
+		context.publish('failed', err)
+	}
 	running = false
+	context.publish('disabled')
 }
 
 //export async function receive(msg: any) {
 export async function receive(msg: PublishedMessage) {
-	console.log('recv', msg)
 	if (msg.topic === 'update') {
 		await syncSettings(msg.message as SettingsInterface)
 	} else if (msg.topic === 'logout') {
 		shouldLogout = true
 		if (running) {
-			await disable()
-			await enable()
+			context.publish('reload')
 		}
 	} else if (msg.topic === 'say') {
 		if (chatClient) {

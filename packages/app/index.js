@@ -19,6 +19,17 @@ async function createService(src) {
   let ctx = `service.${src.uuid}`
   let sub = publisher.subscribe(`${ctx}.*`)
 
+  if (module.context) {
+    module.context.publisher = publisher
+    module.context.subscriber = sub
+    module.context.publish = (topic, msg) => {
+      publisher.publish(`${ctx}.${topic}`, msg)
+    }
+    module.context.publishToAll = (topic, msg) => {
+      publisher.publish(topic, msg)
+    }
+  }
+
   let s = {
     uuid: src.uuid,
     handler: async (msg) => {
@@ -50,10 +61,10 @@ async function createService(src) {
 }
 
 app.on("ready", async () => {
-  // Set up our pubsub endpoints.
-  const serviceEndpoint = publisher.connect('service.*', async (msg) => {
+  // Set up our endpoint.
+  const end = publisher.connect('*', (msg) => {
+    mainWindow.webContents.send('publish', msg)
   })
-  publisher.connect('service.*', serviceEndpoint)
 
   // Create our window.
   const mainWindow = new BrowserWindow({
@@ -109,6 +120,6 @@ app.on("ready", async () => {
     }
   })
   ipcMain.handle('publish', async (event, msg) => {
-    publisher.publish(msg.topic, msg.message)
+    publisher.publish(end, msg)
   })
 })

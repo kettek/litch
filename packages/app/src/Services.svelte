@@ -12,13 +12,12 @@
 	import type { Format, FormatMessageObject } from "./interfaces/Format"
 
 	function toggleService(s: ServiceInterface) {
-		s.enabled = !s.enabled
-		if (s.enabled) {
+		if (s.pending) return
+		if (!s.enabled) {
 			publisher.publish(`service.${s.uuid}.enable`, {})
 		} else {
 			publisher.publish(`service.${s.uuid}.disable`, {})
 		}
-		refreshServices()
 	}
 
 	let selectedUUID: string
@@ -60,7 +59,7 @@
 						<li
 							class:enabled={service.enabled} title="{service.uuid}" on:click={()=>selectedUUID=service.uuid}
 						>
-							<Button on:click={() => toggleService(service)} title={service.enabled?$_('service.disable'):$_('service.enable')}>
+							<Button disabled={service.pending} on:click={() => toggleService(service)} title={service.enabled?$_('service.disable'):$_('service.enable')}>
 								<Icon icon={service.enabled?'active':'inactive'}></Icon>
 							</Button>
 							<span>{service.title}</span>

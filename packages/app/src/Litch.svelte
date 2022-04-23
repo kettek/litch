@@ -15,7 +15,7 @@
 
 	import { settings } from './stores/settings'
 	import { overlays } from './stores/overlays'
-	import { services } from './stores/services'
+	import { refreshServices, services } from './stores/services'
 
 	import { publisher } from './modules'
 </script>
@@ -57,9 +57,13 @@
 		console.log(sourceTopic)
 	})
 
-	let serviceEndpoint = publisher.connect('service.*', async (r: EndpointMessage): Promise<number> => {
+	// Connect our main<->render publisher endpoint.
+	let serviceEndpoint = publisher.connect('*', async (r: EndpointMessage): Promise<number> => {
 		ipcRenderer.invoke('publish', r)
 		return 0
+	})
+	ipcRenderer.on('publish', (event: any, msg: any) => {
+		publisher.publish(serviceEndpoint, msg)
 	})
 
 	onMount(async () => {
