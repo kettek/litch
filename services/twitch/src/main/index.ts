@@ -119,6 +119,12 @@ async function startChatbot() {
 		console.log('connected')
 	})
 	chatClient.onMessage((channel, user, msg) => {
+		// TODO: what should we actually use as the topic...?
+		context.publishToAll('services.chat.message', {
+			channel,
+			user,
+			msg,
+		})
 		if (msg.startsWith('@'+chatClient.currentNick)) {
 			msg = msg.substring(chatClient.currentNick.length+1).trimStart().trimEnd()
 			if (msg.startsWith('roll ')) {
@@ -157,6 +163,10 @@ async function startChatbot() {
 		//console.log('any message', e)
 	})
 	chatClient.onJoin((channel, user) => {
+		context.publishToAll('services.chat.join', {
+			channel,
+			user,
+		})
 		if (channel.substring(1) === user && user !== chatClient.currentNick) {
 			// Greet our lord.
 		} else if (user === chatClient.currentNick) {
@@ -169,6 +179,10 @@ async function startChatbot() {
 		console.log("join failure", channel, reason)
 	})
 	chatClient.onPart((channel, user) => {
+		context.publishToAll('services.chat.part', {
+			channel,
+			user,
+		})
 		console.log("parted", channel, user)
 	})
 	await chatClient.connect()
