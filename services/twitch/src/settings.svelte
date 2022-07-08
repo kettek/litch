@@ -57,6 +57,12 @@
 			</svelte:fragment>
 		</ItemGroup>
 		<ItemGroup label>
+			<input type='checkbox' bind:checked={settings.dumpAllMessages}>
+			<svelte:fragment slot='label'>
+				{format('dumpAllMessages')}
+			</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
 			<input type='checkbox' bind:checked={settings.chatBot.enabled}>
 			<svelte:fragment slot='label'>
 				{format('chatBot')}

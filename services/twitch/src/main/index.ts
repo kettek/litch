@@ -119,6 +119,9 @@ async function startChatbot() {
 		console.log('connected')
 	})
 	chatClient.onMessage((channel, user, msg) => {
+		if (settings.dumpAllMessages) {
+			console.log('onMessage', channel, user, msg)
+		}
 		// TODO: what should we actually use as the topic...?
 		context.publishToAll('services.chat.message', {
 			channel,
@@ -159,8 +162,15 @@ async function startChatbot() {
 			}
 		}
 	})
+	chatClient.onRewardGift((e, user, gift, msg) => {
+		if (settings.dumpAllMessages) {
+			console.log('onRewardGift', e, user, gift, msg)
+		}
+	})
 	chatClient.onAnyMessage(e => {
-		//console.log('any message', e)
+		if (settings.dumpAllMessages) {
+			console.log('dumpAll:', JSON.stringify(e))
+		}
 	})
 	chatClient.onJoin((channel, user) => {
 		context.publishToAll('services.chat.join', {

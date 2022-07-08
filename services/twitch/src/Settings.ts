@@ -1,5 +1,6 @@
 export interface SettingsInterface {
 	clientID: string
+	dumpAllMessages: boolean
 	chatBot: {
 		enabled: boolean
 		name: string
