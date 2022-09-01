@@ -72,6 +72,7 @@ app.on("ready", async () => {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      backgroundThrottling: false,
     }
   })
   mainWindow.loadFile(path.join(__dirname, "public/index.html"))
