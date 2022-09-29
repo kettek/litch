@@ -22,13 +22,27 @@ export function removeOverlay(u: string) {
 	})
 }
 
+export function duplicateOverlay(u: string) {
+	overlays.update((v: any) => {
+		let clone = JSON.parse(JSON.stringify(v[u]))
+		clone.uuid = v4()
+
+		for (let m of clone.modules) {
+			m.channel = createModuleChannel(clone.uuid, m.uuid)
+		}
+
+		v[clone.uuid] = clone
+		return v
+	})
+}
+
 export function deserializeOverlays() {
 	let os = get(overlays) as Record<string, OverlayInterface>
 	for (let [uuid, overlay] of Object.entries(os)) {
 		for (let m of overlay.modules) {
 			m.channel = createModuleChannel(uuid, m.uuid)
 			// Reroll any module UUIDs that exist more than once.
-			if (overlay.modules.filter(v=>v.uuid===uuid).length > 1) {
+			if (overlay.modules.filter(v=>v.uuid===m.uuid).length > 1) {
 				console.log('duplicate module uuid found rerolling')
 				m.uuid = v4()
 			}

@@ -15,7 +15,7 @@
 	import { onMount } from 'svelte'
 	import { publisher } from './modules'
 	import type { Subscriber } from '@kettek/pubsub/dist/Subscriber'
-	import { addOverlay, removeOverlay, overlays, refreshOverlays } from './stores/overlays'
+	import { addOverlay, removeOverlay, overlays, refreshOverlays, duplicateOverlay } from './stores/overlays'
 	import ModuleWrapper from './ModuleWrapper.svelte'
 	export let modules: Record<string, ModuleInterface> = {}
 
@@ -49,6 +49,9 @@
 			currentOverlayUUID = ''
 		}
 	}
+	function handleDuplicate(evt: CustomEvent<string>) {
+		duplicateOverlay(evt.detail)
+	}
 
 	let assetsSubscriber: Subscriber
 	onMount(() => {
@@ -64,7 +67,7 @@
 			{#if showOverlayCreator}
 				<OverlayCreator bind:shown={showOverlayCreator} on:create={handleCreate} />
 			{:else if currentOverlay === undefined}
-				<OverlayList litchURL={litchURL} bind:showOverlayCreator={showOverlayCreator} bind:overlays={$overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} bind:focusedOverlayUUID={focusedOverlayUUID} on:delete={handleDelete}/>
+				<OverlayList litchURL={litchURL} bind:showOverlayCreator={showOverlayCreator} bind:overlays={$overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} bind:focusedOverlayUUID={focusedOverlayUUID} on:delete={handleDelete} on:duplicate={handleDuplicate}/>
 			{:else}
 				<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID} on:delete={handleDelete} modules={modules}/>
 			{/if}

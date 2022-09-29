@@ -106,6 +106,10 @@
 </Card>
 {#if showMenu}
 	<Menu secondary {...menuPos} on:click={closeOverlayMenu} on:clickoutside={closeOverlayMenu}>
+		<MenuOption tertiary on:click={()=>dispatch('duplicate', menuUUID)}>
+			<span>{$_('overlays.duplicate')}</span>
+			<Icon icon='duplicate'></Icon>
+		</MenuOption>
 		<MenuOption dangerous on:click={()=>dispatch('delete', menuUUID)}>
 			<span>Delete</span>
 			<Icon icon='delete'></Icon>
