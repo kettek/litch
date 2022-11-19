@@ -15,7 +15,11 @@ export default {
 		settings: {
 			updateRate: 50,
 			maxAccumulator: 200,
-			groups: [JSON.parse(JSON.stringify(defaultGroup))]
+			groups: [JSON.parse(JSON.stringify(defaultGroup))],
+			teleport: {
+				X: [-10, 110],
+				Y: [-10, 110],
+			}
 		},
 	},
 	settingsComponent: SettingsComponent,

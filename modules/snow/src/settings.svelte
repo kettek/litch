@@ -70,6 +70,16 @@
 				{format('maxAccumulator')}
 			</svelte:fragment>
 		</ItemGroup>
+		<ItemGroup label maxedCount={2} count={3}>
+			<input type='number' bind:value={settings.teleport.X[0]}/>
+			<input type='number' bind:value={settings.teleport.X[1]}/>
+			<svelte:fragment slot='label'>{format('teleportX')}</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label maxedCount={2} count={3}>
+			<input type='number' bind:value={settings.teleport.Y[0]}/>
+			<input type='number' bind:value={settings.teleport.Y[1]}/>
+			<svelte:fragment slot='label'>{format('teleportY')}</svelte:fragment>
+		</ItemGroup>
 	</Section>
 	<TabBar>
 		{#each settings.groups as group, index}

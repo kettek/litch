@@ -56,9 +56,10 @@
 					item.y += item.yRate * item.scale/4
 					item.x += item.xRate * item.scale/4
 					item.rotation += item.rotRate
-					if (item.y > 110) item.y = -10
-					if (item.x > 110) item.x = -10
-					else if (item.x < -10) item.x = 110
+					if (item.y > settings.teleport.Y[1]) item.y = settings.teleport.Y[0]
+					else if (item.y < settings.teleport.Y[0]) item.y = settings.teleport.Y[1]
+					if (item.x > settings.teleport.X[1]) item.x = settings.teleport.X[0]
+					else if (item.x < settings.teleport.X[0]) item.x = settings.teleport.X[1]
 					if (item.rotation > 360) item.rotation = 0
 					else if (item.rotation < 0) item.rotation = 360
 				}

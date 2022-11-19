@@ -19,5 +19,11 @@ export function upgrade(settings: any): [boolean, SettingsInterface] {
 		settings.groups = []
 		changed = true
 	}
+	if (!settings.teleport) {
+		settings.teleport = {
+			X: [-10, 110],
+			Y: [-10, 110],
+		}
+	}
 	return [changed, settings]
 }

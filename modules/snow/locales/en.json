@@ -1,6 +1,8 @@
 {
 	"updateRate": "Update rate (ms)",
 	"maxAccumulator": "Max accumulator (ms)",
+	"teleportX": "X min and max percentages to teleport to opposite side",
+	"teleportY": "Y min and max percentages to teleport to opposite side",
 	"selectAGroup": "Select or create a group",
 	"unsupportedAsset": "Unsupported asset",
 	"openAsset": "Open asset",

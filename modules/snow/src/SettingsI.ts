@@ -2,6 +2,10 @@ export interface SettingsInterface {
 	groups: SpawnItem[]
 	updateRate: number
 	maxAccumulator: number
+	teleport: {
+		X: [number, number]
+		Y: [number, number]
+	}
 }
 
 export interface SpawnItem {
