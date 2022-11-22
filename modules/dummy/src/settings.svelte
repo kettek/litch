@@ -1,11 +1,23 @@
 <script type="ts">
-	/*import type { BoxInterface } from '@kettek/litch-app/src/interfaces/Box'
+	import type { Format } from '@kettek/litch-app/src/interfaces/Format'
+	import type { SettingsI } from './SettingsI'
 
-	export let settings: any = {}
-	export let box: BoxInterface*/
+	import Section from '@kettek/litch-app/src/components/Section.svelte'
+	import ItemGroup from '@kettek/litch-app/src/components/ItemGroup.svelte'
+
+	export let settings: SettingsI
+	export let format: Format
 </script>
 
 <div>
+	<Section alt padded rounded>
+		<ItemGroup label>
+			<input type='text' bind:value={settings.message}/>
+			<svelte:fragment slot='label'>
+				{format('message')}
+			</svelte:fragment>
+		</ItemGroup>
+	</Section>
 </div>
 
 <style>

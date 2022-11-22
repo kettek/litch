@@ -1,12 +1,12 @@
 <script type="ts">
-	/*import type { BoxInterface } from '@kettek/litch-app/src/interfaces/Box'
+	import type { Format } from '@kettek/litch-app/src/interfaces/Format'
+	import type { SettingsI } from './SettingsI'
 
-	export let settings: any = {}
-	export let box: BoxInterface*/
+	export let settings: SettingsI
 </script>
 
 <div>
-    Dummy!
+	{settings.message}
 </div>
 
 <style>

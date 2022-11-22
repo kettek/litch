@@ -1,6 +1,7 @@
 import SettingsComponent from './settings.svelte'
 import LiveComponent from './live.svelte'
 import PreviewComponent from './preview.svelte'
+import en from '../locales/en.json'
 
 export default {
 	title: "Dummy Module",
@@ -8,11 +9,16 @@ export default {
 	defaults: {
 		title: "A dummy module",
 		box: {
-		x: 0, y: 0, width: 200, height: 200,
+			x: 0, y: 0, width: 200, height: 200,
 		},
-		settings: {},
+		settings: {
+			message: "Dummy!",
+		},
 	},
 	settingsComponent: SettingsComponent,
 	liveComponent: LiveComponent,
 	previewComponent: PreviewComponent,
+	locales: {
+		"en": en,
+	}
 }
