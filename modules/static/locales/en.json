@@ -1,0 +1,14 @@
+{
+	"name": "Name",
+	"delete": "Delete",
+	"type": "entry type",
+	"urlType": "file or url",
+	"assetType": "asset",
+	"textType": "text",
+	"left": "left",
+	"top": "top",
+	"width": "width",
+	"height": "height",
+	"replaceAsset": "replace asset",
+	"source": "source"
+}
