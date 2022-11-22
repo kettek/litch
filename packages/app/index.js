@@ -89,7 +89,7 @@ app.on("ready", async () => {
     return screen.getPrimaryDisplay().size
   })
   ipcMain.handle('getModules', async () => {
-    return await fs.readdir('../../modules')
+    return await (await fs.readdir('../../modules', { withFileTypes: true })).filter(v=>v.isDirectory()).map(v=>v.name)
   })
   ipcMain.handle('getServices', async () => {
     serviceSources = []
