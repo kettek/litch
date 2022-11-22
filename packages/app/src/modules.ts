@@ -3,9 +3,20 @@ const { Publisher: PublisherR } = require('@kettek/pubsub')
 import type { Publisher } from "@kettek/pubsub/dist/Publisher"
 import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 
-import type { ModuleChannel } from "./interfaces/ModuleInstance"
+import type { ModuleChannel, ModuleChannels } from "./interfaces/ModuleInstance"
 
 export let publisher: Publisher = new PublisherR()
+
+export function createModuleChannels(overlayUUID: string, uuid: string): ModuleChannels {
+	let ctx = `overlay.${overlayUUID}.module.${uuid}`
+	let m = {
+		publish: async (topic: string, msg: any) => {
+			await publisher.publish(`${ctx}.${topic}`, msg)
+		},
+	}
+
+	return m
+}
 
 export function createModuleChannel(overlayUUID: string, uuid: string): ModuleChannel {
 	let ctx = `overlay.${overlayUUID}.module.${uuid}`

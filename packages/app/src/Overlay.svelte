@@ -7,6 +7,7 @@
 	import type { AssetManager } from './interfaces/Asset'
 	import { createAssetManager } from './assets'
 	import { refreshOverlays } from './stores/overlays'
+  import type { ModuleInstanceInterface } from './interfaces/ModuleInstance'
 
 	export let modules: Record<string, ModuleInterface> = {}
 
@@ -208,6 +209,22 @@
 		}
 	}
 
+	async function updateModule(module: ModuleInstanceInterface, settings: any) {
+		module.settings = settings
+		refreshOverlays()
+		try {
+			await module.channels.publish('update', module.settings)
+		} catch(e: any) {
+			if (e.errors) {
+				for (let err of e.errors) {
+					console.error(err)
+				}
+			} else {
+				console.error(e)
+			}
+		}
+	}
+
 	// Module rotate
 	function rotateModule(node: HTMLElement, params: {uuid: string, act: string}) {
 		const mousedown = (e: MouseEvent) => {
@@ -330,7 +347,7 @@
 		<canvas bind:this={canvas}></canvas>
 		{#each overlay.modules.filter(v=>v.active) as module (module.uuid)}
 			<article style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px; --rad: {(rotatingModule===module.uuid?(rotate+(module.box?.rotate??0)):module.box?.rotate)}rad" use:moveModule={module.uuid}>
-				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} settings={module.settings} bind:box={module.box} update={(v)=>module.settings=v} channel={module.channel} live={module.live} assets={assets} />
+				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} settings={module.settings} bind:box={module.box} zoom={zoom} update={(v)=>updateModule(module, v)} channel={module.previewChannel} live={module.live} assets={assets} />
 				<footer>
 					<span>
 						{module.box.width}x{module.box.height}

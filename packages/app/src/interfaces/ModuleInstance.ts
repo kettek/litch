@@ -16,7 +16,11 @@ export interface ModuleInstanceInterface {
 	openSettings: boolean
 	active: boolean
 	// Live
-	channel: ModuleChannel
+	channels: ModuleChannels
+	liveChannel: ModuleChannel
+	instanceChannel: ModuleChannel
+	settingsChannel: ModuleChannel
+	previewChannel: ModuleChannel
 	live: {[key: string]: any} // Live information, passed to module
 }
 
@@ -26,4 +30,8 @@ export interface ModuleChannel {
 	publish: (topic: string, msg: any) => Promise<void>
 	subscribe: (topic: string) => () => void
 	unsubscribe: (topic?: string) => void
+}
+
+export interface ModuleChannels {
+	publish: (topic: string, msg: any) => Promise<void>
 }

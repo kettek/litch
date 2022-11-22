@@ -15,7 +15,7 @@
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
 
-	import { createModuleChannel, publisher } from './modules'
+	import { createModuleChannel, createModuleChannels, publisher } from './modules'
 
 	export let overlay: OverlayInterface
 	export let uuid: string
@@ -48,7 +48,11 @@
 			box: {...module.defaults.box},
 			moduleUUID: evt.detail,
 			settings: {...module.defaults.settings},
-			channel: createModuleChannel(overlay.uuid, uuid),
+			channels: createModuleChannels(overlay.uuid, uuid),
+			liveChannel: createModuleChannel(overlay.uuid, uuid),
+			previewChannel: createModuleChannel(overlay.uuid, uuid),
+			instanceChannel: createModuleChannel(overlay.uuid, uuid),
+			settingsChannel: createModuleChannel(overlay.uuid, uuid),
 			openDimensions: false,
 			openSettings: true,
 			active: true,
@@ -81,7 +85,7 @@
 	async function reloadModule(uuid: string) {
 		let module = overlay.modules.find(v=>v.uuid===uuid)
 		if (!module) return
-		module.channel.publish('reload', module.settings)
+		module.channels.publish('reload', module.settings)
 	}
 
 	let hoveringModuleUUID: string

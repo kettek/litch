@@ -23,7 +23,7 @@
 		module.settings = value
 		refreshOverlays()
 		try {
-			await module.channel.publish('update', module.settings)
+			await module.channels.publish('update', module.settings)
 		} catch(e: any) {
 			if (e.errors) {
 				for (let err of e.errors) {
@@ -113,11 +113,11 @@
 		</article>
 		<hr/>
 		<article class='module__wrapper'>
-			<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} channel={module.channel} assets={assets} format={localeFormat} />
+			<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} channel={module.settingsChannel} assets={assets} format={localeFormat} />
 		</article>
 	</section>
 	<svelte:fragment slot="footer">
-		<Button tertiary on:click={()=>{module.channel.publish('reload', module.settings)}} title={$_('module.actions.reload')}>
+		<Button tertiary on:click={()=>{module.channels.publish('reload', module.settings)}} title={$_('module.actions.reload')}>
 			<Icon icon='reload'></Icon>
 		</Button>
 		<Button tertiary on:click={()=>update(pendingSettings)} title={$_('module.actions.applyChanges')}>

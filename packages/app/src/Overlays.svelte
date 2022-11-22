@@ -90,14 +90,14 @@
 	{#if activeOverlay}
 		{#each activeOverlay.modules as module}
 			{#if module.active && modules[module.moduleUUID]?.instanceComponent}
-				<ModuleWrapper this={modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.channel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channel.publish('update', module.settings)}} />
+				<ModuleWrapper this={modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.instanceChannel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channels.publish('update', module.settings)}} />
 			{/if}
 		{/each}
 	{/if}
 	{#if focusedOverlay && activeOverlay !== focusedOverlay}
 		{#each focusedOverlay.modules as module}
 			{#if module.active && modules[module.moduleUUID]?.instanceComponent}
-				<ModuleWrapper this={modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.channel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channel.publish('update', module.settings)}} />
+				<ModuleWrapper this={modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.instanceChannel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channels.publish('update', module.settings)}} />
 			{/if}
 		{/each}
 	{/if}
