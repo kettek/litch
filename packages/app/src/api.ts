@@ -117,6 +117,15 @@ export function isModuleTypeResponse(object: any): object is ModuleTypeResponse 
 	return object.event === 'module-response'
 }
 
+// Module refresh.
+export interface ModuleRefreshRequest {
+	event: 'module-refresh'
+	uuid: UUID
+}
+export function isModuleRefreshRequest(object: any): object is ModuleRefreshRequest {
+	return object.event === 'module-refresh'
+}
+
 // Module settings
 export interface ModuleSettings {
 	event: 'module-settings'

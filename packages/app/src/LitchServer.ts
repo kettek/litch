@@ -21,7 +21,7 @@ const fs = require('fs')
 const { Publisher: PublisherR } = require('@kettek/pubsub')
 import type { Publisher } from "@kettek/pubsub/dist/Publisher"*/
 
-import { isHello, Hello, LitchMessage, LazyUpdate, isLazyUpdate, isModuleTypeRequest, ModuleTypeResponse, Endpoint} from './api'
+import { isHello, Hello, LitchMessage, LazyUpdate, isLazyUpdate, isModuleTypeRequest, ModuleTypeResponse, Endpoint, isRefresh, isModuleRefreshRequest} from './api'
 import { httpReference } from './assets'
 
 export class LitchServer {
@@ -167,6 +167,19 @@ export class LitchServer {
 				let msg = JSON.parse(data)
 				if (isHello(msg)) {
 					console.log(`hello from ${msg.uuid}`)
+					// Let the target know we're ready.
+					ws.send(JSON.stringify({event: 'ready'}))
+				} else if (isModuleRefreshRequest(msg)) {
+					// Notify requested module, if active, that it should trigger a refresh.
+					let active = this.#overlays[this.#activeOverlayUUID]
+					if (active) {
+						for (let m of active.modules) {
+							if (!m.active || m.uuid !== msg.uuid) continue
+							m.channels.publish('refresh', {
+								uuid: uuid,
+							})
+						}
+					}
 				} else if (isModuleTypeRequest(msg)) {
 					let r : ModuleTypeResponse = {
 						event: 'module-response',

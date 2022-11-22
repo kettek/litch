@@ -97,6 +97,14 @@
 	async function startWs() {
 		const parsedUrl = new URL(window.location.href)
 
+		// Clear out overlay on start.
+		overlay = {
+			title: '',
+			uuid: '',
+			canvas: {x: 0, y: 0, width: 0, height: 0},
+			modules: [],
+		}
+
 		try {
 			await new Promise((resolve: (value: void) => void, reject: (reason: any) => void) => {
 				webSocket = new WebSocket(`ws://${parsedUrl.host}`)
@@ -116,6 +124,8 @@
 					if (isHello(msg)) {
 						uuid = msg.uuid
 						webSocket?.send(JSON.stringify({event: 'hello', uuid: uuid}))
+					} else if (msg.event === 'ready') {
+						// TODO: Something???
 					} else if (isLazyUpdate(msg)) {
 						// If we're loaded from an /overlays/ path, ensure we are not shown if the overlay is not meant for us.
 						const parsedUrl = new URL(window.location.href)
@@ -132,6 +142,7 @@
 						if (overlay.uuid !== msg.overlayUUID) {
 							// Overlay change, remove all channels.
 							for (let m of overlay.modules) {
+								delete readiedModules[m.uuid]
 								if (modulesChannels[m.uuid]) {
 									modulesChannels[m.uuid].unsubscribe()
 									delete modulesChannels[m.uuid]
@@ -140,6 +151,7 @@
 						} else {
 							// Remove any module channels that don't exist.
 							for (let m of overlay.modules) {
+								delete readiedModules[m.uuid]
 								if (!msg.modules.find(v=>v.uuid===m.uuid)) {
 									// Module was removed.
 									if (modulesChannels[m.uuid]) {
@@ -178,6 +190,10 @@
 		}
 	}
 
+	// readiedModules store moduleUUID readied state for if they've been readied in the DOM yet.
+	let readiedModules: {
+		[key: string]: boolean
+	} = {}
 	let modulesStore: Record<string, ModuleInterface> = {} // null signifies pending, Error is when it fails.
 	let modulesState: Record<string, 'requesting'|'done'|'missing'|'error'> = {}
 	let modulesChannels: Record<string, ModuleChannel> = {}
@@ -213,6 +229,10 @@
 			modulesState[uuid] = 'error'
 		}
 	}
+	function refreshModule(uuid: string) {
+		readiedModules[uuid] = true
+		webSocket?.send(JSON.stringify({event: 'module-refresh', uuid: uuid}))
+	}
 
 	let t: NodeJS.Timeout
 
@@ -240,6 +260,9 @@
 			<article style="--x: {module.box.x}px; --y: {module.box.y}px; --width: {module.box.width}px; --height: {module.box.height}px; --rad: {module.box.rotate}rad">
 				{#if modulesState[module.moduleUUID] === 'done'}
 					<ModuleWrapper this={modulesStore[module.moduleUUID].liveComponent} bind:settings={module.settings} bind:box={module.box} bind:live={module.live} bind:channel={modulesChannels[module.uuid]} assets={assets} />
+					{#if !readiedModules[module.uuid]}
+						{refreshModule(module.uuid)}
+					{/if}
 				{/if}
 			</article>
 		{/each}
