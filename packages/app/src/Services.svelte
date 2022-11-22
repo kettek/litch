@@ -71,17 +71,19 @@
 	</section>
 	<section slot='b' class='serviceSettings'>
 		{#if focusedService}
-			<main>
-				<ModuleWrapper this={focusedService.SettingsComponent} bind:settings={pendingSettings} channel={focusedService.channel} format={localeFormat} />
-			</main>
-			<footer>
-				<Button secondary on:click={()=>{focusedService?.channel.publish('reload', focusedService.settings)}} title={$_('service.actions.reload')}>
-					<Icon icon='reload'></Icon>
-				</Button>
-				<Button secondary on:click={()=>update(pendingSettings)} title={$_('service.actions.applyChanges')}>
-					<Icon icon='checkmark'></Icon>
-				</Button>
-			</footer>
+			{#key focusedService}
+				<main>
+					<ModuleWrapper this={focusedService.SettingsComponent} bind:settings={pendingSettings} channel={focusedService.channel} format={localeFormat} />
+				</main>
+				<footer>
+					<Button secondary on:click={()=>{focusedService?.channel.publish('reload', focusedService.settings)}} title={$_('service.actions.reload')}>
+						<Icon icon='reload'></Icon>
+					</Button>
+					<Button secondary on:click={()=>update(pendingSettings)} title={$_('service.actions.applyChanges')}>
+						<Icon icon='checkmark'></Icon>
+					</Button>
+				</footer>
+			{/key}
 		{/if}
 	</section>
 </SplitPane>
