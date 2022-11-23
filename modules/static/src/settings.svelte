@@ -197,6 +197,7 @@
 					<option value='url'>{format('urlType')}</option>
 					<option value='asset'>{format('assetType')}</option>
 					<option value='text'>{format('textType')}</option>
+					<option value='iframe'>{format('iframeType')}</option>
 				</select>
 				<svelte:fragment slot='label'>
 					{format('type')}
@@ -213,6 +214,19 @@
 				</ItemGroup>
 			{:else if selectedEntry.sourceType === 'text'}
 				<textarea bind:value={selectedEntry.source}></textarea>
+			{:else if selectedEntry.sourceType === 'iframe'}
+				<ItemGroup label>
+					<input type='text' bind:value={selectedEntry.source}/>
+					<svelte:fragment slot='label'>
+						{format('source')}
+					</svelte:fragment>
+				</ItemGroup>
+				<ItemGroup label>
+					<input type='checkbox' bind:checked={selectedEntry.scrollbars}/>
+					<svelte:fragment slot='label'>
+						{format('scrollbars')}
+					</svelte:fragment>
+				</ItemGroup>
 			{:else}
 				<ItemGroup label>
 					<input type='text' bind:value={selectedEntry.source}/>

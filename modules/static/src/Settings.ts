@@ -14,8 +14,9 @@ export interface EntryInterface {
 	width?: number
 	height?: number
 	imageRendering?: 'auto' | 'smooth' | 'high-quality' | 'crisp-edges' | 'pixelated',
-	sourceType?: 'asset' | 'url' | 'text'
+	sourceType?: 'asset' | 'url' | 'text' | 'iframe'
 	source?: string
+	scrollbars?: boolean
 	reference?: AssetSourceInterface
 	style?: string
 }

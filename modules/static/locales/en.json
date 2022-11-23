@@ -5,10 +5,12 @@
 	"urlType": "file or url",
 	"assetType": "asset",
 	"textType": "text",
+	"iframeType": "iframe",
 	"left": "left",
 	"top": "top",
 	"width": "width",
 	"height": "height",
 	"replaceAsset": "replace asset",
-	"source": "source"
+	"source": "source",
+	"scrollbars": "show scrollbars"
 }

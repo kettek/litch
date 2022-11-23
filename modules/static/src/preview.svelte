@@ -185,6 +185,8 @@
 				{:else}
 					<img alt='' src="{entry.source}" style="width: {entry.width?'100%':''}; height: {entry.height?'100%':''};">
 				{/if}
+			{:else if entry.sourceType === 'iframe'}
+					<iframe src="{entry.source}" width={entry.width*zoom} height={entry.height*zoom} scrolling={entry.scrollbars?'yes':'no'} title=''></iframe>
 			{/if}
 		</article>
 	{/each}
