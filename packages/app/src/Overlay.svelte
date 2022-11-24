@@ -105,6 +105,9 @@
 			if (e.button !== 0) return
 			e.preventDefault()
 
+			// Set active module to the given uuid.
+			overlay.activeModuleUUID = uuid
+
 			movingModule = uuid
 			movingX = movingY = 0
 
@@ -344,24 +347,26 @@
 
 <svelte:window on:keydown={keydown} on:keyup={keyup} on:blur={blur}/>
 <main bind:clientWidth={containerWidth} bind:clientHeight={containerHeight} on:wheel={handleWheel} use:move>
-	<section style="--x: {movingCanvas?getX(overlay.canvas.x+movingX):overlay.canvas.x}px; --y: {movingCanvas?getY(overlay.canvas.y+movingY):overlay.canvas.y}px; --width: {width}px; --height: {height}px; --zoom: {zoom}">
+	<section style="--x: {movingCanvas?getX(overlay.canvas.x+movingX):overlay.canvas.x}px; --y: {movingCanvas?getY(overlay.canvas.y+movingY):overlay.canvas.y}px; --width: {width}px; --height: {height}px; --zoom: {zoom}" on:click={_=>overlay.activeModuleUUID=''}>
 		<canvas use:cursorHold={'grab'} use:cursorHover={'move'} bind:this={canvas}></canvas>
-		{#each overlay.modules.filter(v=>v.active) as module (module.uuid)}
-			<article use:cursorHold={'grab'} use:cursorHover={'move'} style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px; --rad: {(rotatingModule===module.uuid?(rotate+(module.box?.rotate??0)):module.box?.rotate)}rad" use:moveModule={module.uuid}>
+		{#each overlay.modules.filter(v=>v.active).sort((a,b)=>a.uuid===overlay.activeModuleUUID?1:b.uuid===overlay.activeModuleUUID?-1:0) as module (module.uuid)}
+			<article use:cursorHold={'grab'} use:cursorHover={'move'} style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px; --rad: {(rotatingModule===module.uuid?(rotate+(module.box?.rotate??0)):module.box?.rotate)}rad" class:active={overlay.activeModuleUUID===module.uuid} use:moveModule={module.uuid}>
 				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} settings={module.settings} bind:box={module.box} zoom={zoom} update={(v)=>updateModule(module, v)} channel={module.previewChannel} live={module.live} assets={assets} />
 				<footer>
 					<span>
 						{module.box.width}x{module.box.height}
 					</span>
 				</footer>
-				<nav use:cursorHold={'rotateTL'} use:cursorHover={'rotateTL'} use:rotateModule={{uuid: module.uuid, act: 'nw-resize'}} class='rotate-top-left'></nav>
-				<nav use:cursorHold={'rotateTR'} use:cursorHover={'rotateTR'} use:rotateModule={{uuid: module.uuid, act: 'ne-resize'}} class='rotate-top-right'></nav>
-				<nav use:cursorHold={'rotateBL'} use:cursorHover={'rotateBL'} use:rotateModule={{uuid: module.uuid, act: 'sw-resize'}} class='rotate-bottom-left'></nav>
-				<nav use:cursorHold={'rotateBR'} use:cursorHover={'rotateBR'} use:rotateModule={{uuid: module.uuid, act: 'se-resize'}} class='rotate-bottom-right'></nav>
-				<nav use:cursorHold={'scaleNW'} use:cursorHover={'scaleNW'} use:resizeModule={{uuid: module.uuid, act: 'nw-resize'}} class='top-left'></nav>
-				<nav use:cursorHold={'scaleNE'} use:cursorHover={'scaleNE'} use:resizeModule={{uuid: module.uuid, act: 'ne-resize'}} class='top-right'></nav>
-				<nav use:cursorHold={'scaleSW'} use:cursorHover={'scaleSW'} use:resizeModule={{uuid: module.uuid, act: 'sw-resize'}} class='bottom-left'></nav>
-				<nav use:cursorHold={'scaleSE'} use:cursorHover={'scaleSE'} use:resizeModule={{uuid: module.uuid, act: 'se-resize'}} class='bottom-right'></nav>
+				{#if overlay.activeModuleUUID === module.uuid}
+					<nav use:cursorHold={'rotateTL'} use:cursorHover={'rotateTL'} use:rotateModule={{uuid: module.uuid, act: 'nw-resize'}} class='rotate-top-left'></nav>
+					<nav use:cursorHold={'rotateTR'} use:cursorHover={'rotateTR'} use:rotateModule={{uuid: module.uuid, act: 'ne-resize'}} class='rotate-top-right'></nav>
+					<nav use:cursorHold={'rotateBL'} use:cursorHover={'rotateBL'} use:rotateModule={{uuid: module.uuid, act: 'sw-resize'}} class='rotate-bottom-left'></nav>
+					<nav use:cursorHold={'rotateBR'} use:cursorHover={'rotateBR'} use:rotateModule={{uuid: module.uuid, act: 'se-resize'}} class='rotate-bottom-right'></nav>
+					<nav use:cursorHold={'scaleNW'} use:cursorHover={'scaleNW'} use:resizeModule={{uuid: module.uuid, act: 'nw-resize'}} class='top-left'></nav>
+					<nav use:cursorHold={'scaleNE'} use:cursorHover={'scaleNE'} use:resizeModule={{uuid: module.uuid, act: 'ne-resize'}} class='top-right'></nav>
+					<nav use:cursorHold={'scaleSW'} use:cursorHover={'scaleSW'} use:resizeModule={{uuid: module.uuid, act: 'sw-resize'}} class='bottom-left'></nav>
+					<nav use:cursorHold={'scaleSE'} use:cursorHover={'scaleSE'} use:resizeModule={{uuid: module.uuid, act: 'se-resize'}} class='bottom-right'></nav>
+				{/if}
 			</article>
 		{/each}
 		<footer>
@@ -414,7 +419,6 @@
 		position: absolute;
 		width: calc(2em * var(--zoom));
 		height: calc(2em * var(--zoom));
-		border: 1px solid red;
 	}
 	article nav.top-left {
 		left: calc(0em * var(--zoom));
@@ -448,7 +452,10 @@
 		right: calc(-1em * var(--zoom));
 		bottom: calc(-1em * var(--zoom));
 	}
-	.active {
+	article.active {
+		border: 1px solid #eeee22;
+	}
+	span.active {
 		color: #eeee22;
 	}
 	canvas {
