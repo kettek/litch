@@ -24,6 +24,7 @@
 	let height: number = overlay.canvas.height
 	let focusedModuleUUID: string
 	$: focusedModule = overlay.modules.find(v=>v.uuid===focusedModuleUUID)
+	$: overlay.activeModuleUUID = focusedModuleUUID
 
 	function hasChanges(width: number, height: number, title: string): boolean {
 		return width !== overlay.canvas.width || height !== overlay.canvas.height || title !== overlay.title
