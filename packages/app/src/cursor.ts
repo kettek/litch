@@ -76,11 +76,12 @@ export function cursorHold(node: Node, which: string): void {
 	const mousedown = () => {
 		addRequester(req)
 
-		const mouseup = () => {
-			removeRequester(req)
-			window.removeEventListener('mouseup', mouseup)
-		}
 		window.addEventListener('mouseup', mouseup)
+	}
+
+	const mouseup = () => {
+		removeRequester(req)
+		window.removeEventListener('mouseup', mouseup)
 	}
 
 	node.addEventListener('mousedown', mousedown)
