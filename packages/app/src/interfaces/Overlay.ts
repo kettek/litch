@@ -11,4 +11,5 @@ export interface OverlayInterface {
 	openAvailableModules: boolean
 	openActiveModules: boolean
 	openSettings: boolean
+	activeModuleUUID: string
 }

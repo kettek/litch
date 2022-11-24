@@ -39,6 +39,7 @@
 			openSettings: true,
 			openAvailableModules: true,
 			openActiveModules: true,
+			activeModuleUUID: '',
 		} as OverlayInterface)
 	}
 </script>
