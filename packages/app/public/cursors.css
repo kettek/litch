@@ -1,0 +1,75 @@
+.cursor-finger {
+	cursor: url('./cursors/finger.svg'), auto;
+}
+
+.cursor-grab {
+	cursor: url('./cursors/grab.svg') 12 12, auto;
+}
+
+.cursor-help {
+	cursor: url('./cursors/help.svg'), auto;
+}
+
+.cursor-move {
+	cursor: url('./cursors/move.svg') 12 12, auto;
+}
+
+.cursor-pointer {
+	cursor: url('./cursors/pointer.svg'), auto;
+}
+
+.cursor-rotate {
+	cursor: url('./cursors/rotate.svg'), auto;
+}
+
+.cursor-rotateBL {
+	cursor: url('./cursors/rotateBL.svg') 12 12, auto;
+}
+
+.cursor-rotateBR {
+	cursor: url('./cursors/rotateBR.svg') 12 12, auto;
+}
+
+.cursor-rotateTL {
+	cursor: url('./cursors/rotateTL.svg') 12 12, auto;
+}
+
+.cursor-rotateTR {
+	cursor: url('./cursors/rotateTR.svg') 12 12, auto;
+}
+
+.cursor-scale {
+	cursor: url('./cursors/scale.svg') 24 0, auto;
+}
+
+.cursor-scaleE {
+	cursor: url('./cursors/scaleE.svg') 24 12, auto;
+}
+
+.cursor-scaleN {
+	cursor: url('./cursors/scaleN.svg') 12 0, auto;
+}
+
+.cursor-scaleNE {
+	cursor: url('./cursors/scaleNE.svg') 24 0, auto;
+}
+
+.cursor-scaleNW {
+	cursor: url('./cursors/scaleNW.svg'), auto;
+}
+
+.cursor-scaleS {
+	cursor: url('./cursors/scaleS.svg') 0 24, auto;
+}
+
+.cursor-scaleSE {
+	cursor: url('./cursors/scaleSE.svg') 24 24, auto;
+}
+
+.cursor-scaleSW {
+	cursor: url('./cursors/scaleSW.svg') 0 24, auto;
+}
+
+.cursor-scaleW {
+	cursor: url('./cursors/scaleW.svg') 0 12, auto;
+}

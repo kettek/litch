@@ -354,14 +354,14 @@
 						{module.box.width}x{module.box.height}
 					</span>
 				</footer>
-				<nav use:cursorHover={'rotateTL'} use:rotateModule={{uuid: module.uuid, act: 'nw-resize'}} class='rotate-top-left'></nav>
-				<nav use:cursorHover={'rotateTR'} use:rotateModule={{uuid: module.uuid, act: 'ne-resize'}} class='rotate-top-right'></nav>
-				<nav use:cursorHover={'rotateBL'} use:rotateModule={{uuid: module.uuid, act: 'sw-resize'}} class='rotate-bottom-left'></nav>
-				<nav use:cursorHover={'rotateBR'} use:rotateModule={{uuid: module.uuid, act: 'se-resize'}} class='rotate-bottom-right'></nav>
-				<nav use:cursorHover={'scaleNW'} use:resizeModule={{uuid: module.uuid, act: 'nw-resize'}} class='top-left'></nav>
-				<nav use:cursorHover={'scaleNE'} use:resizeModule={{uuid: module.uuid, act: 'ne-resize'}} class='top-right'></nav>
-				<nav use:cursorHover={'scaleSW'} use:resizeModule={{uuid: module.uuid, act: 'sw-resize'}} class='bottom-left'></nav>
-				<nav use:cursorHover={'scaleSE'} use:resizeModule={{uuid: module.uuid, act: 'se-resize'}} class='bottom-right'></nav>
+				<nav use:cursorHold={'rotateTL'} use:cursorHover={'rotateTL'} use:rotateModule={{uuid: module.uuid, act: 'nw-resize'}} class='rotate-top-left'></nav>
+				<nav use:cursorHold={'rotateTR'} use:cursorHover={'rotateTR'} use:rotateModule={{uuid: module.uuid, act: 'ne-resize'}} class='rotate-top-right'></nav>
+				<nav use:cursorHold={'rotateBL'} use:cursorHover={'rotateBL'} use:rotateModule={{uuid: module.uuid, act: 'sw-resize'}} class='rotate-bottom-left'></nav>
+				<nav use:cursorHold={'rotateBR'} use:cursorHover={'rotateBR'} use:rotateModule={{uuid: module.uuid, act: 'se-resize'}} class='rotate-bottom-right'></nav>
+				<nav use:cursorHold={'scaleNW'} use:cursorHover={'scaleNW'} use:resizeModule={{uuid: module.uuid, act: 'nw-resize'}} class='top-left'></nav>
+				<nav use:cursorHold={'scaleNE'} use:cursorHover={'scaleNE'} use:resizeModule={{uuid: module.uuid, act: 'ne-resize'}} class='top-right'></nav>
+				<nav use:cursorHold={'scaleSW'} use:cursorHover={'scaleSW'} use:resizeModule={{uuid: module.uuid, act: 'sw-resize'}} class='bottom-left'></nav>
+				<nav use:cursorHold={'scaleSE'} use:cursorHover={'scaleSE'} use:resizeModule={{uuid: module.uuid, act: 'se-resize'}} class='bottom-right'></nav>
 			</article>
 		{/each}
 		<footer>
