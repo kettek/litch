@@ -3,6 +3,7 @@ import { createModuleChannel, createModuleChannels } from '../modules'
 import { localStore } from './localStore'
 import { get } from 'svelte/store'
 import { v4 } from 'uuid'
+import { createServicesChannel } from '../services'
 
 export function restoreOverlays() {
 
@@ -33,6 +34,7 @@ export function duplicateOverlay(u: string) {
 			m.previewChannel = createModuleChannel(clone.uuid, m.uuid)
 			m.instanceChannel = createModuleChannel(clone.uuid, m.uuid)
 			m.channels = createModuleChannels(clone.uuid, m.uuid)
+			m.servicesChannel = createServicesChannel()
 		}
 
 		v[clone.uuid] = clone
@@ -49,6 +51,7 @@ export function deserializeOverlays() {
 			m.previewChannel = createModuleChannel(uuid, m.uuid)
 			m.instanceChannel = createModuleChannel(uuid, m.uuid)
 			m.channels = createModuleChannels(uuid, m.uuid)
+			m.servicesChannel = createServicesChannel()
 			// Reroll any module UUIDs that exist more than once.
 			if (overlay.modules.filter(v=>v.uuid===m.uuid).length > 1) {
 				console.log('duplicate module uuid found rerolling')

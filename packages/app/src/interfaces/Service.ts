@@ -54,6 +54,13 @@ export interface ServiceChannel {
 	unsubscribe: (topic?: string) => void
 }
 
+export interface ServicesChannel {
+	handler: SubscriberHandler
+	receive: (msg: any) => Promise<void>
+	subscribe: (topic: string) => () => void
+	unsubscribe: (topic?: string) => void
+}
+
 export interface ServiceContext {
 	publisher?: Publisher
 	subscriber?: Subscriber

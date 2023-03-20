@@ -1,6 +1,6 @@
 import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 
-import type { ServiceChannel } from "./interfaces/Service"
+import type { ServiceChannel, ServicesChannel } from "./interfaces/Service"
 
 import { publisher } from './modules'
 
@@ -52,6 +52,48 @@ export function createServiceChannel(uuid: string): ServiceChannel {
 
 	return m
 }
+
+export function createServicesChannel(): ServicesChannel {
+	let ctx = `services`
+	let s = publisher.subscribe(`${ctx}.*`)
+
+	let m = {
+		handler: async (msg: any) => {
+			// strip the topics
+			msg = {
+				...msg,
+				sourceTopic: msg.sourceTopic.substring(ctx.length+1),
+				topic: msg.sourceTopic.substring(ctx.length+1),
+			}
+			await m.receive(msg)
+		},
+		receive: async (msg: PublishedMessage) => {
+			// To be overridden by the module.
+		},
+		subscribe: (topic: string): ()=>void => {
+			publisher.subscribe(topic, s)
+			return () => {
+				publisher.unsubscribe(topic, s)
+			}
+		},
+		unsubscribe: (topic?: string) => {
+			if (topic === undefined) {
+				publisher.unsubscribe(s)
+			} else {
+				publisher.unsubscribe(topic, s)
+			}
+		},
+		update: (topic: string, msg: any) => {
+			// OVERRIDE
+		}
+	}
+
+	s.handler = m.handler
+
+	return m
+}
+
+
 
 // Add various subscriptions for managing service enable/disable/reload
 function getUUIDFromTopic(topic: string) {

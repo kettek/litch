@@ -2,6 +2,7 @@ import type { Publisher } from '@kettek/pubsub/dist/Publisher'
 import type { SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
 import type { AssetManager } from './Asset'
 import type { BoxInterface } from './Box'
+import type { ServicesChannel } from './Service'
 
 /**
  * ModuleInstanceInterface is an instance of a module.
@@ -21,6 +22,7 @@ export interface ModuleInstanceInterface {
 	instanceChannel: ModuleChannel
 	settingsChannel: ModuleChannel
 	previewChannel: ModuleChannel
+	servicesChannel: ServicesChannel
 	live: {[key: string]: any} // Live information, passed to module
 }
 

@@ -351,7 +351,7 @@
 		<canvas use:cursorHold={'grab'} use:cursorHover={'move'} bind:this={canvas}></canvas>
 		{#each overlay.modules.filter(v=>v.active).sort((a,b)=>a.uuid===overlay.activeModuleUUID?1:b.uuid===overlay.activeModuleUUID?-1:0) as module (module.uuid)}
 			<article use:cursorHold={'grab'} use:cursorHover={'move'} style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px; --rad: {(rotatingModule===module.uuid?(rotate+(module.box?.rotate??0)):module.box?.rotate)}rad" class:active={overlay.activeModuleUUID===module.uuid} use:moveModule={module.uuid}>
-				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} settings={module.settings} bind:box={module.box} zoom={zoom} update={(v)=>updateModule(module, v)} channel={module.previewChannel} live={module.live} assets={assets} />
+				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} settings={module.settings} bind:box={module.box} zoom={zoom} update={(v)=>updateModule(module, v)} channel={module.previewChannel} services={module.servicesChannel} live={module.live} assets={assets} />
 				<footer>
 					<span>
 						{module.box.width}x{module.box.height}
