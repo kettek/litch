@@ -95,7 +95,7 @@ async function syncSettings(s : SettingsInterface) {
 	let old = settings
 	settings = s
 
-	if (old.user !== s.user) {
+	if (old.channel !== s.channel) {
 		await stopPubsub()
 		await startPubsub()
 
@@ -107,7 +107,7 @@ async function syncSettings(s : SettingsInterface) {
 let chatClient : ChatClient
 async function startChatbot() {
 	if (chatClient) return
-	chatClient = new ChatClient({ authProvider, channels: [settings.user] })
+	chatClient = new ChatClient({ authProvider, channels: [settings.channel] })
 	chatClient.onConnect(() => {
 		console.log('connected')
 	})
@@ -203,8 +203,8 @@ async function startChatbot() {
 async function stopChatbot() {
 	if (!chatClient) return
 	if (settings.chatBot.leaveMessage) {
-		if (settings.user != null) {
-			say(settings.user, `${settings.chatBot.leaveMessage}`)
+		if (settings.channel != null) {
+			say(settings.channel, `${settings.chatBot.leaveMessage}`)
 		}
 	}
 	await chatClient.quit()
@@ -216,10 +216,10 @@ async function startPubsub() {
 	if (pubSubClient) return
 	pubSubClient = new PubSubClient()
 
-	if (settings.user !== '') {
-		const user = await apiClient.users.getUserByName(settings.user)
+	if (settings.channel !== '') {
+		const user = await apiClient.users.getUserByName(settings.channel)
 		userID = await pubSubClient.registerUserListener(authProvider, user.id)
-		console.log('pubsub registered with', settings.user, userID)
+		console.log('pubsub registered with', settings.channel, userID)
 	} else {
 		userID = await pubSubClient.registerUserListener(authProvider)
 	}

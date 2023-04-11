@@ -16,7 +16,7 @@
 
 	let saying: string = ''
 	function say() {
-		channel.publish('say', {channel: settings.user, message: saying})
+		channel.publish('say', {channel: settings.channel, message: saying})
 		saying = ''
 	}
 
@@ -39,7 +39,7 @@
 			</svelte:fragment>
 		</ItemGroup>
 		<ItemGroup label>
-			<input type='text' bind:value={settings.user}>
+			<input type='text' bind:value={settings.channel}>
 			<svelte:fragment slot='label'>
 				{format('user')}
 			</svelte:fragment>
