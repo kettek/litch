@@ -1,0 +1,16 @@
+{
+	"action": "Action",
+	"actions": "Actions",
+	"chatMessage": "Chat Message",
+	"chat": "Chat Message",
+	"subscription": "Subscription",
+	"sub": "Subscription",
+	"subscriptionGift": "Subscription Gift",
+	"subgift": "Subscription Gift",
+	"follow": "Follow",
+	"reward": "Reward",
+	"cheer": "Cheer",
+	"points": "Channel Points",
+	"hype": "Hype",
+	"raid": "Raid"
+}
