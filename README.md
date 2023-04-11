@@ -11,6 +11,30 @@ Litch uses a modular approach to allow dynamically loading:
 
 With this design, third-party additions to add custom functionality are just self-contained NPM packages.
 
+## Building/Running
+To build all modules, services, and the app, issue:
+```shell
+npm run build
+```
+
+After which the app can be run with:
+```shell
+npm run start
+```
+
+## Developing
+When developing the app, issue:
+```shell
+npm run dev
+```
+
+When developing a module or service, enter its directory and issue:
+```shell
+npm run dev
+```
+
+Automatic reloading of the app when a module/service is updated is not implemented. However, issuing a refresh via Ctrl+R within the app will reload modules and services.
+
 ## Gregory
 ![Gregory](packages/app/public/app-128x128.png)
 
