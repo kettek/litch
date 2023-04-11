@@ -51,9 +51,9 @@ export async function enable() {
 		}
 
 		apiClient = new ApiClient({ authProvider })
-		
+
 		await startPubsub()
-		
+
 		console.log('userID is', userID)
 
 		if (settings.chatBot.enabled) {
@@ -63,6 +63,7 @@ export async function enable() {
 		context.publish('enabled')
 		running = true
 	} catch(err) {
+		console.log(err)
 		context.publish('failed', err)
 		running = false
 	}
@@ -98,6 +99,11 @@ export async function receive(msg: PublishedMessage) {
 async function syncSettings(s : SettingsInterface) {
 	let old = settings
 	settings = s
+
+	if (old.user !== s.user) {
+		await stopPubsub()
+		await startPubsub()
+	}
 
 	// Start or stop chatbot.
 	if (old.chatBot.enabled !== s.chatBot.enabled) {
@@ -238,7 +244,14 @@ async function stopChatbot() {
 async function startPubsub() {
 	if (pubSubClient) return
 	pubSubClient = new PubSubClient()
-	userID = await pubSubClient.registerUserListener(authProvider)
+
+	if (settings.user !== '') {
+		const user = await apiClient.users.getUserByName(settings.user)
+		userID = await pubSubClient.registerUserListener(authProvider, user.id)
+	} else {
+		userID = await pubSubClient.registerUserListener(authProvider)
+	}
+
 	pubSubUser = pubSubClient.getUserListener(userID)
 
 	pubSubUser.onSubscription((message: PubSubSubscriptionMessage) => {

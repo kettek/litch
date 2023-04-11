@@ -57,6 +57,12 @@
 			</svelte:fragment>
 		</ItemGroup>
 		<ItemGroup label>
+			<input type='text' bind:value={settings.user}>
+			<svelte:fragment slot='label'>
+				{format('user')}
+			</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
 			<input type='checkbox' bind:checked={settings.dumpAllMessages}>
 			<svelte:fragment slot='label'>
 				{format('dumpAllMessages')}
