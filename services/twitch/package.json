@@ -24,6 +24,7 @@
     "@twurple/api": "^5.1.1",
     "@twurple/auth-electron": "^5.1.0",
     "@twurple/chat": "^5.1.1",
+    "@twurple/pubsub": "^5.1.1",
     "@types/express": "^4.17.13",
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^3.1.0",

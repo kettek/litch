@@ -2,7 +2,11 @@ import electron from 'electron'
 import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 import { ElectronAuthProvider } from '@twurple/auth-electron'
 import { ApiClient } from '@twurple/api'
-import { ChatClient } from '@twurple/chat'
+import { ChatClient, ChatRaidInfo, ChatSubInfo, UserNotice } from '@twurple/chat'
+import { PubSubClient } from '@twurple/pubsub'
+import type { SingleUserPubSubClient } from '@twurple/pubsub/lib/SingleUserPubSubClient'
+import type { PubSubSubscriptionMessage } from '@twurple/pubsub/lib/messages/PubSubSubscriptionMessage'
+import type { PubSubRedemptionMessage } from '@twurple/pubsub/lib/messages/PubSubRedemptionMessage'
 import type { SettingsInterface } from '../Settings'
 import type { ServiceContext } from '@kettek/litch-app/src/interfaces/Service'
 
@@ -11,6 +15,8 @@ let settings : SettingsInterface
 let redirectUri = `http://localhost/nowherefast`
 let shouldLogout: boolean
 let authProvider: ElectronAuthProvider
+let pubSubClient: PubSubClient
+let pubSubUser: SingleUserPubSubClient
 let apiClient: ApiClient
 let running: boolean
 
@@ -44,6 +50,8 @@ export async function enable() {
 		}
 
 		apiClient = new ApiClient({ authProvider })
+		
+		await startPubsub()
 
 		if (settings.chatBot.enabled) {
 			await startChatbot()
@@ -60,6 +68,7 @@ export async function enable() {
 export async function disable() {
 	try {
 		await stopChatbot()
+		await stopPubsub()
 	} catch(err) {
 		context.publish('failed', err)
 	}
@@ -123,12 +132,12 @@ async function startChatbot() {
 			console.log('onMessage', channel, user, msg)
 		}
 		// TODO: what should we actually use as the topic...?
-		context.publishToAll('services.chat.message', {
+		context.publishToAll('services.twitch.message', {
 			channel,
 			user,
 			msg,
 		})
-		if (msg.startsWith('@'+chatClient.currentNick)) {
+		/*if (msg.startsWith('@'+chatClient.currentNick)) {
 			msg = msg.substring(chatClient.currentNick.length+1).trimStart().trimEnd()
 			if (msg.startsWith('roll ')) {
 				let results = []
@@ -160,6 +169,16 @@ async function startChatbot() {
 					}
 				}
 			}
+		}*/
+	})
+	chatClient.onRaid((channel: string, user: string, raidInfo: ChatRaidInfo, msg: UserNotice) => {
+		if (settings.dumpAllMessages) {
+			console.log('onRaid', channel, user, raidInfo, msg)
+		}
+	})
+	chatClient.onSub((channel: string, user: string, subInfo: ChatSubInfo, msg: UserNotice) => {
+		if (settings.dumpAllMessages) {
+			console.log('onSub', channel, user, subInfo, msg)
 		}
 	})
 	chatClient.onRewardGift((e, user, gift, msg) => {
@@ -167,7 +186,7 @@ async function startChatbot() {
 			console.log('onRewardGift', e, user, gift, msg)
 		}
 	})
-	chatClient.onAnyMessage(e => {
+	chatClient.onMessage(e => {
 		if (settings.dumpAllMessages) {
 			console.log('dumpAll:', JSON.stringify(e))
 		}
@@ -177,13 +196,13 @@ async function startChatbot() {
 			channel,
 			user,
 		})
-		if (channel.substring(1) === user && user !== chatClient.currentNick) {
+		/*if (channel.substring(1) === user && user !== chatClient.currentNick) {
 			// Greet our lord.
 		} else if (user === chatClient.currentNick) {
 			if (settings.chatBot.joinMessage) {
 				say(channel, `${settings.chatBot.joinMessage}`)
 			}
-		}
+		}*/
 	})
 	chatClient.onJoinFailure((channel, reason) => {
 		console.log("join failure", channel, reason)
@@ -210,6 +229,29 @@ async function stopChatbot() {
 	await chatClient.quit()
 	chatClient = null
 	console.log('chatbot quit')
+}
+
+async function startPubsub() {
+	if (pubSubClient) return
+	pubSubClient = new PubSubClient()
+	let result = await pubSubClient.registerUserListener(authProvider)
+	pubSubUser = pubSubClient.getUserListener(result)
+
+	pubSubUser.onSubscription((message: PubSubSubscriptionMessage) => {
+		console.log('subscription', message)
+	})
+	pubSubUser.onRedemption((message: PubSubRedemptionMessage) => {
+		console.log('got redemption', message)
+	})
+}
+
+async function stopPubsub() {
+	if (!pubSubClient) return
+		
+	await pubSubUser.removeAllListeners()
+		
+	pubSubClient = null
+	pubSubUser = null
 }
 
 function say(channel: string, message: string) {
