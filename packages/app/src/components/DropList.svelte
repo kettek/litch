@@ -49,6 +49,7 @@
 		border-radius: 0 0 1em 1em;
 		height: 100%;
 		overflow: auto;
+		display: none;
 	}
 	.primary > section {
 		color: var(--primary);
@@ -71,5 +72,6 @@
 	}
 	section.open {
 		max-height: 100%;
+		display: initial;
 	}
 </style>
