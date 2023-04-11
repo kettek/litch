@@ -18,6 +18,7 @@ let authProvider: ElectronAuthProvider
 let pubSubClient: PubSubClient
 let pubSubUser: SingleUserPubSubClient
 let apiClient: ApiClient
+let userID: string
 let running: boolean
 
 export let context: ServiceContext = {}
@@ -52,6 +53,8 @@ export async function enable() {
 		apiClient = new ApiClient({ authProvider })
 		
 		await startPubsub()
+		
+		console.log('userID is', userID)
 
 		if (settings.chatBot.enabled) {
 			await startChatbot()
@@ -114,7 +117,7 @@ async function syncSettings(s : SettingsInterface) {
 			chatClient.part(ch)
 		}
 		for (let channel of newChannels) {
-			chatClient.join(channel)
+			await chatClient.join(channel)
 			say(channel, `${settings.chatBot.name}'s bones are ready to rumble!`)
 		}
 	}
@@ -192,6 +195,7 @@ async function startChatbot() {
 		}
 	})
 	chatClient.onJoin((channel, user) => {
+		console.log('join', channel, user)
 		context.publishToAll('services.chat.join', {
 			channel,
 			user,
@@ -234,8 +238,8 @@ async function stopChatbot() {
 async function startPubsub() {
 	if (pubSubClient) return
 	pubSubClient = new PubSubClient()
-	let result = await pubSubClient.registerUserListener(authProvider)
-	pubSubUser = pubSubClient.getUserListener(result)
+	userID = await pubSubClient.registerUserListener(authProvider)
+	pubSubUser = pubSubClient.getUserListener(userID)
 
 	pubSubUser.onSubscription((message: PubSubSubscriptionMessage) => {
 		console.log('subscription', message)
