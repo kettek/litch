@@ -3,7 +3,7 @@ import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 import { ElectronAuthProvider } from '@twurple/auth-electron'
 import { ApiClient } from '@twurple/api'
 import { ChatClient, ChatRaidInfo, ChatSubInfo, UserNotice } from '@twurple/chat'
-import { PubSubClient } from '@twurple/pubsub'
+import { PubSubBitsMessage, PubSubClient } from '@twurple/pubsub'
 import type { SingleUserPubSubClient } from '@twurple/pubsub/lib/SingleUserPubSubClient'
 import type { PubSubSubscriptionMessage } from '@twurple/pubsub/lib/messages/PubSubSubscriptionMessage'
 import type { PubSubRedemptionMessage } from '@twurple/pubsub/lib/messages/PubSubRedemptionMessage'
@@ -53,12 +53,7 @@ export async function enable() {
 		apiClient = new ApiClient({ authProvider })
 
 		await startPubsub()
-
-		console.log('userID is', userID)
-
-		if (settings.chatBot.enabled) {
-			await startChatbot()
-		}
+		await startChatbot()
 
 		context.publish('enabled')
 		running = true
@@ -103,36 +98,16 @@ async function syncSettings(s : SettingsInterface) {
 	if (old.user !== s.user) {
 		await stopPubsub()
 		await startPubsub()
-	}
 
-	// Start or stop chatbot.
-	if (old.chatBot.enabled !== s.chatBot.enabled) {
-		if (s.chatBot.enabled) {
-			await startChatbot()
-		} else {
-			await stopChatbot()
-		}
-	}
-	// Resync chatbot settings.
-	if (s.chatBot.enabled) {
-		// Check for changed channels.
-		let newChannels = s.chatBot.channels.filter(ch => !old.chatBot.channels.includes(ch))
-		let removedChannels = old.chatBot.channels.filter(ch => !settings.chatBot.channels.includes(ch))
-
-		for (let ch of removedChannels) {
-			chatClient.part(ch)
-		}
-		for (let channel of newChannels) {
-			await chatClient.join(channel)
-			say(channel, `${settings.chatBot.name}'s bones are ready to rumble!`)
-		}
+		await startChatbot()
+		await stopChatbot()
 	}
 }
 
 let chatClient : ChatClient
 async function startChatbot() {
 	if (chatClient) return
-	chatClient = new ChatClient({ authProvider, channels: settings.chatBot.channels })
+	chatClient = new ChatClient({ authProvider, channels: [settings.user] })
 	chatClient.onConnect(() => {
 		console.log('connected')
 	})
@@ -206,13 +181,9 @@ async function startChatbot() {
 			channel,
 			user,
 		})
-		/*if (channel.substring(1) === user && user !== chatClient.currentNick) {
-			// Greet our lord.
-		} else if (user === chatClient.currentNick) {
-			if (settings.chatBot.joinMessage) {
-				say(channel, `${settings.chatBot.joinMessage}`)
-			}
-		}*/
+		if (settings.chatBot.joinMessage) {
+			say(channel, `${settings.chatBot.joinMessage}`)
+		}
 	})
 	chatClient.onJoinFailure((channel, reason) => {
 		console.log("join failure", channel, reason)
@@ -232,8 +203,8 @@ async function startChatbot() {
 async function stopChatbot() {
 	if (!chatClient) return
 	if (settings.chatBot.leaveMessage) {
-		for (let channel of settings.chatBot.channels) {
-			say(channel, `${settings.chatBot.leaveMessage}`)
+		if (settings.user != null) {
+			say(settings.user, `${settings.chatBot.leaveMessage}`)
 		}
 	}
 	await chatClient.quit()
@@ -248,12 +219,16 @@ async function startPubsub() {
 	if (settings.user !== '') {
 		const user = await apiClient.users.getUserByName(settings.user)
 		userID = await pubSubClient.registerUserListener(authProvider, user.id)
+		console.log('pubsub registered with', settings.user, userID)
 	} else {
 		userID = await pubSubClient.registerUserListener(authProvider)
 	}
 
 	pubSubUser = pubSubClient.getUserListener(userID)
 
+	pubSubUser.onBits((message: PubSubBitsMessage) => {
+		console.log('bits', message)
+	})
 	pubSubUser.onSubscription((message: PubSubSubscriptionMessage) => {
 		console.log('subscription', message)
 	})

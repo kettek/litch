@@ -16,26 +16,8 @@
 
 	let saying: string = ''
 	function say() {
-		// FOR NOW
-		for (let ch of settings.chatBot.channels) {
-			channel.publish('say', {channel: ch, message: saying})
-		}
+		channel.publish('say', {channel: settings.user, message: saying})
 		saying = ''
-	}
-
-	let addingChannel: string = ''
-
-	function addChannel(name: string) {
-		if (!settings.chatBot.channels.find(v=>v===name)) {
-			settings.chatBot.channels.push(name)
-			addingChannel = ''
-			settings = {...settings}
-		}
-	}
-
-	function removeChannel(name: string) {
-		settings.chatBot.channels = settings.chatBot.channels.filter(v=>v!==name)
-		settings = {...settings}
 	}
 
 	function revoke() {
@@ -69,71 +51,35 @@
 			</svelte:fragment>
 		</ItemGroup>
 		<ItemGroup label>
-			<input type='checkbox' bind:checked={settings.chatBot.enabled}>
+			<input type='text' bind:value={settings.chatBot.name}>
 			<svelte:fragment slot='label'>
-				{format('chatBot')}
+				{format('name')}
 			</svelte:fragment>
 		</ItemGroup>
-		{#if settings.chatBot.enabled}
-			<ItemGroup label>
-				<input type='text' bind:value={settings.chatBot.name}>
-				<svelte:fragment slot='label'>
-					{format('name')}
-				</svelte:fragment>
-			</ItemGroup>
-			<ItemGroup label>
-				<input type='text' bind:value={settings.chatBot.prefix}>
-				<svelte:fragment slot='label'>
-					{format('prefix')}
-				</svelte:fragment>
-			</ItemGroup>
-			<ItemGroup label>
-				<input type='text' bind:value={settings.chatBot.suffix}>
-				<svelte:fragment slot='label'>
-					{format('suffix')}
-				</svelte:fragment>
-			</ItemGroup>
-			<ItemGroup label>
-				<input type='text' bind:value={settings.chatBot.joinMessage}>
-				<svelte:fragment slot='label'>
-					{format('joinMessage')}
-				</svelte:fragment>
-			</ItemGroup>
-			<ItemGroup label>
-				<input type='text' bind:value={settings.chatBot.leaveMessage}>
-				<svelte:fragment slot='label'>
-					{format('leaveMessage')}
-				</svelte:fragment>
-			</ItemGroup>
-			<ItemGroup label>
-				<input type='text' bind:value={addingChannel}>
-				<Button tertiary on:click={()=>addChannel(addingChannel)} title={format('addChannel_desc')}>
-					<Icon icon='add'></Icon>
-				</Button>
-				<svelte:fragment slot='label'>
-					{format('addChannel')}
-				</svelte:fragment>
-			</ItemGroup>
-
-			<DropList bind:open={settings.chatBot.openChannels} tertiary>
-				<svelte:fragment slot="heading">
-					{format('channels')}
-				</svelte:fragment>
-				<svelte:fragment slot="content">
-					<ul>
-					{#each settings.chatBot.channels as channel (channel)}
-						<li animate:flip="{{duration: 200}}">
-							<span>{channel}</span>
-							<Button tertiary on:click={()=>removeChannel(channel)} title={format('removeChannel_desc')}>
-								<Icon icon='remove'></Icon>
-							</Button>
-						</li>
-					{/each}
-					</ul>
-				</svelte:fragment>
-			</DropList>
-
-		{/if}
+		<ItemGroup label>
+			<input type='text' bind:value={settings.chatBot.prefix}>
+			<svelte:fragment slot='label'>
+				{format('prefix')}
+			</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
+			<input type='text' bind:value={settings.chatBot.suffix}>
+			<svelte:fragment slot='label'>
+				{format('suffix')}
+			</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
+			<input type='text' bind:value={settings.chatBot.joinMessage}>
+			<svelte:fragment slot='label'>
+				{format('joinMessage')}
+			</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
+			<input type='text' bind:value={settings.chatBot.leaveMessage}>
+			<svelte:fragment slot='label'>
+				{format('leaveMessage')}
+			</svelte:fragment>
+		</ItemGroup>
 	</Section>
 	<Section alt rounded padded>
 		<ItemGroup>
