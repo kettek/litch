@@ -41,7 +41,7 @@
 		<ItemGroup label>
 			<input type='text' bind:value={settings.channel}>
 			<svelte:fragment slot='label'>
-				{format('user')}
+				{format('channel')}
 			</svelte:fragment>
 		</ItemGroup>
 		<ItemGroup label>
