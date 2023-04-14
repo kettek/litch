@@ -6,29 +6,24 @@
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
 
 	import { _ } from 'svelte-i18n'
+	import { v4 } from 'uuid'
 
+	import { actions, addAction, removeAction } from './stores/actions'
 	import { services } from './stores/services'
-  import type { ActionEventsI } from './interfaces/Service'
-  import ModuleWrapper from './ModuleWrapper.svelte'
 	import ActionCondition from './ActionCondition.svelte'
 	
-	interface ActionI {
-		service: string
-		id: string
-		condition: any
-	}
-
 	let actionSelect: HTMLSelectElement
-	let actions: ActionI[] = []
-	
-	function addAction() {
+
+	function addNewAction() {
 		let parts = actionSelect.value.split('.', 2)
-		actions = [...actions, {
+		addAction({
+			uuid: v4(),
 			service: parts[0],
 			id: parts[1],
 			condition: {},
-		}]
+		})
 	}
+
 </script>
 
 <main>
@@ -42,11 +37,11 @@
 				{/if}
 			{/each}
 		</select>
-		<Button secondary on:click={addAction}>
+		<Button secondary on:click={addNewAction}>
 			<Icon icon="add"></Icon>
 		</Button>
 	</ItemGroup>
-	{#each actions as action}
+	{#each $actions as action}
 		<DropList secondary>
 			<svelte:fragment slot='heading'>{$_('action')}</svelte:fragment>
 			<section class='action' slot='content'>
@@ -55,6 +50,9 @@
 						<ActionCondition service={$services.find(v=>v.uuid===action.service)} action={action}></ActionCondition>
 					{/if}
 				</Section>
+				<Button secondary dangerous on:click={()=>removeAction(action.uuid)}>
+					<Icon icon="delete"></Icon>
+				</Button>
 			</section>
 		</DropList>
 	{/each}

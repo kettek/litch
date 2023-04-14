@@ -1,6 +1,7 @@
 import type { SvelteComponent } from "svelte"
 import type { Subscriber, SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
 import type { Publisher } from "@kettek/pubsub/dist/Publisher"
+import type { ActionEventsI } from "./Action"
 
 export interface ServiceSourceInterface {
 	uuid: string
@@ -8,16 +9,6 @@ export interface ServiceSourceInterface {
 	dir: string
 	main: string
 	render: string
-}
-
-export interface ActionEventsI {
-	conditions: ActionEventI[]
-}
-
-export interface ActionEventI {
-	title: string
-	id: any
-	ConditionComponent: SvelteComponent
 }
 
 /**
