@@ -10,3 +10,14 @@ export interface SettingsInterface {
 		leaveMessage: string
 	}
 }
+
+export interface Redeem {
+	id: string
+	title: string
+	image: string
+	points: number
+}
+
+export interface ServiceData {
+	redeems: Redeem[]
+}

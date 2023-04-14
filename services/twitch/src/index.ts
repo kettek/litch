@@ -1,4 +1,6 @@
 import SettingsComponent from './settings.svelte'
+import InstanceComponent from './instance.svelte'
+import RedeemCondition from './RedeemCondition.svelte'
 import en from '../locales/en.json'
 
 export default {
@@ -18,6 +20,16 @@ export default {
 		},
 	},
 	SettingsComponent: SettingsComponent,
+	InstanceComponent: InstanceComponent,
+	actionEvents: {
+		conditions: [
+			{
+				title: "Redeem",
+				id: "redeem",
+				ConditionComponent: RedeemCondition,
+			}
+		],
+	},
 	locales: {
 		"en": en,
 	}

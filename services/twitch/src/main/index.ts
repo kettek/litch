@@ -7,7 +7,7 @@ import { PubSubBitsMessage, PubSubClient } from '@twurple/pubsub'
 import type { SingleUserPubSubClient } from '@twurple/pubsub/lib/SingleUserPubSubClient'
 import type { PubSubSubscriptionMessage } from '@twurple/pubsub/lib/messages/PubSubSubscriptionMessage'
 import type { PubSubRedemptionMessage } from '@twurple/pubsub/lib/messages/PubSubRedemptionMessage'
-import type { SettingsInterface } from '../Settings'
+import type { SettingsInterface } from '../interfaces'
 import type { ServiceContext } from '@kettek/litch-app/src/interfaces/Service'
 
 let settings : SettingsInterface
@@ -110,13 +110,14 @@ async function startChatbot() {
 	chatClient = new ChatClient({ authProvider, channels: [settings.channel] })
 	chatClient.onConnect(() => {
 		console.log('connected')
+		context.publish('chat.connected', {})
 	})
 	chatClient.onMessage((channel, user, msg) => {
 		if (settings.dumpAllMessages) {
 			console.log('onMessage', channel, user, msg)
 		}
 		// TODO: what should we actually use as the topic...?
-		context.publishToAll('services.twitch.message', {
+		context.publish('chat.message', {
 			channel,
 			user,
 			msg,
@@ -177,7 +178,7 @@ async function startChatbot() {
 	})
 	chatClient.onJoin((channel, user) => {
 		console.log('join', channel, user)
-		context.publishToAll('services.chat.join', {
+		context.publish('chat.join', {
 			channel,
 			user,
 		})
@@ -189,7 +190,7 @@ async function startChatbot() {
 		console.log("join failure", channel, reason)
 	})
 	chatClient.onPart((channel, user) => {
-		context.publishToAll('services.chat.part', {
+		context.publish('chat.part', {
 			channel,
 			user,
 		})
@@ -223,17 +224,31 @@ async function startPubsub() {
 	} else {
 		userID = await pubSubClient.registerUserListener(authProvider)
 	}
+	
+	let rewards = await apiClient.channelPoints.getCustomRewards(userID)
+	context.publish('channelPoints.clearRewards')
+	for (let reward of rewards) {
+		context.publish('channelPoints.addReward', {
+			id: reward.id,
+			cost: reward.cost,
+			image: reward.getImageUrl(1),
+			title: reward.title,
+		})
+	}
 
 	pubSubUser = pubSubClient.getUserListener(userID)
 
 	pubSubUser.onBits((message: PubSubBitsMessage) => {
 		console.log('bits', message)
+		context.publish('bits', message)
 	})
 	pubSubUser.onSubscription((message: PubSubSubscriptionMessage) => {
 		console.log('subscription', message)
+		context.publish('subscription', message)
 	})
 	pubSubUser.onRedemption((message: PubSubRedemptionMessage) => {
 		console.log('got redemption', message)
+		context.publish('channelPoints.redemption', message)
 	})
 }
 

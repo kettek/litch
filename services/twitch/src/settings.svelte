@@ -6,7 +6,7 @@
 	import DropList from '@kettek/litch-app/src/components/DropList.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
 	import type { ServiceChannel } from '@kettek/litch-app/src/interfaces/Service'
-	import type { SettingsInterface } from './Settings'
+	import type { SettingsInterface } from './interfaces'
 	import type { Format } from '@kettek/litch-app/src/interfaces/Format'
 
 	export let format: Format
