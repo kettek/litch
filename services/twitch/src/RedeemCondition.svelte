@@ -13,10 +13,14 @@
 	export let format: Format
 	export let condition: ConditionI
 	
-	$: console.log('redeem data is now', data)
 </script>
 
 <main>
+	<select>
+		{#each data.redeems as redeem}
+			<option value={redeem.id}>{redeem.title} ({redeem.cost})</option>
+		{/each}
+	</select>
 </main>
 
 <style>

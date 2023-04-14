@@ -15,9 +15,10 @@ export interface Redeem {
 	id: string
 	title: string
 	image: string
-	points: number
+	cost: number
 }
 
 export interface ServiceData {
+	actions: any
 	redeems: Redeem[]
 }

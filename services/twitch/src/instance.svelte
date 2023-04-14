@@ -10,7 +10,17 @@
 
 	channel.receive = async ({topic, message}: {topic: string, message: any}) => {
 		if (topic === 'channelPoints.addReward') {
-			console.log('TODO: add', message)
+			updateData({...data, 
+				redeems: [
+					...data.redeems,
+					{
+						id: message.id,
+						title: message.title,
+						cost: message.cost,
+						image: message.image,
+					}
+				].sort((a,b)=>a.cost-b.cost)
+			})
 		} else if (topic === 'channelPoints.clearRewards') {
 			updateData({...data, redeems: []})
 		} else if (topic === 'channelPoints.redeem') {
