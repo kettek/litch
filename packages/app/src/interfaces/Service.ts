@@ -10,6 +10,16 @@ export interface ServiceSourceInterface {
 	render: string
 }
 
+export interface ActionEventsI {
+	conditions: ActionEventI[]
+}
+
+export interface ActionEventI {
+	title: string
+	id: any
+	ConditionComponent: SvelteComponent
+}
+
 /**
  * ServiceInterface provides the generic interface for services.
  */
@@ -32,6 +42,10 @@ export interface ServiceInterface {
 	SettingsComponent: SvelteComponent
 	//
 	locales: Record<string, any>
+	//
+	actionEvents: ActionEventsI
+	// data is the "live" data used by the service. It is shared between the instance and any actionEvent components.
+	data: any
 	//
 	defaults: {
 		settings: {[key: string]: any}

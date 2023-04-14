@@ -127,9 +127,12 @@
 				publisher.publish('service.'+service+'.fail', {})
 			}
 		}
-		for (let service of servicesToEnable) {
-			publisher.publish(`service.${service.uuid}.enable`, {})
-		}
+		// FIXME: This is really not good, but I want services to be enabled _after_ service instance components have been rendered, as this allows them to hook up their pubsub/channel.
+		setTimeout(() => {
+			for (let service of servicesToEnable) {
+				publisher.publish(`service.${service.uuid}.enable`, {})
+			}
+		}, 100)
 
 		// Load modules (this should bes a separate model)
 		loadingMessage = "Loading modules"
@@ -187,9 +190,16 @@
 	import type { ServiceInterface, ServiceSourceInterface } from './interfaces/Service'
 	import type { EndpointMessage } from '@kettek/pubsub/dist/Endpoint'
 	import { get } from 'svelte/store'
+  import ModuleWrapper from './ModuleWrapper.svelte'
 	let showServices = false
 	function toggleServices() {
 		showServices = !showServices
+	}
+	
+	import Actions from './Actions.svelte'
+	let showActions = false
+	function toggleActions() {
+		showActions = !showActions
 	}
 
 	async function toggleServer() {
@@ -239,6 +249,9 @@
 			<Button primary on:click={toggleServices} title={$_('litch.openServices')}>
 				<Icon icon="service"></Icon>
 			</Button>
+			<Button primary on:click={toggleActions} title={$_('litch.openActions')}>
+				<Icon icon="actions"></Icon>actions
+			</Button>
 			<Button primary disabled={serverStatus==='pending'} on:click={toggleServer} title={serverStatus==='on'?$_('litch.stopServer'):$_('litch.startServer')}>
 				<Icon icon={serverStatus==='on'?'stop':'start'}></Icon>
 			</Button>
@@ -275,6 +288,14 @@
 				</article>
 			</Window>
 		{/if}
+		{#if showActions}
+			<Window primary on:close={()=>showActions=false}>
+				<span slot='title'>{$_('actions.title')}</span>
+				<article slot='content'>
+					<Actions/>
+				</article>
+			</Window>
+		{/if}
 		{#if showSettings}
 			<Settings/>
 		{/if}
@@ -283,6 +304,11 @@
 		{loadingMessage}
 	{/if}
 </main>
+{#each $services as service}
+	{#if service.InstanceComponent}
+		<ModuleWrapper bind:data={service.data} updateData={(data)=>{service.data=data;refreshServices()}} this={service.InstanceComponent} channel={service.channel} publisher={publisher}/>
+	{/if}
+{/each}
 
 <style>
 	main {

@@ -13,12 +13,14 @@ export function addService(s: ServiceInterface) {
 				...v[existing],
 				...s,
 				settings: merge({...s.defaults.settings}, v[existing].settings),
+				data: {},
 			}
 		} else {
 			v.push({
 				...s,
 				settings: {...s.defaults.settings},
 				channel: createServiceChannel(s.uuid),
+				data: {},
 			})
 		}
 		return v
@@ -38,6 +40,7 @@ function deserializeServices() {
 	let ss = get(services)
 	for (let s of ss) {
 		s.channel = createServiceChannel(s.uuid)
+		s.data = {}
 	}
 	services.set(ss)
 }
