@@ -15,7 +15,7 @@
 	let serviceChannel: ServiceChannel = createServiceChannel(service.uuid)
 </script>
 
-<ModuleWrapper this={service?.actionEvents?.conditions.find(v=>v.id===action.id)?.ConditionComponent} bind:condition={action.condition} channel={serviceChannel} data={service.data}/>
+<ModuleWrapper this={service?.actionEvents?.conditions.find(v=>v.id===action.id)?.ConditionComponent} bind:condition={action.condition} channel={serviceChannel} data={service.data} id={action.id}/>
 
 <style>
 </style>

@@ -7,10 +7,11 @@
 		id: string
 	}
 
+	export let id: string
 	export let data: ServiceData
 	export let channel: ServiceChannel
 	export let format: Format
-	export let condition: any
+	export let condition: ConditionI
 	
 	$: console.log('redeem data is now', data)
 </script>
