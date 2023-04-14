@@ -78,6 +78,15 @@ app.on("ready", async () => {
   mainWindow.loadFile(path.join(__dirname, "public/index.html"))
   mainWindow.webContents.openDevTools()
 
+  // Ensure services are disabled when the app is reloaded.
+  mainWindow.webContents.on('did-start-loading', () => {
+    for (let service of services) {
+      if (service.module.disable) {
+        service.module.disable()
+      }
+    }
+  })
+
   // Set up our various IPC.
   ipcMain.handle('getPath', async (e, w) => {
     return app.getPath(w)
