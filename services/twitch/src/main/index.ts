@@ -160,6 +160,24 @@ async function startChatbot() {
 		if (settings.dumpAllMessages) {
 			console.log('onRaid', channel, user, raidInfo, msg)
 		}
+		context.publish('raid.start', {
+			user: String,
+			userDisplayName: raidInfo.displayName,
+			viewerCount: raidInfo.viewerCount,
+			date: msg.date,
+			message: msg.message,
+		})
+	})
+	chatClient.onRaidCancel((channel: string, msg: UserNotice) => {
+		if (settings.dumpAllMessages) {
+			console.log('onRaidCancel', channel, msg)
+		}
+		context.publish('raid.cancel', {
+			user: String,
+			userDisplayName: msg.userInfo.displayName,
+			date: msg.date,
+			message: msg.message,
+		})
 	})
 	chatClient.onSub((channel: string, user: string, subInfo: ChatSubInfo, msg: UserNotice) => {
 		if (settings.dumpAllMessages) {
