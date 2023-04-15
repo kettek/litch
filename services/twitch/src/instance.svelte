@@ -34,6 +34,18 @@
 					publisher.publish(`actions.${action.uuid}.trigger`, message)
 				}
 			}
+		} else if (topic === 'raid.start') {
+			for (let action of actions) {
+				if (action.id === 'raid' && !action.condition.cancel) {
+					publisher.publish(`actions.${action.uuid}.trigger`, message)
+				}
+			}
+		} else if (topic === 'raid.cancel') {
+			for (let action of actions) {
+				if (action.id === 'raid' && action.condition.cancel) {
+					publisher.publish(`actions.${action.uuid}.trigger`, message)
+				}
+			}
 		} else {
 			console.log('UNHANDLED: ', topic, message)
 		}
