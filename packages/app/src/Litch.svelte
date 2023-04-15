@@ -197,6 +197,8 @@
 	}
 	
 	import Actions from './Actions.svelte'
+	import ActionsEditor from './ActionsEditor.svelte'
+  import ServiceInstances from './ServiceInstances.svelte';
 	let showActions = false
 	function toggleActions() {
 		showActions = !showActions
@@ -292,7 +294,7 @@
 			<Window primary on:close={()=>showActions=false}>
 				<span slot='title'>{$_('actions.title')}</span>
 				<article slot='content'>
-					<Actions/>
+					<ActionsEditor/>
 				</article>
 			</Window>
 		{/if}
@@ -304,11 +306,8 @@
 		{loadingMessage}
 	{/if}
 </main>
-{#each $services as service}
-	{#if service.InstanceComponent}
-		<ModuleWrapper bind:data={service.data} updateData={(data)=>{service.data=data;refreshServices()}} this={service.InstanceComponent} channel={service.channel} publisher={publisher}/>
-	{/if}
-{/each}
+<Actions></Actions>
+<ServiceInstances></ServiceInstances>
 
 <style>
 	main {

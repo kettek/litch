@@ -1,21 +1,17 @@
 <script lang='ts'>
   import ModuleWrapper from './ModuleWrapper.svelte'
+  import type { ActionInterface } from './interfaces/Action'
   import type { ServiceChannel, ServiceInterface } from './interfaces/Service'
-  import { createServiceChannel } from './services';
+  import { createServiceChannel } from './services'
+  import { refreshActions } from './stores/actions'
 
-	interface ActionI {
-		service: string
-		id: string
-		condition: any
-	}
-	
 	export let service: ServiceInterface
-	export let action: ActionI
+	export let action: ActionInterface
 
 	let serviceChannel: ServiceChannel = createServiceChannel(service.uuid)
 </script>
 
-<ModuleWrapper this={service?.actionEvents?.conditions.find(v=>v.id===action.id)?.ConditionComponent} bind:condition={action.condition} channel={serviceChannel} data={service.data} id={action.id}/>
+<ModuleWrapper this={service?.actionEvents?.conditions.find(v=>v.id===action.id)?.ConditionComponent} bind:condition={action.condition} channel={serviceChannel} data={service.data} id={action.id} refresh={refreshActions}/>
 
 <style>
 </style>
