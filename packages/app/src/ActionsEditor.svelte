@@ -128,7 +128,11 @@
 	<section class='actions'>
 		{#each $actions as action, actionIndex}
 			<DropList secondary>
-				<svelte:fragment slot='heading'>{$_('action')}</svelte:fragment>
+				<svelte:fragment slot='heading'>
+					{#if action.type === 'service'}
+						{$services.find(v=>action.service===v.uuid)?.actionEvents.conditions.find(v=>v.id===action.id)?.title ?? action.id}
+					{/if}
+				</svelte:fragment>
 				<section class='action' slot='content'>
 					<Section rounded>
 						{#if action.type === 'service'}
