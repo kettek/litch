@@ -1,14 +1,26 @@
 <script lang='ts'>
 	import type { Asset } from '../interfaces/Asset'
+  import Button from './Button.svelte'
+  import Icon from './Icon.svelte'
 
 	export let displayed: boolean = false
 	export let contained: boolean = false
 	export let bg: boolean =false
+	export let minimal: boolean = false
+	export let volume: number = 1.0
 
 	export let asset: Asset|undefined
+
+	function play() {
+		if (!asset) return
+		let audio = new Audio()
+		audio.volume = volume
+		audio.src = asset.redirectedSource||asset.originalSource
+		audio.play()
+	}
 </script>
 
-<main class:contained class:displayed class:bg>
+<main class:contained class:displayed class:bg class:minimal>
 	{#if !asset}
 		<span>
 			No asset.
@@ -17,12 +29,20 @@
 		{#if asset.mimetype.startsWith('image')}
 			<img alt={asset.uuid} src={asset.redirectedSource||asset.originalSource}/>
 		{:else if asset.mimetype.startsWith('video')}
-			<video controls src={asset.redirectedSource||asset.originalSource}>
+			<video volume={volume} controls src={asset.redirectedSource||asset.originalSource}>
 				<track kind="captions" />
 			</video>
 		{:else if asset.mimetype.startsWith('audio')}
-			<audio controls src={asset.redirectedSource||asset.originalSource}>
-			</audio>
+			{#if minimal}
+				<span>
+					<Button small on:click={play}>
+						<Icon icon={'start'}></Icon>
+					</Button>
+				</span>
+			{:else}
+				<audio volume={volume} controls src={asset.redirectedSource||asset.originalSource}>
+				</audio>
+			{/if}
 		{:else}
 			<span>
 				Unhandled asset type.
@@ -32,6 +52,9 @@
 </main>
 
 <style>
+	.minimal {
+		display: inline-block;
+	}
 	.contained img, .contained video, .contained audio {
 		width: 100%;
 		height: 100%;
