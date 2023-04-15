@@ -12,5 +12,7 @@
 	"suffix_desc": "Text that comes after every message that the bot says.",
 	"joinMessage": "Join Message",
 	"leaveMessage": "Leave Message",
-	"say": "Say"
+	"say": "Say",
+	"raidCancel": "Raid Cancel",
+	"noRedeems": "No redeems"
 }
