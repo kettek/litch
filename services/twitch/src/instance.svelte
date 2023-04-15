@@ -3,11 +3,16 @@
 
 	import type { ServiceChannel } from '@kettek/litch-app/src/interfaces/Service'
 	import type { ServiceData } from './interfaces'
+  import type { ActionInterface } from '@kettek/litch-app/src/interfaces/Action';
+	import type { Publisher } from "@kettek/pubsub/dist/Publisher"
 	
 	export let data: ServiceData
+	export let publisher: Publisher
 	export let channel: ServiceChannel
+	export let actions: ActionInterface[]
 	export let updateData: (data: any) => void
 
+	// TODO: Add interfaces for all these messaage types and use whatever typescript's type coercion code is.
 	channel.receive = async ({topic, message}: {topic: string, message: any}) => {
 		if (topic === 'channelPoints.addReward') {
 			updateData({...data, 
@@ -23,8 +28,12 @@
 			})
 		} else if (topic === 'channelPoints.clearRewards') {
 			updateData({...data, redeems: []})
-		} else if (topic === 'channelPoints.redeem') {
-			console.log('TODO: redeem', message)
+		} else if (topic === 'channelPoints.redemption') {
+			for (let action of actions) {
+				if (action.id === 'redeem' && action.condition.id == message.rewardID) {
+					publisher.publish(`actions.${action.uuid}.trigger`, message)
+				}
+			}
 		} else {
 			console.log('UNHANDLED: ', topic, message)
 		}

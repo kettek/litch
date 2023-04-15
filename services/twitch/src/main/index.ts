@@ -247,8 +247,14 @@ async function startPubsub() {
 		context.publish('subscription', message)
 	})
 	pubSubUser.onRedemption((message: PubSubRedemptionMessage) => {
+		context.publish('channelPoints.redemption', {
+			rewardID: message.rewardId,
+			prompt: message.rewardPrompt,
+			userID: message.userId,
+			userName: message.userName,
+			userDisplayName: message.userDisplayName,
+		})
 		console.log('got redemption', message)
-		context.publish('channelPoints.redemption', message)
 	})
 }
 
