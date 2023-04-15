@@ -113,7 +113,6 @@
 <main>
 	<ItemGroup label>
 		<select bind:this={actionSelect}>
-			<option></option>
 			{#each $services as service}
 				{#if service.actionEvents?.conditions}
 					{#each service.actionEvents.conditions as condition}
