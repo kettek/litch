@@ -4,7 +4,7 @@
 
 	import { actions } from "./stores/actions"
   import { getAsset } from "./assets";
-  import { isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreWait } from "./interfaces/Action";
+  import { ActionCoreHotkeyI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreWait } from "./interfaces/Action";
   import { overlays, refreshOverlays } from "./stores/overlays"
 
 	async function triggerAction(uuid: string) {
@@ -65,6 +65,30 @@
 			}
 		})
 	}
+	
+	let previousHotKeys: string[] = []
+	let hotkeyActions: ActionCoreHotkeyI[]
+	$: hotkeyActions = $actions.filter(v=>isActionCoreHotkey(v)&&v.keys!=='') as ActionCoreHotkeyI[]
+	$: {
+		for (let action of hotkeyActions) {
+			if (!previousHotKeys.includes(action.keys)) {
+				publisher.publish(`hotkeys.${action.keys}.register`, {})
+			}
+		}
+		for (let hotkey of previousHotKeys) {
+			let has = false
+			for (let action of hotkeyActions) {
+				if (action.keys === hotkey) {
+					has = true
+					break
+				}
+			}
+			if (!has) {
+				publisher.publish(`hotkeys.${hotkey}.unregister`, {})
+			}
+		}
+		previousHotKeys = hotkeyActions.map(v=>v.keys)
+	}
 
 	onMount(() => {
 		let subs = [
@@ -72,7 +96,23 @@
 				let uuid = msg.sourceTopic?.split('.')[1]
 				triggerAction(uuid as string)
 			}),
+			publisher.subscribe('hotkeys.*.trigger', async (msg) => {
+				let hotkey = msg.sourceTopic?.split('.')[1]
+				for (let action of hotkeyActions) {
+					if (action.keys === hotkey) {
+						triggerAction(action.uuid)
+					}
+				}
+			})
 		]
+
+		// Register hotkeys
+		for (let action of $actions) {
+			if (isActionCoreHotkey(action)) {
+				publisher.publish(`hotkeys.${action.keys}.register`, {})
+			}
+		}
+
 		return () => {
 			for (let sub of subs) {
 				publisher.unsubscribe(sub)

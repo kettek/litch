@@ -11,29 +11,43 @@
 	import { actions, addAction, refreshActions, removeAction } from './stores/actions'
 	import { services } from './stores/services'
 	import ActionCondition from './ActionCondition.svelte'
-  import { ActionInterface, ActionTriggerI, TriggerCoreTypes, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreWait } from './interfaces/Action'
+  import { ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreWait } from './interfaces/Action'
   import AssetViewer from './components/AssetViewer.svelte'
   import AssetsCard from './AssetsCard.svelte'
   import type { AssetResults } from './interfaces/Asset'
   import { getAsset } from './assets'
   import { collections } from './stores/collections';
   import { overlays } from './stores/overlays';
+  import ActionHotkey from './ActionHotkey.svelte';
 	
 	let actionSelect: HTMLSelectElement
 	let triggerSelects: HTMLSelectElement[] = []
 
 	function addNewAction() {
 		let types = actionSelect.value.split(':', 2)
-		let parts = types[1].split('.', 2)
 		let uuid = v4()
-		addAction({
-			type: types[0],
-			uuid: uuid,
-			service: parts[0],
-			id: parts[1],
-			condition: {},
-			triggers: [],
-		})
+		
+		if (types[0] === 'service') {
+			let parts = types[1].split('.', 2)
+			addAction({
+				type: 'service',
+				uuid: uuid,
+				service: parts[0],
+				id: parts[1],
+				condition: {},
+				triggers: [],
+			})
+		} else if (types[0] === 'core') {
+			if (types[1] === 'hotkey') {
+				addAction({
+					uuid: uuid,
+					triggers: [],
+					type: 'core',
+					id: 'hotkey',
+					keys: '',
+				})
+			}
+		}
 	}
 
 	function addNewTrigger(action: ActionInterface, actionIndex: number) {
@@ -113,6 +127,7 @@
 <main>
 	<ItemGroup label>
 		<select bind:this={actionSelect}>
+			<option value={'core:hotkey'}>Hotkey</option>
 			{#each $services as service}
 				{#if service.actionEvents?.conditions}
 					{#each service.actionEvents.conditions as condition}
@@ -129,16 +144,20 @@
 		{#each $actions as action, actionIndex}
 			<DropList secondary>
 				<svelte:fragment slot='heading'>
-					{#if action.type === 'service'}
+					{#if isActionService(action)}
 						{$services.find(v=>action.service===v.uuid)?.actionEvents.conditions.find(v=>v.id===action.id)?.title ?? action.id}
+					{:else if action.type === 'core'}
+						{action.id}
 					{/if}
 				</svelte:fragment>
 				<section class='action' slot='content'>
 					<Section rounded>
-						{#if action.type === 'service'}
+						{#if isActionService(action)}
 							{#if $services.find(v=>v.uuid===action.service)}
 								<ActionCondition service={$services.find(v=>v.uuid===action.service)} action={action}></ActionCondition>
 							{/if}
+						{:else if isActionCoreHotkey(action)}
+							<ActionHotkey bind:value={action.keys}></ActionHotkey>
 						{/if}
 					</Section>
 					<Section alt>
@@ -171,7 +190,7 @@
 														<Button title={$_('selectSound')} tertiary on:click={()=>{showAssetsWindow(action, index)}}>
 															<Icon icon='open'></Icon>
 														</Button>
-														<ItemGroup label inline>
+														<ItemGroup label>
 															<input type='checkbox' bind:checked={trigger.data.wait}/>
 															<svelte:fragment slot='label'>{$_('wait')}</svelte:fragment>
 														</ItemGroup>

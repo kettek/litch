@@ -1,4 +1,4 @@
-const { app, screen, BrowserWindow, ipcMain } = require("electron")
+const { app, screen, BrowserWindow, ipcMain, globalShortcut } = require("electron")
 const { promises: fs } = require('fs')
 const path = require("path")
 require('electron-app-settings')
@@ -80,6 +80,7 @@ app.on("ready", async () => {
 
   // Ensure services are disabled when the app is reloaded.
   mainWindow.webContents.on('did-start-loading', () => {
+    globalShortcut.unregisterAll()
     for (let service of services) {
       if (service.module.disable) {
         service.module.disable()
@@ -132,4 +133,36 @@ app.on("ready", async () => {
   ipcMain.handle('publish', async (event, msg) => {
     publisher.publish(end, msg)
   })
+  ipcMain.handle('registerShortcut', async (event, msg) => {
+    globalShortcut.register(msg.hotkey, () => {
+      publisher.publish('shortcuts.'+msg.hotkey+'.register')
+      publisher.publish('shortcuts.'+msg.hotkey+'.trigger')
+    })
+  })
 })
+
+// Create a hotkeys pubsub system
+{
+  let keys = {}
+  const register = publisher.subscribe(`hotkeys.*.register`, async({topic, sourceTopic, message}) => {
+    let shortcut = sourceTopic.split('.')[1]
+
+    publisher.publish(`hotkeys.${shortcut}.registered`)
+    
+    if (!keys[shortcut]) {
+      keys[shortcut] = 1
+      globalShortcut.register(shortcut, () => {
+        publisher.publish(`hotkeys.${shortcut}.trigger`)
+      })
+    } else keys[shortcut]++
+  })
+  const unregister = publisher.subscribe(`hotkeys.*.unregister`, async({topic, sourceTopic, message}) => {
+    let shortcut = sourceTopic.split('.')[1]
+    if (!keys[shortcut]) return
+    else keys[shortcut]--
+    
+    if (keys[shortcut] <= 0) {
+      globalShortcut.unregister(shortcut)
+    }
+  })
+}

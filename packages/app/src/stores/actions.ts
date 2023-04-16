@@ -1,8 +1,8 @@
-import type { ActionInterface } from '../interfaces/Action'
+import type { ActionI } from '../interfaces/Action'
 import { localStore } from "./localStore"
 import { get } from 'svelte/store'
 
-export function addAction(s: ActionInterface) {
+export function addAction(s: ActionI) {
 	actions.update((v: any) => {
 		let existing = v.findIndex((v2: any) => v2.uuid === s.uuid)
 		if (existing !== -1) {
@@ -33,6 +33,6 @@ function deserializeActions() {
 	actions.set(aa)
 }
 
-export const actions = localStore<ActionInterface[]>('actions', [])
+export const actions = localStore<ActionI[]>('actions', [])
 
 deserializeActions()

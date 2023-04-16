@@ -3,13 +3,13 @@
 
 	import type { ServiceChannel } from '@kettek/litch-app/src/interfaces/Service'
 	import type { ServiceData } from './interfaces'
-  import type { ActionInterface } from '@kettek/litch-app/src/interfaces/Action';
+  import type { ActionServiceI } from '@kettek/litch-app/src/interfaces/Action'
 	import type { Publisher } from "@kettek/pubsub/dist/Publisher"
 	
 	export let data: ServiceData
 	export let publisher: Publisher
 	export let channel: ServiceChannel
-	export let actions: ActionInterface[]
+	export let actions: ActionServiceI[]
 	export let updateData: (data: any) => void
 
 	// TODO: Add interfaces for all these messaage types and use whatever typescript's type coercion code is.

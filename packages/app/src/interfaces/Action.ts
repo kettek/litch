@@ -2,14 +2,29 @@ import type { SvelteComponent } from "svelte"
 
 export interface ActionInterface {
 	uuid: string
-	type: string
-	// action information
+	triggers: ActionTriggerI[]
+}
+
+export interface ActionServiceI extends ActionInterface {
+	type: 'service'
 	service: string
 	id: string
 	condition: any
-	// trigger information
-	triggers: ActionTriggerI[]
 }
+export function isActionService(o: any): o is ActionServiceI {
+	return o.type === 'service'
+}
+
+export interface ActionCoreHotkeyI extends ActionInterface {
+	type: 'core'
+	id: 'hotkey'
+	keys: string
+}
+export function isActionCoreHotkey(o: any): o is ActionCoreHotkeyI {
+	return o.type === 'core' && o.id === 'hotkey'
+}
+
+export type ActionI = ActionServiceI | ActionCoreHotkeyI
 
 export type ActionTriggerI = ActionTriggerCoreI | ActionTriggerModuleI
 
@@ -27,11 +42,13 @@ export function isTriggerModule(o: any): o is ActionTriggerModuleI {
 export interface ActionTriggerCoreI {
 	type: 'core'
 	fulltype: string
-	data: ActionTriggerCoreSoundI | ActionTriggerCoreWaitI | ActionTriggerCoreToggleModuleI
+	data: ActionTriggerCoreTypes
 }
 export function isTriggerCore(o: any): o is ActionTriggerCoreI {
 	return o.type === 'core'
 }
+
+export type ActionTriggerCoreTypes = ActionTriggerCoreSoundI | ActionTriggerCoreWaitI | ActionTriggerCoreToggleModuleI
 
 export interface ActionTriggerCoreToggleModuleI {
 	type: 'toggleModule'
