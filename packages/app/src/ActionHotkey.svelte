@@ -4,6 +4,8 @@
 	export let value: string
 	let valueKeys: string[]
 	$: valueKeys = value.split('+')
+	
+	const mods = ['Control', 'Command', 'Option', 'Shift', 'Alt', 'AltGr', 'Super', 'Meta']
 
 	let keyup: (e: KeyboardEvent) => void
 	let keydown: (e: KeyboardEvent) => void
@@ -32,8 +34,8 @@
 			if (pressedKeys.find(v=>v===e.key||v===e.key.toLocaleLowerCase()||v===e.key.toLocaleUpperCase())) return
 			keys = [...keys, e.key.toLocaleLowerCase()]
 			pressedKeys = [...pressedKeys, e.key].sort((a,b) => {
-				let isModA = ['Control','Command','Shift','Alt','Meta'].includes(a)
-				let isModB = ['Control','Command','Shift','Alt','Meta'].includes(b)
+				let isModA = mods.includes(a)
+				let isModB = mods.includes(b)
 				if (isModA && !isModB) {
 					return -1
 				} else if (!isModA && isModB) {
@@ -53,7 +55,7 @@
 
 		recording = false
 		if (pressedKeys.length > 0) {
-			value = pressedKeys.map(v=>['Control','Command','Shift','Alt','Meta'].includes(v)?v:v.toLocaleUpperCase()).join('+')
+			value = pressedKeys.map(v=>mods.includes(v)?v:v.toLocaleUpperCase()).join('+')
 		}
 	}
 	function clear() {
