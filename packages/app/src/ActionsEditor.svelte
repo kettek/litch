@@ -226,7 +226,7 @@
 				<ItemGroup label tertiary>
 					<select bind:value={triggerType}>
 						{#each TriggerCoreTypes as coreType}
-							<option value={'core:'+coreType}>{$_(coreType)}</option>
+							<option value={'core:'+coreType}>{$_('actions.'+coreType)}</option>
 						{/each}
 					</select>
 					<Button tertiary on:click={()=>addNewTrigger()}>
@@ -241,7 +241,7 @@
 								<section class='trigger'>
 									<ItemGroup label>
 										{#if isTriggerCore(trigger)}
-											{$_(trigger.data.type)}
+											{$_('actions.'+trigger.data.type)}
 										{/if}
 									</ItemGroup>
 									<Section rounded>

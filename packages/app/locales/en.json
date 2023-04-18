@@ -85,7 +85,12 @@
 		"title": "Actions",
 		"addAction": "Add action",
 		"removeAction": "Remove",
-		"duplicateAction": "Duplicate"
+		"duplicateAction": "Duplicate",
+		"condition": "Condition",
+		"triggers": "Triggers",
+		"playSound": "Play a sound",
+		"wait": "Wait",
+		"toggleModule": "Toggle a module"
 	},
 	"settings": {
 		"title": "Settings",
