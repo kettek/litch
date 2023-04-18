@@ -4,11 +4,15 @@
 	export let maxedCount: number = 1
 	export let title: string = ''
 	export let padded: boolean = true
+	export let primary: boolean = false
+	export let secondary: boolean = false
+	export let tertiary: boolean = false
+
 	$: repeatStr = new Array(maxedCount).fill('minmax(0, 1fr)').join(' ') + new Array(count-1).fill('auto').join(' ')
 </script>
 
 {#if label}
-	<label title={title} class:ItemGroup={true} class:padded style='--repeat: {repeatStr};'>
+	<label title={title} class:ItemGroup={true} class:padded style='--repeat: {repeatStr};' class:primary class:secondary class:tertiary>
 		<slot></slot>
 		{#if $$slots.label}
 			<span>
@@ -18,7 +22,7 @@
 		{/if}
 	</label>
 {:else}
-	<article title={title} class:ItemGroup={true} class:padded style='--repeat: {repeatStr};'>
+	<article title={title} class:ItemGroup={true} class:padded style='--repeat: {repeatStr};' class:primary class:secondary class:tertiary>
 		<slot></slot>
 		{#if $$slots.label}
 			<span>
@@ -43,4 +47,14 @@
 		align-items: center;
 		padding: 0 .5em;
 	}
+	.primary {
+		color: var(--primary);
+	}
+	.secondary {
+		color: var(--secondary);
+	}
+	.tertiary {
+		color: var(--tertiary);
+	}
+
 </style>

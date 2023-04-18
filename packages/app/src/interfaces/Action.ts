@@ -93,4 +93,5 @@ export interface ActionEventI {
 	title: string
 	id: any
 	ConditionComponent: SvelteComponent
+	TitleComponent?: SvelteComponent
 }

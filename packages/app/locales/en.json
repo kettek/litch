@@ -81,6 +81,12 @@
 			"delete": "Delete"
 		}
 	},
+	"actions": {
+		"title": "Actions",
+		"addAction": "Add action",
+		"removeAction": "Remove",
+		"duplicateAction": "Duplicate"
+	},
 	"settings": {
 		"title": "Settings",
 		"port": "Port"

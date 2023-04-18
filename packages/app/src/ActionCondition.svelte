@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n'
   import ModuleWrapper from './ModuleWrapper.svelte'
   import type { ActionInterface } from './interfaces/Action'
-  import type { Format, FormatMessageObject } from './interfaces/Format';
+  import type { Format, FormatMessageObject } from './interfaces/Format'
   import type { ServiceChannel, ServiceInterface } from './interfaces/Service'
   import { createServiceChannel } from './services'
   import { refreshActions } from './stores/actions'

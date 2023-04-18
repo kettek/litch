@@ -1,6 +1,7 @@
 import SettingsComponent from './settings.svelte'
 import InstanceComponent from './instance.svelte'
 import RedeemCondition from './RedeemCondition.svelte'
+import RedeemTitle from './RedeemTitle.svelte'
 import RaidCondition from './RaidCondition.svelte'
 import en from '../locales/en.json'
 
@@ -28,6 +29,7 @@ export default {
 				title: "Redeem",
 				id: "redeem",
 				ConditionComponent: RedeemCondition,
+				TitleComponent: RedeemTitle,
 			},
 			{
 				title: "Raid",
