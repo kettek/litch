@@ -2,6 +2,7 @@ import type { SvelteComponent } from "svelte"
 
 export interface ActionInterface {
 	uuid: string
+	title: string
 	triggers: ActionTriggerI[]
 }
 

@@ -40,6 +40,7 @@
 			let parts = types[1].split('.', 2)
 			addAction({
 				type: 'service',
+				title: '',
 				uuid: uuid,
 				service: parts[0],
 				id: parts[1],
@@ -50,6 +51,7 @@
 			if (types[1] === 'hotkey') {
 				addAction({
 					uuid: uuid,
+					title: '',
 					triggers: [],
 					type: 'core',
 					id: 'hotkey',
@@ -188,10 +190,14 @@
 								{#each $actions as action}
 									<li class='actions__entry' class:selected={selectedActionUUID===action.uuid} on:click={()=>{selectedActionUUID=action.uuid}}>
 										<span>
-											{#if isActionService(action)}
-												<ActionTitle service={$services.find(v=>v.uuid===action.service)} action={action}>{action.id}</ActionTitle>
-											{:else if action.type === 'core'}
-												{action.id}
+											{#if action.title}
+												{action.title} 
+											{:else}
+												{#if isActionService(action)}
+													<ActionTitle service={$services.find(v=>v.uuid===action.service)} action={action}>{action.id}</ActionTitle>
+												{:else if action.type === 'core'}
+													{action.id}
+												{/if}
 											{/if}
 										</span>
 										<Button nomargin secondary invert={selectedActionUUID!==action.uuid} on:click={(e)=>showActionMenu(e, action.uuid)}>
@@ -211,6 +217,15 @@
 			Select an action
 		{:else}
 			<section>
+				<DropList secondary>
+					<svelte:fragment slot='heading'>{$_('actions.settings')}</svelte:fragment>
+					<svelte:fragment slot='content'>
+						<ItemGroup label secondary>
+							<input bind:value={selectedAction.title}/>
+							<svelte:fragment slot='label'>{$_('actions.actionTitle')}</svelte:fragment>
+						</ItemGroup>
+					</svelte:fragment>
+				</DropList>
 				<DropList secondary>
 					<svelte:fragment slot='heading'>{$_('actions.condition')}</svelte:fragment>
 					<svelte:fragment slot='content'>
