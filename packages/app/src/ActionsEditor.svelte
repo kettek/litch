@@ -24,6 +24,7 @@
 	import Menu from './components/Menu.svelte'
 	import MenuOption from './components/MenuOption.svelte'
   import ActionTitle from './ActionTitle.svelte';
+  import { flip } from 'svelte/animate';
 	
 	let actionSelect: HTMLSelectElement
 	let triggerSelects: HTMLSelectElement[] = []
@@ -131,6 +132,35 @@
 		selectedAction.triggers.splice(index, 1)
 		refreshActions()
 	}
+	
+	let hoveringActionUUID: string
+	let fromActionUUID: string
+	function handleActionDragStart(e: DragEvent, uuid: string) {
+		if (!e.dataTransfer) return
+		e.dataTransfer.effectAllowed = 'move'
+		e.dataTransfer.dropEffect = 'move'
+		fromActionUUID = uuid
+	}
+	function handleActionDrop(e: DragEvent, targetUUID: string) {
+		if (!e.dataTransfer) return
+		e.dataTransfer.dropEffect = 'move'
+
+		const fromIndex = $actions.findIndex(v=>v.uuid===fromActionUUID)
+		const toIndex = $actions.findIndex(v=>v.uuid===targetUUID)
+
+		const acts = $actions
+		if (fromIndex < toIndex) {
+			$actions.splice(toIndex+1, 0, acts[fromIndex])
+			$actions.splice(fromIndex, 1)
+		} else {
+			$actions.splice(toIndex, 0, acts[fromIndex])
+			$actions.splice(fromIndex+1, 1)
+		}
+		fromActionUUID = ''
+		hoveringActionUUID = ''
+		refreshActions()
+	}
+
 
 	let showAssets = false
 	let targetAction: ActionInterface
@@ -187,8 +217,17 @@
 						</svelte:fragment>
 						<svelte:fragment slot="content">
 							<ul>
-								{#each $actions as action}
-									<li class='actions__entry' class:selected={selectedActionUUID===action.uuid} on:click={()=>{selectedActionUUID=action.uuid}}>
+								{#each $actions as action (action.uuid)}
+									<li
+										animate:flip="{{duration: 200}}"
+										draggable={true}
+										on:dragstart={e => handleActionDragStart(e, action.uuid)}
+										on:drop|preventDefault={e => handleActionDrop(e, action.uuid)}
+										ondragover="return false"
+										on:dragenter={() => hoveringActionUUID = action.uuid}
+										class:active={hoveringActionUUID === action.uuid}
+									 	class='actions__entry' class:selected={selectedActionUUID===action.uuid} on:click={()=>{selectedActionUUID=action.uuid}}
+									>
 										<span>
 											{#if action.title}
 												{action.title} 
@@ -364,6 +403,9 @@
 		margin: 0.5em;
 		padding: 0.5em;
 		border-radius: .25em;
+	}
+	li.actions__entry.active {
+		border: 1px solid var(--secondary);
 	}
 	/* */
 	nav {
