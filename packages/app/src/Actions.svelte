@@ -4,10 +4,12 @@
 
 	import { actions } from "./stores/actions"
   import { getAsset } from "./assets";
-  import { ActionCoreHotkeyI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreWait } from "./interfaces/Action";
+  import { ActionCoreHotkeyI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreTriggerModule, isTriggerCoreWait } from "./interfaces/Action";
   import { overlays, refreshOverlays } from "./stores/overlays"
+  import { modules } from "./stores/modules"
+  import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 
-	async function triggerAction(uuid: string) {
+	async function triggerAction(uuid: string, msg: PublishedMessage) {
 		let action = $actions.find(v=>v.uuid===uuid)
 		if (!action) return
 
@@ -29,6 +31,16 @@
 						module.active = false
 					}
 					refreshOverlays()
+				} else if (isTriggerCoreTriggerModule(trigger.data)) {
+					let moduleUUID = trigger.data.module
+					let overlay = $overlays[trigger.data.overlay]
+					if (!overlay) continue
+					let module = overlay.modules.find(v=>v.uuid===moduleUUID)
+					if (!module) return
+					let realModule = $modules[module.moduleUUID]
+					if (!realModule) return
+					console.log('publish', trigger.data.id, msg)
+					module.instanceChannel.publish('trigger.'+trigger.data.id, msg)
 				}
 			}
 		}
@@ -94,13 +106,13 @@
 		let subs = [
 			publisher.subscribe('actions.*.trigger', async (msg) => {
 				let uuid = msg.sourceTopic?.split('.')[1]
-				triggerAction(uuid as string)
+				triggerAction(uuid as string, msg.message)
 			}),
 			publisher.subscribe('hotkeys.*.trigger', async (msg) => {
 				let hotkey = msg.sourceTopic?.split('.')[1]
 				for (let action of hotkeyActions) {
 					if (action.keys === hotkey) {
-						triggerAction(action.uuid)
+						triggerAction(action.uuid, msg.message)
 					}
 				}
 			})

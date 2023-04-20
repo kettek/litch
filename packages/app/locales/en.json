@@ -92,7 +92,8 @@
 		"triggers": "Triggers",
 		"playSound": "Play a sound",
 		"wait": "Wait",
-		"toggleModule": "Toggle a module"
+		"toggleModule": "Toggle a module",
+		"triggerModule": "Module Trigger"
 	},
 	"settings": {
 		"title": "Settings",

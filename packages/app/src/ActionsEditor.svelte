@@ -11,13 +11,12 @@
 	import { actions, addAction, refreshActions, removeAction, duplicateAction } from './stores/actions'
 	import { services } from './stores/services'
 	import ActionCondition from './ActionCondition.svelte'
-  import { ActionI, ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreWait } from './interfaces/Action'
+  import { ActionI, ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreTriggerModule, isTriggerCoreWait } from './interfaces/Action'
   import AssetViewer from './components/AssetViewer.svelte'
   import AssetsCard from './AssetsCard.svelte'
-  import type { AssetResults } from './interfaces/Asset'
   import { getAsset } from './assets'
-  import { collections } from './stores/collections';
   import { overlays } from './stores/overlays';
+	import { modules } from './stores/modules'
   import ActionHotkey from './ActionHotkey.svelte';
   import SplitPane from './components/SplitPane.svelte';
   import Card from './components/Card.svelte';
@@ -25,6 +24,7 @@
 	import MenuOption from './components/MenuOption.svelte'
   import ActionTitle from './ActionTitle.svelte';
   import { flip } from 'svelte/animate';
+  import ActionModuleTrigger from './ActionModuleTrigger.svelte';
 	
 	let actionSelect: HTMLSelectElement
 	let triggerSelects: HTMLSelectElement[] = []
@@ -118,6 +118,18 @@
 						act: 'enable',
 						overlay: '',
 						module: '',
+					}
+				}
+			} else if (id === 'triggerModule') {
+				trigger = {
+					type: 'core',
+					fulltype: triggerType,
+					data: {
+						type: 'triggerModule',
+						overlay: '',
+						module: '',
+						id: '',
+						trigger: {},
 					}
 				}
 			}
@@ -329,6 +341,29 @@
 														{/each}
 													{/if}
 												</select>
+											{:else if isTriggerCoreTriggerModule(trigger.data)}
+												<select bind:value={trigger.data.overlay} on:change={refreshActions}>
+													{#each Object.entries($overlays) as [name, overlay]}
+														<option value={overlay.uuid}>{overlay.title}</option>
+													{/each}
+												</select>
+												{#if $overlays[trigger.data.overlay]}
+													<select bind:value={trigger.data.module} on:change={refreshActions}>
+														{#each $overlays[trigger.data.overlay].modules as module}
+															{#if $modules[module.moduleUUID].triggerEvents?.actions}
+																<option value={module.uuid}>{module.title}</option>
+															{/if}
+														{/each}
+													</select>
+													{#if $overlays[trigger.data.overlay].modules.find(v=>v.uuid===trigger.data.module)}
+														<select bind:value={trigger.data.id} on:change={refreshActions}>
+															{#each $modules[($overlays[trigger.data.overlay].modules.find(v=>v.uuid===trigger.data.module)).moduleUUID]?.triggerEvents?.actions as action}
+																<option value={action.id}>{action.title}</option>
+															{/each}
+														</select>
+														<ActionModuleTrigger data={trigger.data}></ActionModuleTrigger>
+													{/if}
+												{/if}
 											{/if}
 										{/if}
 									</Section>

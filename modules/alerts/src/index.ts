@@ -2,6 +2,7 @@ import SettingsComponent from './settings.svelte'
 import LiveComponent from './live.svelte'
 import PreviewComponent from './preview.svelte'
 import InstanceComponent from './instance.svelte'
+import PopupAction from './PopupAction.svelte'
 import en from '../locales/en.json'
 
 export default {
@@ -15,6 +16,15 @@ export default {
 		settings: {
 			styles: [],
 		},
+	},
+	triggerEvents: {
+		actions: [
+			{
+				title: "Popup",
+				id: "popup",
+				ActionComponent: PopupAction,
+			}
+		]
 	},
 	settingsComponent: SettingsComponent,
 	liveComponent: LiveComponent,

@@ -27,18 +27,7 @@ export function isActionCoreHotkey(o: any): o is ActionCoreHotkeyI {
 
 export type ActionI = ActionServiceI | ActionCoreHotkeyI
 
-export type ActionTriggerI = ActionTriggerCoreI | ActionTriggerModuleI
-
-export interface ActionTriggerModuleI {
-	type: 'module'
-	fulltype: string
-	uuid: string
-	id: string
-	data: string
-}
-export function isTriggerModule(o: any): o is ActionTriggerModuleI {
-	return o.type === 'module'
-}
+export type ActionTriggerI = ActionTriggerCoreI
 
 export interface ActionTriggerCoreI {
 	type: 'core'
@@ -49,7 +38,7 @@ export function isTriggerCore(o: any): o is ActionTriggerCoreI {
 	return o.type === 'core'
 }
 
-export type ActionTriggerCoreTypes = ActionTriggerCoreSoundI | ActionTriggerCoreWaitI | ActionTriggerCoreToggleModuleI
+export type ActionTriggerCoreTypes = ActionTriggerCoreSoundI | ActionTriggerCoreWaitI | ActionTriggerCoreToggleModuleI | ActionTriggerCoreTriggerModuleI
 
 export interface ActionTriggerCoreToggleModuleI {
 	type: 'toggleModule'
@@ -59,6 +48,17 @@ export interface ActionTriggerCoreToggleModuleI {
 }
 export function isTriggerCoreToggleModule(o: any): o is ActionTriggerCoreToggleModuleI {
 	return o.type === 'toggleModule'
+}
+
+export interface ActionTriggerCoreTriggerModuleI {
+	type: 'triggerModule'
+	overlay: string
+	module: string
+	id: string
+	trigger: any
+}
+export function isTriggerCoreTriggerModule(o: any): o is ActionTriggerCoreTriggerModuleI {
+	return o.type === 'triggerModule'
 }
 
 export interface ActionTriggerCoreSoundI {
@@ -84,6 +84,7 @@ export const TriggerCoreTypes = [
 	'playSound',
 	'wait',
 	'toggleModule',
+	'triggerModule',
 ]
 
 export interface ActionEventsI {

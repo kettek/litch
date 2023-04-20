@@ -17,7 +17,7 @@
 	import type { Subscriber } from '@kettek/pubsub/dist/Subscriber'
 	import { addOverlay, removeOverlay, overlays, refreshOverlays, duplicateOverlay } from './stores/overlays'
 	import ModuleWrapper from './ModuleWrapper.svelte'
-	export let modules: Record<string, ModuleInterface> = {}
+	import { modules } from './stores/modules'
 
 	//export let overlays: Record<string, OverlayInterface> = {}
 	export let litchURL: string = ''
@@ -69,7 +69,7 @@
 			{:else if currentOverlay === undefined}
 				<OverlayList litchURL={litchURL} bind:showOverlayCreator={showOverlayCreator} bind:overlays={$overlays} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={activeOverlayUUID} bind:focusedOverlayUUID={focusedOverlayUUID} on:delete={handleDelete} on:duplicate={handleDuplicate}/>
 			{:else}
-				<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID} on:delete={handleDelete} modules={modules}/>
+				<OverlayItem bind:overlay={currentOverlay} bind:uuid={currentOverlayUUID} on:delete={handleDelete} modules={$modules}/>
 			{/if}
 		</nav>
 		<section slot=b style='width: 100%;'>
@@ -80,7 +80,7 @@
 					{$_('overlays.createOverlay')}
 				{/if}
 			{:else}
-				<Overlay bind:overlay={displayedOverlay} modules={modules} active={displayedOverlay === activeOverlay} />
+				<Overlay bind:overlay={displayedOverlay} modules={$modules} active={displayedOverlay === activeOverlay} />
 			{/if}
 		</section>
 	</SplitPane>
@@ -89,15 +89,15 @@
 <aside>
 	{#if activeOverlay}
 		{#each activeOverlay.modules as module}
-			{#if module.active && modules[module.moduleUUID]?.instanceComponent}
-				<ModuleWrapper this={modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.instanceChannel} services={module.servicesChannel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channels.publish('update', module.settings)}} />
+			{#if module.active && $modules[module.moduleUUID]?.instanceComponent}
+				<ModuleWrapper this={$modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.instanceChannel} services={module.servicesChannel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channels.publish('update', module.settings)}} />
 			{/if}
 		{/each}
 	{/if}
 	{#if focusedOverlay && activeOverlay !== focusedOverlay}
 		{#each focusedOverlay.modules as module}
-			{#if module.active && modules[module.moduleUUID]?.instanceComponent}
-				<ModuleWrapper this={modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.instanceChannel} services={module.servicesChannel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channels.publish('update', module.settings)}} />
+			{#if module.active && $modules[module.moduleUUID]?.instanceComponent}
+				<ModuleWrapper this={$modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.instanceChannel} services={module.servicesChannel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channels.publish('update', module.settings)}} />
 			{/if}
 		{/each}
 	{/if}

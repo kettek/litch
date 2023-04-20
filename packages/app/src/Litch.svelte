@@ -15,6 +15,7 @@
 
 	import { settings } from './stores/settings'
 	import { overlays } from './stores/overlays'
+	import { modules } from './stores/modules'
 	import { refreshServices, services } from './stores/services'
 
 	import { publisher } from './modules'
@@ -22,7 +23,6 @@
 
 <script lang="ts">
 	let assets: Asset[] = []
-	let modules: Record<string, ModuleInterface> = {}
 	let modulesMap: Record<string, string> = {}
 	let serviceSources: ServiceSourceInterface[] = []
 	let currentOverlayUUID: string = ''
@@ -142,7 +142,10 @@
 			let url = `../../../..${fullmod}`
 			try {
 				let m: ModuleInterface = (await import(url)).default as unknown as ModuleInterface
-				modules[m.uuid] = m
+				modules.update(v => {
+					v[m.uuid] = m
+					return v
+				})
 				modulesMap[m.uuid] = fullmod
 				// TODO: It'd be nice to have locales be unloadable but I don't know if svelte-i18n supports that.
 				if (m.locales) {
@@ -301,7 +304,7 @@
 		{#if showSettings}
 			<Settings/>
 		{/if}
-		<Overlays litchURL={litchServer.url} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={$settings.activeOverlay} on:refresh={handleRefresh} modules={modules}/>
+		<Overlays litchURL={litchServer.url} bind:currentOverlayUUID={currentOverlayUUID} bind:activeOverlayUUID={$settings.activeOverlay} on:refresh={handleRefresh}/>
 	{:else}
 		{loadingMessage}
 	{/if}

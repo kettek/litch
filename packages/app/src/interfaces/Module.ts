@@ -17,4 +17,16 @@ export interface ModuleInterface {
 	liveComponent?: SvelteComponent
 	defaults: ModuleDefaultsInterface
 	locales: Record<string, any>
+	//
+	triggerEvents?: ModuleTriggerEventsInterface
+}
+
+export interface ModuleTriggerEventsInterface {
+	actions: ModuleTriggerActionInterface[]
+}
+
+export interface ModuleTriggerActionInterface {
+	title: string
+	id: string
+	ActionComponent: SvelteComponent
 }
