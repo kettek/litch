@@ -269,6 +269,7 @@ async function startPubsub() {
 			rewardID: message.rewardId,
 			rewardCost: message.rewardCost,
 			rewardTitle: message.rewardTitle,
+			rewardImage: message.rewardImage,
 			prompt: message.rewardPrompt,
 			userID: message.userId,
 			userName: message.userName,

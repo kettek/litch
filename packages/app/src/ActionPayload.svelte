@@ -18,7 +18,7 @@
 		<svelte:fragment slot='content'>
 			<ul>
 				{#each Object.entries(condition.payload) as [key, value]}
-					<li>{key}</li>
+					<li title={$_(`service.${service.uuid}.conditions.${action.id}.${key}`)}>{key}</li>
 				{/each}
 			</ul>
 			<Info tertiary>

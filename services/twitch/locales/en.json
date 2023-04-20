@@ -15,5 +15,23 @@
 	"say": "Say",
 	"raidCancel": "Raid Cancel",
 	"redeem": "Redeem",
-	"noRedeems": "No redeems"
+	"noRedeems": "No redeems",
+	"conditions": {
+		"redeem": {
+			"rewardID": "Unique ID of the reward.",
+			"rewardCost": "The channel points cost of the reward.",
+			"rewardTitle": "The title of the reward.",
+			"rewardImage": "The image URL of the reward.",
+			"prompt": "The prompt of the reward.",
+			"userID": "The ID of the user that redeemed the reward.",
+			"userName": "The user name of the user that redeemed the reward.",
+			"userDisplayName": "The display user name of the user that redeemed the reward."
+		},
+		"raid": {
+			"userName": "The user name of the raider.",
+			"userDisplayName": "The display user name of the raider.",
+			"viewerCount": "The viewer count of the raider.",
+			"message": "The raider's message."
+		}
+	}
 }
