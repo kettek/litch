@@ -34,6 +34,10 @@
 		border-style: solid;
 		border-color: var(--bar-bg);
 		border-bottom: none;
+		word-break: keep-all;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
 	}
 	.selected {
 		background: var(--bar-bg);
