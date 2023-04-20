@@ -187,6 +187,54 @@
 		refreshActions()
 	}
 
+	let hoveringTriggerIndex: number
+	let fromTriggerIndex: number
+	let selectedTriggerIndex: number
+	function handleTriggerDragStart(e: DragEvent, index: number) {
+		if (!e.dataTransfer) return
+		e.dataTransfer.effectAllowed = 'move'
+		e.dataTransfer.dropEffect = 'move'
+		fromTriggerIndex = index
+	}
+	function handleTriggerDrop(e: DragEvent, targetIndex: number) {
+		if (!e.dataTransfer || !selectedAction) return
+		e.dataTransfer.dropEffect = 'move'
+
+		const fromIndex = fromTriggerIndex
+		const toIndex = targetIndex
+
+		const triggers = selectedAction.triggers
+		if (fromIndex < toIndex) {
+			selectedAction.triggers.splice(toIndex+1, 0, triggers[fromIndex])
+			selectedAction.triggers.splice(fromIndex, 1)
+		} else {
+			selectedAction.triggers.splice(toIndex, 0, triggers[fromIndex])
+			selectedAction.triggers.splice(fromIndex+1, 1)
+		}
+		fromTriggerIndex = -1
+		hoveringTriggerIndex = -1
+		refreshActions()
+	}
+
+	// trigger menu
+	let menuTriggerPos = {x: 0, y: 0}
+	let triggerMenuIndex: number
+	let showTriggerMenu = false
+	async function enableTriggerMenu(e: MouseEvent, index: number) {
+		e.preventDefault()
+		e.stopPropagation()
+		triggerMenuIndex = index
+		if (showTriggerMenu) {
+			showTriggerMenu = false
+			await new Promise(res => setTimeout(res, 100));
+		}
+		menuPos = { x: e.clientX, y: e.clientY }
+		showTriggerMenu = true
+	}
+	function closeTriggerMenu() {
+		showTriggerMenu = false
+	}
+
 
 	let showAssets = false
 	let targetAction: ActionInterface
@@ -324,8 +372,17 @@
 							</Button>
 						</ItemGroup>
 						{#if selectedAction.triggers}
-							{#each selectedAction.triggers as trigger, index}
-								<section class='trigger'>
+							{#each selectedAction.triggers as trigger, index (index)}
+								<li
+									animate:flip="{{duration: 200}}"
+									draggable={true}
+									on:dragstart={e => handleTriggerDragStart(e, index)}
+									on:drop|preventDefault={e => handleTriggerDrop(e, index)}
+									ondragover="return false"
+									on:dragenter={() => hoveringTriggerIndex = index}
+									class:active={hoveringTriggerIndex === index}
+								 	class='triggers__entry' class:selected={selectedTriggerIndex===index} on:click={()=>{selectedTriggerIndex=index}}
+								>
 									<ItemGroup label>
 										{#if isTriggerCore(trigger)}
 											{$_('actions.'+trigger.data.type)}
@@ -335,36 +392,38 @@
 									</ItemGroup>
 									<Section rounded>
 										{#if isTriggerCore(trigger)}
-											{#if isTriggerCoreSound(trigger.data)}
-												<AssetViewer volume={trigger.data.volume} asset={getAsset(trigger.data.collection, trigger.data.asset)} minimal></AssetViewer>
-												<input type='number' bind:value={trigger.data.volume}/>
-												<Button title={$_('selectSound')} tertiary on:click={()=>{showAssetsWindow(selectedAction, index)}}>
-													<Icon icon='open'></Icon>
-												</Button>
-												<ItemGroup label>
-													<input type='checkbox' bind:checked={trigger.data.wait}/>
-													<svelte:fragment slot='label'>{$_('wait')}</svelte:fragment>
-												</ItemGroup>
-											{:else if isTriggerCoreWait(trigger.data)}
-												<input type='number' bind:value={trigger.data.seconds}/> seconds
-											{:else if isTriggerCoreToggleModule(trigger.data)}
-												<select on:change={e=>trigger.data.act=e.currentTarget.value}>
-													<option>{$_('enable')}</option>
-													<option>{$_('disable')}</option>
-												</select>
-												<select bind:value={trigger.data.overlay} on:change={refreshActions}>
-													{#each Object.entries($overlays) as [name, overlay]}
-														<option value={overlay.uuid}>{overlay.title}</option>
-													{/each}
-												</select>
-												<select bind:value={trigger.data.module}>
-													{#if $overlays[trigger.data.overlay]}
-														{#each $overlays[trigger.data.overlay].modules as module}
-															<option value={module.uuid}>{module.title}</option>
+											<div draggable="true" on:dragstart|preventDefault|stopPropagation>
+												{#if isTriggerCoreSound(trigger.data)}
+													<AssetViewer volume={trigger.data.volume} asset={getAsset(trigger.data.collection, trigger.data.asset)} minimal></AssetViewer>
+													<input type='number' bind:value={trigger.data.volume}/>
+													<Button title={$_('selectSound')} tertiary on:click={()=>{showAssetsWindow(selectedAction, index)}}>
+														<Icon icon='open'></Icon>
+													</Button>
+													<ItemGroup label>
+														<input type='checkbox' bind:checked={trigger.data.wait}/>
+														<svelte:fragment slot='label'>{$_('wait')}</svelte:fragment>
+													</ItemGroup>
+												{:else if isTriggerCoreWait(trigger.data)}
+													<input type='number' bind:value={trigger.data.seconds}/> seconds
+												{:else if isTriggerCoreToggleModule(trigger.data)}
+													<select on:change={e=>trigger.data.act=e.currentTarget.value}>
+														<option>{$_('enable')}</option>
+														<option>{$_('disable')}</option>
+													</select>
+													<select bind:value={trigger.data.overlay} on:change={refreshActions}>
+														{#each Object.entries($overlays) as [name, overlay]}
+															<option value={overlay.uuid}>{overlay.title}</option>
 														{/each}
-													{/if}
-												</select>
-											{/if}
+													</select>
+													<select bind:value={trigger.data.module}>
+														{#if $overlays[trigger.data.overlay]}
+															{#each $overlays[trigger.data.overlay].modules as module}
+																<option value={module.uuid}>{module.title}</option>
+															{/each}
+														{/if}
+													</select>
+												{/if}
+											</div>
 										{:else if isTriggerModule(trigger)}
 											<select bind:value={trigger.overlayUUID} on:change={refreshActions}>
 												{#each Object.entries($overlays) as [name, overlay]}
@@ -385,10 +444,10 @@
 											{/if}
 										{/if}
 									</Section>
-									<Button tertiary dangerous on:click={()=>removeActionTrigger(index)}>
-										<Icon icon="delete"></Icon>
+									<Button tertiary invert on:click={(e)=>enableTriggerMenu(e, index)}>
+										<Icon icon='burger'></Icon>
 									</Button>
-								</section>
+								</li>
 							{/each}
 						{/if}
 					</svelte:fragment>
@@ -403,6 +462,14 @@
 					<Icon icon='duplicate'></Icon>
 				</MenuOption>
 				<MenuOption dangerous on:click={()=>removeAction(menuUUID)}>
+					<span>{$_('actions.removeAction')}</span>
+					<Icon icon='delete'></Icon>
+				</MenuOption>
+			</Menu>
+		{/if}
+		{#if showTriggerMenu}
+			<Menu tertiary {...menuPos} on:click={closeTriggerMenu} on:clickoutside={closeTriggerMenu}>
+				<MenuOption dangerous on:click={()=>removeActionTrigger(triggerMenuIndex)}>
 					<span>{$_('actions.removeAction')}</span>
 					<Icon icon='delete'></Icon>
 				</MenuOption>
@@ -426,11 +493,6 @@
 	.action {
 		height: 100%;
 		overflow: auto;
-	}
-	.trigger {
-		display: grid;
-		grid-template-columns: auto minmax(0, 1fr) auto;
-		align-items: start;
 	}
 	/* */
 	ul {
@@ -457,10 +519,29 @@
 	li.actions__entry.active {
 		border: 1px solid var(--secondary);
 	}
-	div.condition__payload {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
+	li.triggers__entry.selected {
+		/*background: var(--tertiary);
+		color: var(--text);*/
+		/*border: 1px solid var(--tertiary);*/
 	}
+	li.triggers__entry {
+		list-style: none;
+		min-height: 2em;
+		display: grid;
+		grid-template-rows: minmax(0, 1fr);
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		justify-content: stretch;
+		align-items: center;
+		color: var(--tertiary);
+		margin: 0.5em;
+		padding: 0.5em;
+		border-radius: .25em;
+		border: 1px solid transparent;
+	}
+	li.triggers__entry.active {
+		border: 1px solid var(--tertiary);
+	}
+
 	/* */
 	nav {
 		display: grid;
