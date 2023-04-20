@@ -425,22 +425,25 @@
 												{/if}
 											</div>
 										{:else if isTriggerModule(trigger)}
-											<select bind:value={trigger.overlayUUID} on:change={refreshActions}>
-												{#each Object.entries($overlays) as [name, overlay]}
-													<option value={overlay.uuid}>{overlay.title}</option>
-												{/each}
-											</select>
-											{#if $overlays[trigger.overlayUUID]}
-												<select bind:value={trigger.moduleInstanceUUID} on:change={refreshActions}>
-													{#each $overlays[trigger.overlayUUID].modules as module}
-														{#if module.moduleUUID === trigger.moduleUUID}
-															<option value={module.uuid}>{module.title}</option>
-														{/if}
+											<ItemGroup label count={3}>
+												<select bind:value={trigger.overlayUUID} on:change={refreshActions}>
+													{#each Object.entries($overlays) as [name, overlay]}
+														<option value={overlay.uuid}>{overlay.title}</option>
 													{/each}
 												</select>
-												{#if $overlays[trigger.overlayUUID].modules.find(v=>v.uuid===trigger.moduleInstanceUUID)}
-													<ActionModuleTrigger trigger={trigger}></ActionModuleTrigger>
+												{#if $overlays[trigger.overlayUUID]}
+													<select bind:value={trigger.moduleInstanceUUID} on:change={refreshActions}>
+														{#each $overlays[trigger.overlayUUID].modules as module}
+															{#if module.moduleUUID === trigger.moduleUUID}
+																<option value={module.uuid}>{module.title}</option>
+															{/if}
+														{/each}
+													</select>
 												{/if}
+												<svelte:fragment slot='label'>{$_('actions.triggerTarget')}</svelte:fragment>
+											</ItemGroup>
+											{#if $overlays[trigger.overlayUUID]?.modules.find(v=>v.uuid===trigger.moduleInstanceUUID)}
+												<ActionModuleTrigger trigger={trigger}></ActionModuleTrigger>
 											{/if}
 										{/if}
 									</Section>
