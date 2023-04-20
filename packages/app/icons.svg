@@ -3,7 +3,7 @@
 
 <svg
    sodipodi:docname="icons.svg"
-   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20, custom)"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
    id="svg5"
    version="1.1"
    viewBox="0 0 4.4979165 4.4979165"
@@ -26,15 +26,17 @@
      showgrid="true"
      units="px"
      width="16px"
-     inkscape:zoom="32"
-     inkscape:cx="7.5"
-     inkscape:cy="7.1875"
+     inkscape:zoom="24.352941"
+     inkscape:cx="4.8864735"
+     inkscape:cy="7.1859904"
      inkscape:window-width="1920"
      inkscape:window-height="1007"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer21">
+     inkscape:current-layer="layer22"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#505050">
     <inkscape:grid
        type="xygrid"
        id="grid824"
@@ -505,7 +507,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer21"
-     inkscape:label="service">
+     inkscape:label="service"
+     style="display:none">
     <path
        style="fill:none;stroke:#000000;stroke-width:0.396875;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 0.39687498,2.7781249 H 1.1906249 V 4.1010415 H 0.39687498 V 2.7781249"
@@ -520,5 +523,26 @@
        cx="2.7781248"
        cy="1.190625"
        r="0.79374999" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer22"
+     inkscape:label="actions">
+    <path
+       sodipodi:type="star"
+       style="fill:none;stroke:#000000;stroke-width:0.396875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+       id="path1152"
+       inkscape:flatsided="false"
+       sodipodi:sides="7"
+       sodipodi:cx="2.2489581"
+       sodipodi:cy="2.2489581"
+       sodipodi:r1="1.8520832"
+       sodipodi:r2="0.64822912"
+       sodipodi:arg1="-1.5707963"
+       sodipodi:arg2="-1.1219973"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 2.2489582,0.3968749 2.5302142,1.6649239 3.6969751,1.0942032 2.8809348,2.1047136 4.0546057,2.6610854 2.755764,2.6531224 3.0525469,3.9176274 2.2489581,2.8971872 1.4453693,3.9176274 1.7421521,2.6531223 0.44331049,2.6610853 1.6169815,2.1047135 0.80094118,1.0942031 1.9677021,1.6649238 Z"
+       inkscape:transform-center-y="-0.055847172" />
   </g>
 </svg>

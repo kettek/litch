@@ -16,6 +16,7 @@
 		'settings': 0xe035,
 		'assets': 0xe036,
 		'service': 0xe037,
+		'action': 0xe038,
 		'stop': 0xe03a,
 		'start': 0xe03b,
 		'back': 0xe040,

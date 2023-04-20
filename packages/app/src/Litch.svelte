@@ -255,7 +255,7 @@
 				<Icon icon="service"></Icon>
 			</Button>
 			<Button primary on:click={toggleActions} title={$_('litch.openActions')}>
-				<Icon icon="actions"></Icon>actions
+				<Icon icon="action"></Icon>
 			</Button>
 			<Button primary disabled={serverStatus==='pending'} on:click={toggleServer} title={serverStatus==='on'?$_('litch.stopServer'):$_('litch.startServer')}>
 				<Icon icon={serverStatus==='on'?'stop':'start'}></Icon>
