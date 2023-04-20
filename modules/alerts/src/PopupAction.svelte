@@ -9,7 +9,7 @@
 
 </script>
 
-<main>
+<main draggable="true" on:dragstart|preventDefault|stopPropagation>
 	<ItemGroup label>
 		<input bind:value={data.message} on:change={refresh}/>
 		<svelte:fragment slot='label'>
