@@ -11,7 +11,7 @@
 	import { actions, addAction, refreshActions, removeAction, duplicateAction } from './stores/actions'
 	import { services } from './stores/services'
 	import ActionCondition from './ActionCondition.svelte'
-  import { ActionI, ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreTriggerModule, isTriggerCoreWait } from './interfaces/Action'
+  import { ActionI, ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreTriggerModule, isTriggerCoreWait, isTriggerModule } from './interfaces/Action'
   import AssetViewer from './components/AssetViewer.svelte'
   import AssetsCard from './AssetsCard.svelte'
   import { getAsset } from './assets'
@@ -132,6 +132,19 @@
 						trigger: {},
 					}
 				}
+			}
+		} else if (type.startsWith('module')) {
+			let parts = type.split('.')
+			let uuid = parts[1]
+			let id = types[1]
+			trigger = {
+				type: 'module',
+				moduleUUID: uuid,
+				triggerID: id,
+				fulltype: triggerType,
+				overlayUUID: '',
+				moduleInstanceUUID: '',
+				data: {},
 			}
 		}
 		if (trigger !== undefined) {
@@ -294,6 +307,13 @@
 						{#each TriggerCoreTypes as coreType}
 							<option value={'core:'+coreType}>{$_('actions.'+coreType)}</option>
 						{/each}
+						{#each Object.entries($modules) as [uuid, module]}
+							{#if module.triggerEvents?.actions}
+								{#each module.triggerEvents.actions as triggerAction}
+									<option value={`module.${module.uuid}:${triggerAction.id}`}>{module.title}: {triggerAction.title}</option>
+								{/each}
+							{/if}
+						{/each}
 					</select>
 					<Button tertiary on:click={()=>addNewTrigger()}>
 						<Icon icon="add"></Icon>
@@ -308,6 +328,8 @@
 									<ItemGroup label>
 										{#if isTriggerCore(trigger)}
 											{$_('actions.'+trigger.data.type)}
+										{:else if isTriggerModule(trigger)}
+											{$modules[trigger.moduleUUID]?.title}:{$modules[trigger.moduleUUID]?.triggerEvents?.actions.find(v=>v.id===trigger.triggerID)?.title}
 										{/if}
 									</ItemGroup>
 									<Section rounded>
@@ -341,28 +363,23 @@
 														{/each}
 													{/if}
 												</select>
-											{:else if isTriggerCoreTriggerModule(trigger.data)}
-												<select bind:value={trigger.data.overlay} on:change={refreshActions}>
-													{#each Object.entries($overlays) as [name, overlay]}
-														<option value={overlay.uuid}>{overlay.title}</option>
+											{/if}
+										{:else if isTriggerModule(trigger)}
+											<select bind:value={trigger.overlayUUID} on:change={refreshActions}>
+												{#each Object.entries($overlays) as [name, overlay]}
+													<option value={overlay.uuid}>{overlay.title}</option>
+												{/each}
+											</select>
+											{#if $overlays[trigger.overlayUUID]}
+												<select bind:value={trigger.moduleInstanceUUID} on:change={refreshActions}>
+													{#each $overlays[trigger.overlayUUID].modules as module}
+														{#if module.moduleUUID === trigger.moduleUUID}
+															<option value={module.uuid}>{module.title}</option>
+														{/if}
 													{/each}
 												</select>
-												{#if $overlays[trigger.data.overlay]}
-													<select bind:value={trigger.data.module} on:change={refreshActions}>
-														{#each $overlays[trigger.data.overlay].modules as module}
-															{#if $modules[module.moduleUUID].triggerEvents?.actions}
-																<option value={module.uuid}>{module.title}</option>
-															{/if}
-														{/each}
-													</select>
-													{#if $overlays[trigger.data.overlay].modules.find(v=>v.uuid===trigger.data.module)}
-														<select bind:value={trigger.data.id} on:change={refreshActions}>
-															{#each $modules[($overlays[trigger.data.overlay].modules.find(v=>v.uuid===trigger.data.module)).moduleUUID]?.triggerEvents?.actions as action}
-																<option value={action.id}>{action.title}</option>
-															{/each}
-														</select>
-														<ActionModuleTrigger data={trigger.data}></ActionModuleTrigger>
-													{/if}
+												{#if $overlays[trigger.overlayUUID].modules.find(v=>v.uuid===trigger.moduleInstanceUUID)}
+													<ActionModuleTrigger trigger={trigger}></ActionModuleTrigger>
 												{/if}
 											{/if}
 										{/if}

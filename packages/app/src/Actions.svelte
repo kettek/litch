@@ -4,7 +4,7 @@
 
 	import { actions } from "./stores/actions"
   import { getAsset } from "./assets";
-  import { ActionCoreHotkeyI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreTriggerModule, isTriggerCoreWait } from "./interfaces/Action";
+  import { ActionCoreHotkeyI, ActionTriggerModuleI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreTriggerModule, isTriggerCoreWait, isTriggerModule } from "./interfaces/Action";
   import { overlays, refreshOverlays } from "./stores/overlays"
   import { modules } from "./stores/modules"
   import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
@@ -42,6 +42,15 @@
 					console.log('publish', trigger.data.id, msg)
 					module.instanceChannel.publish('trigger.'+trigger.data.id, msg)
 				}
+			} else if (isTriggerModule(trigger)) {
+				let overlay = $overlays[trigger.overlayUUID]
+				if (!overlay) continue
+				let module = overlay.modules.find(v=>v.uuid===(trigger as ActionTriggerModuleI).moduleInstanceUUID)
+				if (!module) return
+				module.instanceChannel.publish('trigger.'+trigger.triggerID, {
+					trigger: trigger.data,
+					action: msg,
+				})
 			}
 		}
 	}

@@ -27,7 +27,7 @@ export function isActionCoreHotkey(o: any): o is ActionCoreHotkeyI {
 
 export type ActionI = ActionServiceI | ActionCoreHotkeyI
 
-export type ActionTriggerI = ActionTriggerCoreI
+export type ActionTriggerI = ActionTriggerCoreI | ActionTriggerModuleI
 
 export interface ActionTriggerCoreI {
 	type: 'core'
@@ -86,6 +86,20 @@ export const TriggerCoreTypes = [
 	'toggleModule',
 	'triggerModule',
 ]
+
+export interface ActionTriggerModuleI {
+	type: 'module'
+	moduleUUID: string
+	triggerID: string
+	fulltype: string
+	//
+	overlayUUID: string
+	moduleInstanceUUID: string
+	data: any
+}
+export function isTriggerModule(o: any): o is ActionTriggerModuleI {
+	return o.type === 'module'
+}
 
 export interface ActionEventsI {
 	conditions: ActionEventI[]
