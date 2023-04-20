@@ -36,6 +36,7 @@
 			{#if minimal}
 				<span>
 					<Button small on:click={play}>
+						{asset.name}
 						<Icon icon={'start'}></Icon>
 					</Button>
 				</span>
