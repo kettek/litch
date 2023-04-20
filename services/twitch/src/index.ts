@@ -30,11 +30,27 @@ export default {
 				id: "redeem",
 				ConditionComponent: RedeemCondition,
 				TitleComponent: RedeemTitle,
+				payload: {
+					"rewardID": "",
+					"rewardCost": "",
+					"rewardTitle": "",
+					"prompt": "",
+					"userID": "",
+					"userName": "",
+					"userDisplayName": "",
+				},
 			},
 			{
 				title: "Raid",
 				id: "raid",
 				ConditionComponent: RaidCondition,
+				payload: {
+					"userName": "",
+					"userDisplayName": "",
+					"viewerCount": "",
+					"data": "",
+					"message": "",
+				},
 			}
 		],
 	},

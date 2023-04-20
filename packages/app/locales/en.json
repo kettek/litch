@@ -93,7 +93,11 @@
 		"playSound": "Play a sound",
 		"wait": "Wait",
 		"toggleModule": "Toggle a module",
-		"triggerModule": "Module Trigger"
+		"triggerModule": "Module Trigger",
+		"triggerVariables": "Trigger Variables",
+		"variablesInfo": "These values can be used for variable substitution in triggers that can define messages.",
+		"variablesInfoExample": "So long and thanks for all the redeems, {userDisplayName}!",
+		"variableExample": "Example"
 	},
 	"settings": {
 		"title": "Settings",

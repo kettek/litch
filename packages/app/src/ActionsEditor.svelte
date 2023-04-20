@@ -25,6 +25,7 @@
   import ActionTitle from './ActionTitle.svelte';
   import { flip } from 'svelte/animate';
   import ActionModuleTrigger from './ActionModuleTrigger.svelte';
+  import ActionPayload from './ActionPayload.svelte';
 	
 	let actionSelect: HTMLSelectElement
 	let triggerSelects: HTMLSelectElement[] = []
@@ -280,7 +281,7 @@
 		{#if !selectedAction}
 			Select an action
 		{:else}
-			<section>
+			<section class='action'>
 				<DropList secondary>
 					<svelte:fragment slot='heading'>{$_('actions.settings')}</svelte:fragment>
 					<svelte:fragment slot='content'>
@@ -288,40 +289,40 @@
 							<input bind:value={selectedAction.title}/>
 							<svelte:fragment slot='label'>{$_('actions.actionTitle')}</svelte:fragment>
 						</ItemGroup>
-					</svelte:fragment>
-				</DropList>
-				<DropList secondary>
-					<svelte:fragment slot='heading'>{$_('actions.condition')}</svelte:fragment>
-					<svelte:fragment slot='content'>
 						{#if isActionService(selectedAction)}
 							{#if $services.find(v=>v.uuid===selectedAction.service)}
-								<ActionCondition service={$services.find(v=>v.uuid===selectedAction.service)} action={selectedAction}></ActionCondition>
+								{#key selectedActionUUID}
+									<ItemGroup label secondary>
+										<ActionCondition service={$services.find(v=>v.uuid===selectedAction.service)} action={selectedAction}></ActionCondition>
+										<svelte:fragment slot='label'>{$_('actions.condition')}</svelte:fragment>
+									</ItemGroup>
+								{/key}
 							{/if}
 						{:else if isActionCoreHotkey(selectedAction)}
 							<ActionHotkey bind:value={selectedAction.keys}></ActionHotkey>
 						{/if}
 					</svelte:fragment>
 				</DropList>
-				<ItemGroup label tertiary>
-					<select bind:value={triggerType}>
-						{#each TriggerCoreTypes as coreType}
-							<option value={'core:'+coreType}>{$_('actions.'+coreType)}</option>
-						{/each}
-						{#each Object.entries($modules) as [uuid, module]}
-							{#if module.triggerEvents?.actions}
-								{#each module.triggerEvents.actions as triggerAction}
-									<option value={`module.${module.uuid}:${triggerAction.id}`}>{module.title}: {triggerAction.title}</option>
-								{/each}
-							{/if}
-						{/each}
-					</select>
-					<Button tertiary on:click={()=>addNewTrigger()}>
-						<Icon icon="add"></Icon>
-					</Button>
-				</ItemGroup>
 				<DropList tertiary>
 					<svelte:fragment slot='heading'>{$_('actions.triggers')}</svelte:fragment>
 					<svelte:fragment slot='content'>
+						<ItemGroup label tertiary>
+							<select bind:value={triggerType}>
+								{#each TriggerCoreTypes as coreType}
+									<option value={'core:'+coreType}>{$_('actions.'+coreType)}</option>
+								{/each}
+								{#each Object.entries($modules) as [uuid, module]}
+									{#if module.triggerEvents?.actions}
+										{#each module.triggerEvents.actions as triggerAction}
+											<option value={`module.${module.uuid}:${triggerAction.id}`}>{module.title}: {triggerAction.title}</option>
+										{/each}
+									{/if}
+								{/each}
+							</select>
+							<Button tertiary on:click={()=>addNewTrigger()}>
+								<Icon icon="add"></Icon>
+							</Button>
+						</ItemGroup>
 						{#if selectedAction.triggers}
 							{#each selectedAction.triggers as trigger, index}
 								<section class='trigger'>
@@ -329,7 +330,7 @@
 										{#if isTriggerCore(trigger)}
 											{$_('actions.'+trigger.data.type)}
 										{:else if isTriggerModule(trigger)}
-											{$modules[trigger.moduleUUID]?.title}:{$modules[trigger.moduleUUID]?.triggerEvents?.actions.find(v=>v.id===trigger.triggerID)?.title}
+											{$modules[trigger.moduleUUID]?.title}: {$modules[trigger.moduleUUID]?.triggerEvents?.actions.find(v=>v.id===trigger.triggerID)?.title}
 										{/if}
 									</ItemGroup>
 									<Section rounded>
@@ -392,6 +393,7 @@
 						{/if}
 					</svelte:fragment>
 				</DropList>
+				<ActionPayload service={$services.find(v=>v.uuid===selectedAction.service)} action={selectedAction}></ActionPayload>
 			</section>
 		{/if}
 		{#if showMenu}
@@ -422,12 +424,8 @@
 		overflow: auto;
 	}
 	.action {
-		display: grid;
-		grid-template-columns: auto minmax(0, 1fr) auto;
-		align-items: start;
-	}
-	.action > * {
-		min-width: 0;
+		height: 100%;
+		overflow: auto;
 	}
 	.trigger {
 		display: grid;
@@ -458,6 +456,10 @@
 	}
 	li.actions__entry.active {
 		border: 1px solid var(--secondary);
+	}
+	div.condition__payload {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
 	}
 	/* */
 	nav {

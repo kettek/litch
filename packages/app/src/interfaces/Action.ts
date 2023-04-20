@@ -110,4 +110,5 @@ export interface ActionEventI {
 	id: any
 	ConditionComponent: SvelteComponent
 	TitleComponent?: SvelteComponent
+	payload?: Object
 }
