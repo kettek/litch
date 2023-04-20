@@ -161,7 +161,7 @@ async function startChatbot() {
 			console.log('onRaid', channel, user, raidInfo, msg)
 		}
 		context.publish('raid.start', {
-			user: String,
+			userName: user,
 			userDisplayName: raidInfo.displayName,
 			viewerCount: raidInfo.viewerCount,
 			date: msg.date,
@@ -173,7 +173,7 @@ async function startChatbot() {
 			console.log('onRaidCancel', channel, msg)
 		}
 		context.publish('raid.cancel', {
-			user: String,
+			userName: msg.userInfo.userName,
 			userDisplayName: msg.userInfo.displayName,
 			date: msg.date,
 			message: msg.message,
@@ -267,6 +267,8 @@ async function startPubsub() {
 	pubSubUser.onRedemption((message: PubSubRedemptionMessage) => {
 		context.publish('channelPoints.redemption', {
 			rewardID: message.rewardId,
+			rewardCost: message.rewardCost,
+			rewardTitle: message.rewardTitle,
 			prompt: message.rewardPrompt,
 			userID: message.userId,
 			userName: message.userName,
