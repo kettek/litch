@@ -14,7 +14,7 @@ export default {
 			x: 0, y: 0, width: 640, height: 360,
 		},
 		settings: {
-			example: '',
+			example: '{Big John} donated {Big Things}',
 			style: {
 				focusColor: '#ff0000',
 				textColor: '#ffffff',

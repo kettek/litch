@@ -31,9 +31,9 @@
 	}
 </script>
 
-<div style="{settings.style.css}; color: {settings.style.textColor}; -webkit-text-stroke: .01em {settings.style.outlineColor}; font-size: {settings.style.size};">
+<div style="{settings.style.css}; color: {settings.style.textColor}; --outlineColor: {settings.style.outlineColor}; font-size: {settings.style.size}; --focusColor: {settings.style.focusColor}">
 	{#each alerts as alert (alert.id)}
-		<span animate:flip transition:fade>{alert.message}</span>
+		<span animate:flip transition:fade>{@html alert.message}</span>
 	{/each}
 </div>
 
@@ -46,5 +46,9 @@
 		display: grid;
 		align-items: center;
 		justify-content: center;
+		text-shadow: 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor);
+	}
+	div :global(strong) {
+		color: var(--focusColor);
 	}
 </style>

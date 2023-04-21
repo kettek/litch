@@ -6,6 +6,9 @@
 	export let settings: SettingsInterface
 	export let assets: AssetManager
 
+	let example: string
+	$: example = settings.example.replaceAll('{', '<strong>').replaceAll('}', '</strong>')
+
 	export let update: (value: any) => void
 
 	export let channel: ModuleChannel
@@ -15,8 +18,8 @@
 	}
 </script>
 
-<div style="{settings.style.css}; color: {settings.style.textColor}; -webkit-text-stroke: .01em {settings.style.outlineColor}; font-size: {settings.style.size};">
-	<span>{settings.example}</span>
+<div style="{settings.style.css}; color: {settings.style.textColor}; --outlineColor: {settings.style.outlineColor}; font-size: {settings.style.size}; --focusColor: {settings.style.focusColor}">
+	<span>{@html example}</span>
 </div>
 
 <style>
@@ -28,5 +31,9 @@
 		display: grid;
 		align-items: center;
 		justify-content: center;
+		text-shadow: 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor);
+	}
+	div :global(strong) {
+		color: var(--focusColor);
 	}
 </style>

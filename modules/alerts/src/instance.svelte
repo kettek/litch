@@ -8,7 +8,7 @@
 	function triggerPopup(trigger: PopupTriggerDataI, action: Object) {
 		let msg = trigger.message
 		for (const prop in action) {
-			msg = msg.replace(new RegExp('{'+prop+'}', 'g'), action[prop])
+			msg = msg.replace(new RegExp('{'+prop+'}', 'g'), '<strong>'+action[prop]+'</strong>')
 		}
 		channel.publish('alert', msg)
 	}
