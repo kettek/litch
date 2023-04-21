@@ -4,6 +4,7 @@ import PreviewComponent from './preview.svelte'
 import InstanceComponent from './instance.svelte'
 import PopupAction from './PopupAction.svelte'
 import en from '../locales/en.json'
+import { defaultExample, defaultStyle } from './Settings'
 
 export default {
 	title: "Alerts",
@@ -14,13 +15,8 @@ export default {
 			x: 0, y: 0, width: 640, height: 360,
 		},
 		settings: {
-			example: '{Big John} donated {Big Things}',
-			style: {
-				focusColor: '#ff0000',
-				textColor: '#ffffff',
-				outlineColor: '#000000',
-				css: '',
-			},
+			example: defaultExample,
+			style: defaultStyle,
 		},
 	},
 	triggerEvents: {
