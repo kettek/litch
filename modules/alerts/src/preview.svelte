@@ -8,6 +8,7 @@
 	export let assets: AssetManager
 	export let update: (value: any) => void
 	export let channel: ModuleChannel
+	export let zoom: number = 1.0
 
 	// Ensure settings are upgraded.
 	let [changed, settings_] = upgrade(settings)
@@ -15,7 +16,6 @@
 		settings = settings_
 		update(settings_)
 	}
-	console.log('wtf', changed, settings_, settings)
 
 	let example: string
 	$: example = settings.example.replaceAll('{', '<strong>').replaceAll('}', '</strong>')
@@ -25,7 +25,7 @@
 	}
 </script>
 
-<div style="{settings.style.css}; color: {settings.style.textColor}; --outlineColor: {settings.style.outlineColor}; font-size: {settings.style.size}; --focusColor: {settings.style.focusColor}">
+<div style="transform: scale({zoom}); {settings.style.css}; color: {settings.style.textColor}; --outlineColor: {settings.style.outlineColor}; font-size: {settings.style.size}; --focusColor: {settings.style.focusColor}">
 	<span>{@html example}</span>
 </div>
 
