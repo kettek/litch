@@ -40,6 +40,7 @@ export function refreshActions() {
 
 function deserializeActions() {
 	let aa = get(actions)
+	aa = aa.filter(v=>v)
 	// TODO: Optional deserialization
 	actions.set(aa)
 }
