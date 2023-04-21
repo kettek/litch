@@ -1,5 +1,11 @@
 {
 	"popup": {
 		"message": "Message"
-	}
+	},
+	"example": "Example Text",
+	"focusColor": "Focus Color",
+	"textColor": "Text Color",
+	"outlineColor": "Outline Color",
+	"size": "Font Size",
+	"css": "CSS"
 }

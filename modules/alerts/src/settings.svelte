@@ -13,14 +13,13 @@
 
 	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import { onMount } from 'svelte'
+  import ItemGroup from '@kettek/litch-app/src/components/ItemGroup.svelte';
 
 	export let format: Format
 
 	export let channel: ModuleChannel
 
-	export let settings: SettingsInterface = {
-		styles: [],
-	}
+	export let settings: SettingsInterface
 
 	export let assets: AssetManager
 
@@ -30,27 +29,6 @@
 		settings = { ...settings }
 	}
 	
-	let selectedStyleIndex: number = 0
-	function addStyle() {
-		settings.styles.push({
-			name: `style ${settings.styles.length+1}`,
-			outlineColor: '#ff00ff',
-			textColor: '#ffffff',
-			focusColor: '#ffff00',
-			css: '',
-		})
-		selectedStyleIndex = settings.styles.length-1
-		refresh()
-	}
-	
-	function removeStyle(index: number) {
-		settings.styles.splice(index, 1)
-		if (selectedStyleIndex > settings.styles.length-1) {
-			selectedStyleIndex--
-		}
-		refresh()
-	}
-
 	onMount(() => {
 		return () => {
 			channel.receive = null
@@ -59,27 +37,34 @@
 </script>
 
 <main>
-	<TabBar>
-		{#each settings.styles as style, index}
-			<Tab tertiary selected={index===selectedStyleIndex} on:click={()=>selectedStyleIndex=index}>
-				{style.name||index}
-			</Tab>
-		{/each}
-		<svelte:fragment slot='controls'>
-			<Button tertiary small on:click={addStyle}>
-				<Icon icon='add'></Icon>
-			</Button>
-		</svelte:fragment>
-	</TabBar>
-	{#if settings.styles[selectedStyleIndex]}
-		<ItemBar alt round='top'>
-			<Button dangerous on:click={()=>removeStyle(selectedStyleIndex)} title={format('removeStyle')}>
-				<Icon icon='delete'></Icon>
-			</Button>
-		</ItemBar>
-		<Section alt round='bottom' padded>
-		</Section>
-	{/if}
+	<Section alt padded>
+		<ItemGroup label>
+			<input bind:value={settings.example} on:change={refresh}>
+			<svelte:fragment slot='label'>{format('example')}</svelte:fragment>
+		</ItemGroup>
+	</Section>
+	<Section alt padded>
+		<ItemGroup label>
+			<input type='color' bind:value={settings.style.focusColor} on:change={refresh}>
+			<svelte:fragment slot='label'>{format('focusColor')}</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
+			<input type='color' bind:value={settings.style.textColor} on:change={refresh}>
+			<svelte:fragment slot='label'>{format('textColor')}</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
+			<input type='color' bind:value={settings.style.outlineColor} on:change={refresh}>
+			<svelte:fragment slot='label'>{format('outlineColor')}</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
+			<input type='size' bind:value={settings.style.size} on:change={refresh}>
+			<svelte:fragment slot='label'>{format('size')}</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
+			<textarea bind:value={settings.style.css} on:change={refresh}></textarea>
+			<svelte:fragment slot='label'>{format('css')}</svelte:fragment>
+		</ItemGroup>
+	</Section>
 </main>
 
 <style>

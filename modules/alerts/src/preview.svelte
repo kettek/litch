@@ -3,7 +3,7 @@
 	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
 	import type { SettingsInterface } from './Settings'
 
-	export let settings: SettingsInterface = {}
+	export let settings: SettingsInterface
 	export let assets: AssetManager
 
 	export let update: (value: any) => void
@@ -15,7 +15,8 @@
 	}
 </script>
 
-<div>
+<div style="{settings.style.css}; color: {settings.style.textColor}; -webkit-text-stroke: .01em {settings.style.outlineColor}; font-size: {settings.style.size};">
+	<span>{settings.example}</span>
 </div>
 
 <style>
@@ -24,5 +25,8 @@
 		width: 100%;
 		height: 100%;
 		overflow: hidden;
+		display: grid;
+		align-items: center;
+		justify-content: center;
 	}
 </style>

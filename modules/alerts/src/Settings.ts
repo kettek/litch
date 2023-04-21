@@ -1,9 +1,10 @@
 export interface SettingsInterface {
-	styles: Style[]
+	example: string
+	style: Style
 }
 
 export interface Style {
-	name: string
+	size: number
 	focusColor: string
 	textColor: string
 	outlineColor: string

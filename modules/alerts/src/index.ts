@@ -14,7 +14,13 @@ export default {
 			x: 0, y: 0, width: 640, height: 360,
 		},
 		settings: {
-			styles: [],
+			example: '',
+			style: {
+				focusColor: '#ff0000',
+				textColor: '#ffffff',
+				outlineColor: '#000000',
+				css: '',
+			},
 		},
 	},
 	triggerEvents: {
