@@ -26,7 +26,7 @@
 			}]
 			setTimeout(() => {
 				alerts = alerts.filter(v=>v.id!==alertID)
-			}, 100*message.length)
+			}, Math.min(2000, 50*message.length))
 		}
 	}
 </script>
