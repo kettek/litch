@@ -13,6 +13,7 @@ function getLastWordPosition(word: Word): number {
 	return word.end
 }
 
+const notPartOfStyle = [' ', '{', '}', '!', ',']
 function buildWord(str: string, start: number): Word {
 	let word: Word = {
 	start: start+1,
@@ -32,7 +33,7 @@ function buildWord(str: string, start: number): Word {
 			word.fullEnd = j
 			if (j+1 !== str.length && str[j+1] === '.') {
 				let k = j+1
-				for (; k < str.length && str[k] !== ' ' && str[k] !== '{' && str[k] !== '}'; k++);
+				for (; k < str.length && !notPartOfStyle.includes(str[k]); k++);
 					word.style = str.substring(j+2, k)
 					word.fullEnd = k-1
 				}
@@ -43,7 +44,7 @@ function buildWord(str: string, start: number): Word {
 }
 		
 function wordToHTML(source: string, word: Word): string {
-	let html = '<strong' + (word.style?` class='${word.style}'>`:'>')
+	let html = '<strong' + (word.style?` class='alerts-${word.style}'>`:'>')
 	if (word.children.length === 0) {
 		html += source.substring(word.start, word.end).split('').map(v=>'<span>'+v+'</span>').join('')
 	} else {
