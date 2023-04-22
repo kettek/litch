@@ -22,11 +22,11 @@
 			let alertID = id++
 			alerts = [...alerts, {
 				id: alertID,
-				message: message,
+				message: message.message,
 			}]
 			setTimeout(() => {
 				alerts = alerts.filter(v=>v.id!==alertID)
-			}, Math.min(2000, 50*message.length))
+			}, Math.max(2000, message.lifetime))
 		}
 	}
 </script>

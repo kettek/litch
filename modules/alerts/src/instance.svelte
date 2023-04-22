@@ -11,7 +11,10 @@
 		for (const prop in action) {
 			msg = msg.replace(new RegExp('{'+prop+'}', 'g'), '{'+action[prop]+'}')
 		}
-		channel.publish('alert', parseToHTML(msg))
+		channel.publish('alert', {
+			message: parseToHTML(msg),
+			lifetime: msg.length*70,
+		})
 	}
 
 	// Republish the static server port on new live view.
