@@ -3,17 +3,18 @@
 	import Tab from '@kettek/litch-app/src/components/Tab.svelte'
 	import Button from '@kettek/litch-app/src/components/Button.svelte'
 	import Icon from '@kettek/litch-app/src/components/Icon.svelte'
+  import ItemGroup from '@kettek/litch-app/src/components/ItemGroup.svelte'
 	import ItemBar from '@kettek/litch-app/src/components/ItemBar.svelte'
 	import Section from '@kettek/litch-app/src/components/Section.svelte'
 
 	import type { SettingsInterface } from './Settings'
+  import { parseToHTML } from './parser'
 
 	import type { AssetManager, AssetResult } from '@kettek/litch-app/src/interfaces/Asset'
 	import type { Format } from '@kettek/litch-app/src/interfaces/Format'
 
 	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import { onMount } from 'svelte'
-  import ItemGroup from '@kettek/litch-app/src/components/ItemGroup.svelte';
 
 	export let format: Format
 
@@ -27,6 +28,13 @@
 	
 	function refresh() {
 		settings = { ...settings }
+	}
+
+	function test() {
+		channel.publish('alert', {
+			message: parseToHTML(settings.example),
+			lifetime: settings.example.length*70,
+		})
 	}
 	
 	onMount(() => {
@@ -64,6 +72,9 @@
 			<textarea bind:value={settings.style.css} on:change={refresh}></textarea>
 			<svelte:fragment slot='label'>{format('css')}</svelte:fragment>
 		</ItemGroup>
+		<Button on:click={test}>
+			{format('test')}
+		</Button>
 	</Section>
 </main>
 
