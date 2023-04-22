@@ -2,15 +2,16 @@
 	import { onMount } from "svelte"
 	import type { ModuleChannel } from "@kettek/litch-app/src/interfaces/ModuleInstance"
 	import type { PopupTriggerDataI } from "./interfaces"
+	import { parseToHTML } from './parser'
 
 	export let channel: ModuleChannel
 
 	function triggerPopup(trigger: PopupTriggerDataI, action: Object) {
 		let msg = trigger.message
 		for (const prop in action) {
-			msg = msg.replace(new RegExp('{'+prop+'}', 'g'), '<strong>'+action[prop]+'</strong>')
+			msg = msg.replace(new RegExp('{'+prop+'}', 'g'), '{'+action[prop]+'}')
 		}
-		channel.publish('alert', msg)
+		channel.publish('alert', parseToHTML(msg))
 	}
 
 	// Republish the static server port on new live view.

@@ -3,6 +3,7 @@
 	import type { AssetManager } from '@kettek/litch-app/src/interfaces/Asset'
 	import type { SettingsInterface } from './Settings'
 	import { upgrade } from './upgrade'
+	import { parseToHTML } from './parser'
 
 	export let settings: SettingsInterface
 	export let assets: AssetManager
@@ -18,7 +19,7 @@
 	}
 
 	let example: string
-	$: example = settings.example.replaceAll('{', '<strong>').replaceAll('}', '</strong>')
+	$: example = parseToHTML(settings.example)
 
 	channel.receive = async (msg) => {
 		//
