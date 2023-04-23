@@ -17,4 +17,4 @@ export const defaultStyle: Style = {
 	css: '',
 }
 
-export const defaultExample: string = '{Big John} donated {Big Things}'
+export const defaultExample: string = '{Big John}.rainbow {donated}#purple {Big Things}.wiggle#pink'
