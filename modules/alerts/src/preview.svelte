@@ -26,7 +26,7 @@
 	}
 </script>
 
-<div style="transform: scale({zoom}); {settings.style.css}; color: {settings.style.textColor}; --outlineColor: {settings.style.outlineColor}; font-size: {settings.style.size}; --focusColor: {settings.style.focusColor}">
+<div style="transform: scale({zoom}); {settings.style.css}; color: {settings.style.textColor}; --outlineColor: {settings.style.outlineColor}; font-size: {settings.style.size};">
 	<span>{@html example}</span>
 </div>
 
@@ -42,6 +42,6 @@
 		text-shadow: 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor);
 	}
 	div :global(strong) {
-		color: var(--focusColor);
+		display: inline-block;
 	}
 </style>

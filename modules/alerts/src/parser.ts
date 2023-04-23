@@ -3,6 +3,7 @@ type Word = {
 	end: number
 	fullEnd: number
 	style: string
+	color: string
 	children: Word[]
 }
 
@@ -13,13 +14,15 @@ function getLastWordPosition(word: Word): number {
 	return word.end
 }
 
-const notPartOfStyle = [' ', '{', '}', '!', ',']
+const notPartOfStyle = [' ', '{', '}', '!', ',', '#']
+const notPartOfColor = [' ', '{', '}', '!', ',']
 function buildWord(str: string, start: number): Word {
 	let word: Word = {
 	start: start+1,
 		end: start,
 		fullEnd: start,
 		style: '',
+		color: '',
 		children: [],
 	}
 	let j = start+1
@@ -34,17 +37,34 @@ function buildWord(str: string, start: number): Word {
 			if (j+1 !== str.length && str[j+1] === '.') {
 				let k = j+1
 				for (; k < str.length && !notPartOfStyle.includes(str[k]); k++);
-					word.style = str.substring(j+2, k)
+				word.style = str.substring(j+2, k)
+				word.fullEnd = k-1
+				j = k-1
+				if (k < str.length && str[k] === '#') {
+					for (; k < str.length && !notPartOfColor.includes(str[k]); k++);
+					word.color = str.substring(j+2, k)
 					word.fullEnd = k-1
 				}
 				break
+			} else if (j+1 !== str.length && str[j+1] === '#') {
+				let k = j+1
+				for (; k < str.length && !notPartOfColor.includes(str[k]); k++);
+				word.color = str.substring(j+2, k)
+				word.fullEnd = k-1
+				break
 			}
 		}
+	}
 	return word
+}
+
+function getColor(c: string): string {
+	return (c.split('').filter(v=>['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'].includes(v)).length === c.length) ? '#'+c : c
 }
 		
 function wordToHTML(source: string, word: Word): string {
-	let html = '<strong' + (word.style?` class='alerts-${word.style}'>`:'>')
+	let html = '<strong' + (word.color?` style='color: ${getColor(word.color)}'`:'') + (word.style?` class='alerts-${word.style}'`:'') + '>'
+	console.log(html)
 	if (word.children.length === 0) {
 		html += source.substring(word.start, word.end).split('').map(v=>'<span>'+v+'</span>').join('')
 	} else {

@@ -53,10 +53,6 @@
 	</Section>
 	<Section alt padded>
 		<ItemGroup label>
-			<input type='color' bind:value={settings.style.focusColor} on:change={refresh}>
-			<svelte:fragment slot='label'>{format('focusColor')}</svelte:fragment>
-		</ItemGroup>
-		<ItemGroup label>
 			<input type='color' bind:value={settings.style.textColor} on:change={refresh}>
 			<svelte:fragment slot='label'>{format('textColor')}</svelte:fragment>
 		</ItemGroup>

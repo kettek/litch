@@ -31,7 +31,7 @@
 	}
 </script>
 
-<div style="{settings.style.css}; color: {settings.style.textColor}; --outlineColor: {settings.style.outlineColor}; font-size: {settings.style.size}; --focusColor: {settings.style.focusColor}">
+<div style="{settings.style.css}; color: {settings.style.textColor}; --outlineColor: {settings.style.outlineColor}; font-size: {settings.style.size};">
 	{#each alerts as alert (alert.id)}
 		<span animate:flip transition:fade>{@html alert.message}</span>
 	{/each}
@@ -50,7 +50,6 @@
 	}
 	div :global(strong) {
 		display: inline-block;
-		color: var(--focusColor);
 	}
 	div :global(strong.alerts-rainbow) {
 		text-shadow: none;
