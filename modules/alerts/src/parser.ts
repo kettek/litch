@@ -15,7 +15,7 @@ function getLastWordPosition(word: Word): number {
 }
 
 const notPartOfStyle = [' ', '{', '}', '!', ',', '#']
-const notPartOfColor = [' ', '{', '}', '!', ',']
+const notPartOfColor = [' ', '{', '}', '!', ',', '.']
 function buildWord(str: string, start: number): Word {
 	let word: Word = {
 	start: start+1,
@@ -51,6 +51,12 @@ function buildWord(str: string, start: number): Word {
 				for (; k < str.length && !notPartOfColor.includes(str[k]); k++);
 				word.color = str.substring(j+2, k)
 				word.fullEnd = k-1
+				j = k-1
+				if (k < str.length && str[k] === '.') {
+					for (; k < str.length && !notPartOfStyle.includes(str[k]); k++);
+					word.style = str.substring(j+2, k)
+					word.fullEnd = k-1
+				}
 				break
 			}
 		}
