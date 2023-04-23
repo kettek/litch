@@ -88,7 +88,76 @@
 		animation: alertsWiggle 0.4s linear infinite;
 		animation-delay: -0.4s;
 	}
-
+	div :global(strong.alerts-card span) {
+		position: relative;
+		background: white;
+		border: .05em solid black;
+		margin: 0.1em;
+		border-radius: 0.1em;
+		min-width: 1em;
+		text-align: center;
+	}
+	div :global(strong.alerts-card span::before) {
+		position: absolute;
+		top: -0.2em;
+		left: 0.1em;
+		color: black;
+		font-size: 0.3em;
+	}
+	div :global(strong.alerts-card span::after) {
+		position: absolute;
+		bottom: -0.2em;
+		right: 0.1em;
+		color: black;
+		font-size: 0.3em;
+	}
+	div :global(strong.alerts-card span:nth-child(4n)::before), div :global(strong.alerts-card span:nth-child(4n)::after) {
+		content: '♠';
+	}
+	div :global(strong.alerts-card span:nth-child(4n+1)::before), div :global(strong.alerts-card span:nth-child(4n+1)::after) {
+		content: '♥';
+		color: red;
+	}
+	div :global(strong.alerts-card span:nth-child(4n+2)::before), div :global(strong.alerts-card span:nth-child(4n+2)::after) {
+		content: '♣';
+	}
+	div :global(strong.alerts-card span:nth-child(4n+3)::before), div :global(strong.alerts-card span:nth-child(4n+3)::after) {
+		content: '♦';
+		color: red;
+	}
+	div :global(strong.alerts-flip span) {
+		animation: alertsFlip 2s linear infinite;
+	}
+	div :global(strong.alerts-flip span:nth-child(10n)) {
+		animation-delay: 0s;
+	}
+	div :global(strong.alerts-flip span:nth-child(10n+1)) {
+		animation-delay: 0.25s;
+	}
+	div :global(strong.alerts-flip span:nth-child(10n+2)) {
+		animation-delay: 0.5s;
+	}
+	div :global(strong.alerts-flip span:nth-child(10n+3)) {
+		animation-delay: 0.75s;
+	}
+	div :global(strong.alerts-flip span:nth-child(10n+4)) {
+		animation-delay: 1s;
+	}
+	div :global(strong.alerts-flip span:nth-child(10n+5)) {
+		animation-delay: 1.25s;
+	}
+	div :global(strong.alerts-flip span:nth-child(10n+6)) {
+		animation-delay: 1.5s;
+	}
+	div :global(strong.alerts-flip span:nth-child(10n+7)) {
+		animation-delay: 1.75s;
+	}
+	div :global(strong.alerts-flip span:nth-child(10n+8)) {
+		animation-delay: 2s;
+	}
+	div :global(strong.alerts-flip span:nth-child(10n+9)) {
+		animation-delay: 2.25s;
+	}
 
 	@keyframes -global-alertsRainbowAnimation {
 		0% {
@@ -145,6 +214,21 @@
 		}
 		100% {
 			transform: translateX(0) rotate(0);
+		}
+	}
+
+	@keyframes -global-alertsFlip {
+		0% {
+			transform: scaleY(1);
+		}
+		25% {
+			transform: scaleY(-1);
+		}
+		50% {
+			transform: scaleY(1);
+		}
+		100% {
+			transform: scaleY(1);
 		}
 	}
 
