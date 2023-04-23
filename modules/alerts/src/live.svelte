@@ -31,7 +31,7 @@
 	}
 </script>
 
-<div style="{settings.style.css}; color: {settings.style.textColor}; --outlineColor: {settings.style.outlineColor}; font-size: {settings.style.size};">
+<div class:outlined={settings.style.outline} style="{settings.style.css}; color: {settings.style.textColor}; --outlineColor: {settings.style.outlineColor}; font-size: {settings.style.size};">
 	{#each alerts as alert (alert.id)}
 		<span animate:flip transition:fade>{@html alert.message}</span>
 	{/each}
@@ -46,6 +46,8 @@
 		display: grid;
 		align-items: center;
 		justify-content: center;
+	}
+	div.outlined {
 		text-shadow: 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor), 0 0 2px var(--outlineColor);
 	}
 	div :global(strong) {

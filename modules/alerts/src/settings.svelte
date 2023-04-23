@@ -56,8 +56,9 @@
 			<input type='color' bind:value={settings.style.textColor} on:change={refresh}>
 			<svelte:fragment slot='label'>{format('textColor')}</svelte:fragment>
 		</ItemGroup>
-		<ItemGroup label>
+		<ItemGroup count={3} label>
 			<input type='color' bind:value={settings.style.outlineColor} on:change={refresh}>
+			<input type='checkbox' bind:checked={settings.style.outline} on:change={refresh}>
 			<svelte:fragment slot='label'>{format('outlineColor')}</svelte:fragment>
 		</ItemGroup>
 		<ItemGroup label>
