@@ -69,7 +69,7 @@ function getColor(c: string): string {
 }
 		
 function wordToHTML(source: string, word: Word): string {
-	let html = '<strong' + (word.color?` style='color: ${getColor(word.color)}'`:'') + (word.style?` class='alerts-${word.style}'`:'') + '>'
+	let html = '<strong' + (word.color?` style='color: ${getColor(word.color)}'`:'') + (word.style?" class='"+word.style.split('.').map(v=>'alerts-'+v).join(' ')+"'":'') + '>'
 	if (word.children.length === 0) {
 		html += source.substring(word.start, word.end).split('').map(v=>'<span>'+v+'</span>').join('')
 	} else {
