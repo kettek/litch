@@ -4,7 +4,7 @@
 
 	import { actions } from "./stores/actions"
   import { getAsset } from "./assets";
-  import { ActionCoreHotkeyI, ActionTriggerModuleI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreTriggerModule, isTriggerCoreWait, isTriggerModule } from "./interfaces/Action";
+  import { ActionCoreHotkeyI, ActionTriggerModuleI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreWait, isTriggerModule } from "./interfaces/Action";
   import { overlays, refreshOverlays } from "./stores/overlays"
   import { modules } from "./stores/modules"
   import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
@@ -31,16 +31,6 @@
 						module.active = false
 					}
 					refreshOverlays()
-				} else if (isTriggerCoreTriggerModule(trigger.data)) {
-					let moduleUUID = trigger.data.module
-					let overlay = $overlays[trigger.data.overlay]
-					if (!overlay) continue
-					let module = overlay.modules.find(v=>v.uuid===moduleUUID)
-					if (!module) return
-					let realModule = $modules[module.moduleUUID]
-					if (!realModule) return
-					console.log('publish', trigger.data.id, msg)
-					module.instanceChannel.publish('trigger.'+trigger.data.id, msg)
 				}
 			} else if (isTriggerModule(trigger)) {
 				let overlay = $overlays[trigger.overlayUUID]

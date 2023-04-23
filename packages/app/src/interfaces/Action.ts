@@ -38,7 +38,7 @@ export function isTriggerCore(o: any): o is ActionTriggerCoreI {
 	return o.type === 'core'
 }
 
-export type ActionTriggerCoreTypes = ActionTriggerCoreSoundI | ActionTriggerCoreWaitI | ActionTriggerCoreToggleModuleI | ActionTriggerCoreTriggerModuleI
+export type ActionTriggerCoreTypes = ActionTriggerCoreSoundI | ActionTriggerCoreWaitI | ActionTriggerCoreToggleModuleI
 
 export interface ActionTriggerCoreToggleModuleI {
 	type: 'toggleModule'
@@ -48,17 +48,6 @@ export interface ActionTriggerCoreToggleModuleI {
 }
 export function isTriggerCoreToggleModule(o: any): o is ActionTriggerCoreToggleModuleI {
 	return o.type === 'toggleModule'
-}
-
-export interface ActionTriggerCoreTriggerModuleI {
-	type: 'triggerModule'
-	overlay: string
-	module: string
-	id: string
-	trigger: any
-}
-export function isTriggerCoreTriggerModule(o: any): o is ActionTriggerCoreTriggerModuleI {
-	return o.type === 'triggerModule'
 }
 
 export interface ActionTriggerCoreSoundI {
@@ -84,7 +73,6 @@ export const TriggerCoreTypes = [
 	'playSound',
 	'wait',
 	'toggleModule',
-	'triggerModule',
 ]
 
 export interface ActionTriggerModuleI {

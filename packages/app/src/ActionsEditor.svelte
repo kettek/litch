@@ -11,7 +11,7 @@
 	import { actions, addAction, refreshActions, removeAction, duplicateAction } from './stores/actions'
 	import { services } from './stores/services'
 	import ActionCondition from './ActionCondition.svelte'
-  import { ActionI, ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreTriggerModule, isTriggerCoreWait, isTriggerModule } from './interfaces/Action'
+  import { ActionI, ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreWait, isTriggerModule } from './interfaces/Action'
   import AssetViewer from './components/AssetViewer.svelte'
   import AssetsCard from './AssetsCard.svelte'
   import { getAsset } from './assets'
@@ -119,18 +119,6 @@
 						act: 'enable',
 						overlay: '',
 						module: '',
-					}
-				}
-			} else if (id === 'triggerModule') {
-				trigger = {
-					type: 'core',
-					fulltype: triggerType,
-					data: {
-						type: 'triggerModule',
-						overlay: '',
-						module: '',
-						id: '',
-						trigger: {},
 					}
 				}
 			}
