@@ -26,5 +26,8 @@
 		"randomRotationRate": "Rotation Random Rate (min, max)",
 		"reloadRequired": "Changing the following options require a reload.",
 		"randomizationInformation": "Random rates are percentages applied every update."
+	},
+	"randomizeAction": {
+		"groupIndex": "Group Index"
 	}
 }

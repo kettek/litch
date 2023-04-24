@@ -3,6 +3,7 @@ import LiveComponent from './live.svelte'
 import PreviewComponent from './preview.svelte'
 import { defaultGroup } from './SettingsI'
 import en from '../locales/en.json'
+import RandomizeAction from './RandomizeAction.svelte'
 
 export default {
 	title: "Snow",
@@ -21,6 +22,15 @@ export default {
 				Y: [-10, 110],
 			}
 		},
+	},
+	triggerEvents: {
+		actions: [
+			{
+				title: "Randomize",
+				id: "randomize",
+				ActionComponent: RandomizeAction,
+			}
+		]
 	},
 	settingsComponent: SettingsComponent,
 	liveComponent: LiveComponent,
