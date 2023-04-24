@@ -54,6 +54,7 @@
 	"collections": {
 		"title": "Collections",
 		"name": "Name",
+		"selectACollection": "Select a Collection",
 		"selectAnAsset": "Select an Asset",
 		"selectOneOrMoreAssets": "Select one or more assets",
 		"selectedAsset": "Selected Asset",

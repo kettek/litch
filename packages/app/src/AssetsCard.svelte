@@ -52,7 +52,13 @@
 </script>
 
 <Card secondary on:close doClose>
-	<svelte:fragment slot='title'>{$_('collections.selectAnAsset')}</svelte:fragment>
+	<svelte:fragment slot='title'>
+		{#if collectionsOnly}
+			{$_('collections.selectACollection')}
+		{:else}
+			{$_('collections.selectAnAsset')}
+		{/if}
+	</svelte:fragment>
 	<svelte:fragment slot='content'>
 		<main>
 			<section>
