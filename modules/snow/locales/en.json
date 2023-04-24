@@ -28,6 +28,7 @@
 		"randomizationInformation": "Random rates are percentages applied every update."
 	},
 	"randomizeAction": {
-		"groupIndex": "Group Index"
+		"groupIndex": "Group Index",
+		"collection": "Collection"
 	}
 }

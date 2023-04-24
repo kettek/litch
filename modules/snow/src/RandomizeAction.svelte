@@ -25,8 +25,9 @@
 			multiple: true,
 			collectionsOnly: true,
 		})
-		if (results.length === 0) return
+		if (!results || results.length === 0) return
 		data.targetCollection = results[0].collection
+		refresh()
 	}
 	
 	function selectItem(e: Event & { currentTarget: EventTarget & HTMLSelectElement }) {
@@ -51,10 +52,13 @@
 		{#if settings.groups[data.groupIndex].sourceType === 'emoji'}
 			TODO: modify emoji
 		{:else if settings.groups[data.groupIndex].sourceType === 'asset'}
-			{assets.collectionName(data.targetCollection)}
-			<Button title={format('openAsset')} tertiary on:click={openCollectionDialog}>
-				<Icon icon='open'></Icon>
-			</Button>
+			<ItemGroup count={3} label>
+				{assets.collectionName(data.targetCollection)}
+				<Button title={format('openAsset')} tertiary on:click={openCollectionDialog}>
+					<Icon icon='open'></Icon>
+				</Button>
+				<svelte:fragment slot='label'>{format('randomizeAction.collection')}</svelte:fragment>
+			</ItemGroup>
 		{/if}
 	{/if}
 </main>
