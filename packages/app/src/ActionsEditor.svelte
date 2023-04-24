@@ -146,6 +146,11 @@
 		selectedAction.triggers.splice(index, 1)
 		refreshActions()
 	}
+	function duplicateActionTrigger(index: number) {
+		if (!selectedAction) return
+		selectedAction.triggers.splice(index, 0, JSON.parse(JSON.stringify(selectedAction.triggers[index])))
+		refreshActions()
+	}
 	
 	let hoveringActionUUID: string
 	let fromActionUUID: string
@@ -463,6 +468,10 @@
 				<MenuOption dangerous on:click={()=>removeActionTrigger(triggerMenuIndex)}>
 					<span>{$_('actions.removeAction')}</span>
 					<Icon icon='delete'></Icon>
+				</MenuOption>
+				<MenuOption on:click={()=>duplicateActionTrigger(triggerMenuIndex)}>
+					<span>{$_('actions.duplicateAction')}</span>
+					<Icon icon='duplicate'></Icon>
 				</MenuOption>
 			</Menu>
 		{/if}
