@@ -12,6 +12,7 @@
 	import Card from './components/Card.svelte'
 
 	export let multiple: boolean = false
+	export let collectionsOnly: boolean = false
 
 	/* dispatch */
 	const dispatch = createEventDispatcher()
@@ -26,16 +27,24 @@
 
 	/* */
 	function returnResults() {
-		dispatch('close', selectedAssetUUIDs.map(v => {
-			let asset = getAsset($settings.collectionUUID, v)
-			return {
-				collection: $settings.collectionUUID,
-				asset: v,
-				reference: `${httpReference}/${$settings.collectionUUID}/${v}`,
-				mimetype: asset?.mimetype,
-				name: asset?.name,
-			}
-		}))
+		if (collectionsOnly) {
+			dispatch('close', [
+				{
+					collection: $settings.collectionUUID,
+				}
+			])
+		} else {
+			dispatch('close', selectedAssetUUIDs.map(v => {
+				let asset = getAsset($settings.collectionUUID, v)
+				return {
+					collection: $settings.collectionUUID,
+					asset: v,
+					reference: `${httpReference}/${$settings.collectionUUID}/${v}`,
+					mimetype: asset?.mimetype,
+					name: asset?.name,
+				}
+			}))
+		}
 	}
 
 	/* filter */
@@ -61,20 +70,22 @@
 				</DropList>
 			</section>
 			<section class='assets'>
-				<DropList tertiary>
-					<svelte:fragment slot="heading">
-						{$_('assets.title')}
-					</svelte:fragment>
-					<section class='assets__listing' slot="content">
-						<label title={$_('collections.filterAssetsInfo')}>
-							<input placeholder='name, type, !tag, ...' type='text' bind:value={filter}/>
-							<Button tertiary invert>
-								<Icon icon='filter'></Icon>
-							</Button>
-						</label>
-						<AssetsListing multiple={multiple} selector assets={assets} bind:focused={focusedAssetUUID} bind:selected={selectedAssetUUIDs} filter={filter}></AssetsListing>
-					</section>
-				</DropList>
+				{#if !collectionsOnly}
+					<DropList tertiary>
+						<svelte:fragment slot="heading">
+							{$_('assets.title')}
+						</svelte:fragment>
+						<section class='assets__listing' slot="content">
+							<label title={$_('collections.filterAssetsInfo')}>
+								<input placeholder='name, type, !tag, ...' type='text' bind:value={filter}/>
+								<Button tertiary invert>
+									<Icon icon='filter'></Icon>
+								</Button>
+							</label>
+							<AssetsListing multiple={multiple} selector assets={assets} bind:focused={focusedAssetUUID} bind:selected={selectedAssetUUIDs} filter={filter}></AssetsListing>
+						</section>
+					</DropList>
+				{/if}
 			</section>
 		</main>
 	</svelte:fragment>

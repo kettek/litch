@@ -267,6 +267,9 @@ export function createAssetManager(): AssetManager {
 		},
 		get: (ref: AssetResult): Asset | undefined => {
 			return getAsset(ref)
+		},
+		collectionName: (ref: string): string => {
+			return get(collections).find(v=>v.uuid === ref)?.name || ''
 		}
 	}
 }
