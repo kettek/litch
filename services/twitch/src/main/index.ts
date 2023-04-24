@@ -280,7 +280,7 @@ async function startPubsub() {
 }
 
 async function stopPubsub() {
-	if (!pubSubClient) return
+	if (!pubSubClient && !pubSubUser) return
 		
 	await pubSubUser.removeAllListeners()
 		
