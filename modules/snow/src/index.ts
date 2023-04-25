@@ -1,5 +1,6 @@
 import SettingsComponent from './settings.svelte'
 import LiveComponent from './live.svelte'
+import InstanceComponent from './instance.svelte'
 import PreviewComponent from './preview.svelte'
 import { defaultGroup } from './SettingsI'
 import en from '../locales/en.json'
@@ -35,6 +36,7 @@ export default {
 	settingsComponent: SettingsComponent,
 	liveComponent: LiveComponent,
 	previewComponent: PreviewComponent,
+	instanceComponent: InstanceComponent,
 	locales: {
 		"en": en,
 	}
