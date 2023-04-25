@@ -26,6 +26,7 @@
   import { flip } from 'svelte/animate';
   import ActionModuleTrigger from './ActionModuleTrigger.svelte';
   import ActionPayload from './ActionPayload.svelte';
+  import { publisher } from './modules'
 	
 	let actionSelect: HTMLSelectElement
 	let triggerSelects: HTMLSelectElement[] = []
@@ -61,6 +62,10 @@
 				})
 			}
 		}
+	}
+	
+	function triggerAction(uuid: string) {
+		publisher.publish(`actions.${uuid}.trigger`, {})
 	}
 	
 	/* Menu */
@@ -456,6 +461,9 @@
 				<MenuOption secondary on:click={()=>duplicateAction(menuUUID)}>
 					<span>{$_('actions.duplicateAction')}</span>
 					<Icon icon='duplicate'></Icon>
+				</MenuOption>
+				<MenuOption on:click={()=>triggerAction(menuUUID)}>
+					<span>{$_('actions.triggerAction')}</span>
 				</MenuOption>
 				<MenuOption dangerous on:click={()=>removeAction(menuUUID)}>
 					<span>{$_('actions.removeAction')}</span>
