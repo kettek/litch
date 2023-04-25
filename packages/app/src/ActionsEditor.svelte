@@ -464,6 +464,7 @@
 				</MenuOption>
 				<MenuOption on:click={()=>triggerAction(menuUUID)}>
 					<span>{$_('actions.triggerAction')}</span>
+					<Icon icon='action'></Icon>
 				</MenuOption>
 				<MenuOption dangerous on:click={()=>removeAction(menuUUID)}>
 					<span>{$_('actions.removeAction')}</span>

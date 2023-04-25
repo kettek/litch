@@ -87,6 +87,7 @@
 		"addAction": "Add action",
 		"removeAction": "Remove",
 		"duplicateAction": "Duplicate",
+		"triggerAction": "Trigger",
 		"actionTitle": "Title",
 		"settings": "Settings",
 		"condition": "Condition",
