@@ -270,6 +270,9 @@ export function createAssetManager(): AssetManager {
 		},
 		collectionName: (ref: string): string => {
 			return get(collections).find(v=>v.uuid === ref)?.name || ''
+		},
+		collectionAssets: (ref: string): Asset[] => {
+			return get(collections).find(v=>v.uuid === ref)?.assets || []
 		}
 	}
 }

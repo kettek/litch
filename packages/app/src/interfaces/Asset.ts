@@ -41,4 +41,5 @@ export interface AssetManager {
 	source: (reference: AssetResult) => string
 	get: (reference: AssetResult) => Asset | undefined
 	collectionName: (collection: string) => string
+	collectionAssets: (collection: string) => Asset[]
 }
