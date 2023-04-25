@@ -18,6 +18,8 @@
 	import { addOverlay, removeOverlay, overlays, refreshOverlays, duplicateOverlay } from './stores/overlays'
 	import ModuleWrapper from './ModuleWrapper.svelte'
 	import { modules } from './stores/modules'
+  import { createAssetManager } from './assets'
+  import type { AssetManager } from './interfaces/Asset'
 
 	//export let overlays: Record<string, OverlayInterface> = {}
 	export let litchURL: string = ''
@@ -26,6 +28,9 @@
 	export let focusedOverlayUUID: string = ''
 	let showOverlaySelection: boolean = false
 	let showOverlayCreator: boolean = false
+
+	// Global assets manager passed to all module instance components.
+	let assets: AssetManager = createAssetManager()
 
 	let activeOverlay: OverlayInterface
 	$: currentOverlay = $overlays[currentOverlayUUID]
@@ -90,14 +95,14 @@
 	{#if activeOverlay}
 		{#each activeOverlay.modules as module}
 			{#if module.active && $modules[module.moduleUUID]?.instanceComponent}
-				<ModuleWrapper this={$modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.instanceChannel} services={module.servicesChannel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channels.publish('update', module.settings)}} />
+				<ModuleWrapper this={$modules[module.moduleUUID].instanceComponent} assets={assets} settings={module.settings} bind:live={module.live} channel={module.instanceChannel} services={module.servicesChannel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channels.publish('update', module.settings)}} />
 			{/if}
 		{/each}
 	{/if}
 	{#if focusedOverlay && activeOverlay !== focusedOverlay}
 		{#each focusedOverlay.modules as module}
 			{#if module.active && $modules[module.moduleUUID]?.instanceComponent}
-				<ModuleWrapper this={$modules[module.moduleUUID].instanceComponent} settings={module.settings} bind:live={module.live} channel={module.instanceChannel} services={module.servicesChannel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channels.publish('update', module.settings)}} />
+				<ModuleWrapper this={$modules[module.moduleUUID].instanceComponent} assets={assets} settings={module.settings} bind:live={module.live} channel={module.instanceChannel} services={module.servicesChannel} format={(messageId, options) => $_(`modules.${module.moduleUUID}.${messageId}`, options)} update={(value)=>{module.settings = value;refreshOverlays();module.channels.publish('update', module.settings)}} />
 			{/if}
 		{/each}
 	{/if}
