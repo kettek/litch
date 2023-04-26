@@ -244,6 +244,12 @@
 					{format('triggerdB')}
 				</svelte:fragment>
 			</ItemGroup>
+			<ItemGroup label>
+				<input type='checkbox' bind:checked={settings.muted}/>
+				<svelte:fragment slot='label'>
+					{format('muted')}
+				</svelte:fragment>
+			</ItemGroup>
 			<Button on:click={enableVisualizer}>
 				{format('configureSensitivity')}
 			</Button>

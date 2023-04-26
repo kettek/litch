@@ -8,6 +8,7 @@ export interface SettingsInterface {
 	sampleRate: number
 	sampleLimit: number
 	trigger: number
+	muted: boolean
 }
 
 export interface LitchTuber {

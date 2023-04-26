@@ -38,7 +38,8 @@ export default {
 			},
 			sampleRate: 10,
 			sampleLimit: 2,
-			trigger: 32
+			trigger: 32,
+			muted: false,
 		},
 		live: {
 			reference: {

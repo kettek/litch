@@ -122,7 +122,7 @@
 	}
 
 	function refreshLitch(db: number) {
-		if (db >= settings.trigger) {
+		if (db >= settings.trigger && !settings.muted) {
 			litchStates.mouth = true
 		} else {
 			litchStates.mouth = false
@@ -132,7 +132,7 @@
 	function refreshPuppeteer(db: number) {
 		if (!isPuppeteerTuber(settings.tuber)) return
 		// eh
-		if (db >= settings.trigger) {
+		if (db >= settings.trigger && !settings.muted) {
 			if (currentFace !== 'eyesOpenMouthOpen') {
 				currentFace = 'eyesOpenMouthOpen'
 				channel.publish('setImage', {
