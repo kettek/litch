@@ -11,7 +11,7 @@
 </script>
 
 <main draggable="true" on:dragstart|preventDefault|stopPropagation>
-	<ItemGroup label>
+	<ItemGroup label noAlt>
 		<input bind:value={data.message} on:change={refresh}/>
 		<svelte:fragment slot='label'>
 			{format('popup.message')}

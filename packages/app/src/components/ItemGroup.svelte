@@ -7,12 +7,13 @@
 	export let primary: boolean = false
 	export let secondary: boolean = false
 	export let tertiary: boolean = false
+	export let noAlt: boolean = false
 
 	$: repeatStr = new Array(maxedCount).fill('minmax(0, 1fr)').join(' ') + new Array(count-1).fill('auto').join(' ')
 </script>
 
 {#if label}
-	<label title={title} class:ItemGroup={true} class:padded style='--repeat: {repeatStr};' class:primary class:secondary class:tertiary>
+	<label title={title} class:ItemGroup={true} class:padded class:noAlt style='--repeat: {repeatStr};' class:primary class:secondary class:tertiary>
 		<slot></slot>
 		{#if $$slots.label}
 			<span>
@@ -22,7 +23,7 @@
 		{/if}
 	</label>
 {:else}
-	<article title={title} class:ItemGroup={true} class:padded style='--repeat: {repeatStr};' class:primary class:secondary class:tertiary>
+	<article title={title} class:ItemGroup={true} class:padded class:noAlt style='--repeat: {repeatStr};' class:primary class:secondary class:tertiary>
 		<slot></slot>
 		{#if $$slots.label}
 			<span>
@@ -56,5 +57,7 @@
 	.tertiary {
 		color: var(--tertiary);
 	}
-
+	.noAlt > :global(input), .noAlt > :global(button), .noAlt > :global(select), .noAlt > :global(textarea) {
+		background: var(--bar-bg);
+	}
 </style>

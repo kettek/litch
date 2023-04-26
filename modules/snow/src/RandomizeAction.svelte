@@ -37,7 +37,7 @@
 </script>
 
 <main draggable='true' on:dragstart|preventDefault|stopPropagation>
-	<ItemGroup label>
+	<ItemGroup label noAlt>
 		<select on:change={selectItem}>
 			{#if data.groupIndex === undefined}
 				<option></option>

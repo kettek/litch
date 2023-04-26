@@ -393,16 +393,20 @@
 											<div draggable="true" on:dragstart|preventDefault|stopPropagation>
 												{#if isTriggerCoreSound(trigger.data)}
 													<AssetViewer volume={trigger.data.volume} asset={getAsset(trigger.data.collection, trigger.data.asset)} minimal></AssetViewer>
-													<input type='number' bind:value={trigger.data.volume}/>
+													<ItemGroup noAlt>
+														<input type='number' bind:value={trigger.data.volume}/>
+													</ItemGroup>
 													<Button title={$_('selectSound')} tertiary on:click={()=>{showAssetsWindow(selectedAction, index)}}>
 														<Icon icon='open'></Icon>
 													</Button>
-													<ItemGroup label>
+													<ItemGroup label noAlt>
 														<input type='checkbox' bind:checked={trigger.data.wait}/>
 														<svelte:fragment slot='label'>{$_('wait')}</svelte:fragment>
 													</ItemGroup>
 												{:else if isTriggerCoreWait(trigger.data)}
-													<input type='number' bind:value={trigger.data.seconds}/> seconds
+													<ItemGroup noAlt>
+														<input type='number' bind:value={trigger.data.seconds}/> seconds
+													</ItemGroup>
 												{:else if isTriggerCoreToggleModule(trigger.data)}
 													<select on:change={e=>trigger.data.act=e.currentTarget.value}>
 														<option>{$_('enable')}</option>
@@ -423,7 +427,7 @@
 												{/if}
 											</div>
 										{:else if isTriggerModule(trigger)}
-											<ItemGroup label count={3}>
+											<ItemGroup label count={3} noAlt>
 												<select bind:value={trigger.overlayUUID} on:change={refreshActions}>
 													{#each Object.entries($overlays) as [name, overlay]}
 														<option value={overlay.uuid}>{overlay.title}</option>
