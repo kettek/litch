@@ -2,6 +2,7 @@ import SettingsComponent from './settings.svelte'
 import LiveComponent from './live.svelte'
 import PreviewComponent from './preview.svelte'
 import InstanceComponent from './instance.svelte'
+import MuteAction from './MuteAction.svelte'
 import en from '../locales/en.json'
 
 export default {
@@ -48,10 +49,19 @@ export default {
 			},
 		},
 	},
+	triggerEvents: {
+		actions: [
+			{
+				title: "Mute",
+				id: "mute",
+				ActionComponent: MuteAction,
+			}
+		]
+	},
 	settingsComponent: SettingsComponent,
 	liveComponent: LiveComponent,
 	previewComponent: PreviewComponent,
-	//instanceComponent: InstanceComponent,
+	instanceComponent: InstanceComponent,
 	locales: {
 		"en": en,
 	}
