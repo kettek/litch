@@ -388,7 +388,7 @@
 											{$modules[trigger.moduleUUID]?.title}: {$modules[trigger.moduleUUID]?.triggerEvents?.actions.find(v=>v.id===trigger.triggerID)?.title}
 										{/if}
 									</ItemGroup>
-									<Section rounded>
+									<Section rounded padded>
 										{#if isTriggerCore(trigger)}
 											<div draggable="true" on:dragstart|preventDefault|stopPropagation>
 												{#if isTriggerCoreSound(trigger.data)}
