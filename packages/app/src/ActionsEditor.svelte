@@ -408,7 +408,7 @@
 														<input type='number' bind:value={trigger.data.seconds}/> seconds
 													</ItemGroup>
 												{:else if isTriggerCoreToggleModule(trigger.data)}
-													<select bind:value={trigger.data.act}>
+													<select bind:value={trigger.data.act} on:change={refreshActions}>
 														<option value='enable'>{$_('enable')}</option>
 														<option value='disable'>{$_('disable')}</option>
 													</select>
