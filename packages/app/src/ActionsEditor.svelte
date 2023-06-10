@@ -408,9 +408,9 @@
 														<input type='number' bind:value={trigger.data.seconds}/> seconds
 													</ItemGroup>
 												{:else if isTriggerCoreToggleModule(trigger.data)}
-													<select on:change={e=>trigger.data.act=e.currentTarget.value}>
-														<option>{$_('enable')}</option>
-														<option>{$_('disable')}</option>
+													<select bind:value={trigger.data.act}>
+														<option value='enable'>{$_('enable')}</option>
+														<option value='disable'>{$_('disable')}</option>
 													</select>
 													<select bind:value={trigger.data.overlay} on:change={refreshActions}>
 														{#each Object.entries($overlays) as [name, overlay]}
