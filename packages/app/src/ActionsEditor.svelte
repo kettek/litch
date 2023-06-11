@@ -370,7 +370,7 @@
 							</Button>
 						</ItemGroup>
 						{#if selectedAction.triggers}
-							{#each selectedAction.triggers as trigger, index (index)}
+							{#each selectedAction.triggers as trigger, index (selectedAction.uuid+index)}
 								<li
 									animate:flip="{{duration: 200}}"
 									draggable={true}
