@@ -38,6 +38,10 @@ export function refreshServices() {
 
 function deserializeServices() {
 	let ss = get(services)
+	setServices(ss)
+}
+
+export function setServices(ss: ServiceInterface[]) {
 	for (let s of ss) {
 		s.channel = createServiceChannel(s.uuid)
 		s.data = {}

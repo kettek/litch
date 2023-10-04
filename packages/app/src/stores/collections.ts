@@ -16,6 +16,10 @@ export function removeCollection(uuid: string) {
 	collections.set(cs)
 }
 
+export function setCollections(cs: Collection[]) {
+	collections.set(cs)
+}
+
 export function refreshCollections() {
 	collections.set(get(collections))
 }

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { _ } from 'svelte-i18n'
-	import { settings } from './stores/settings'
-	import { overlays } from './stores/overlays'
-	import { collections } from './stores/collections'
-	import { actions } from './stores/actions'
-	import { services } from './stores/services'
+	import { setSettings, settings } from './stores/settings'
+	import { overlays, setOverlays } from './stores/overlays'
+	import { collections, setCollections } from './stores/collections'
+	import { actions, setActions } from './stores/actions'
+	import { services, setServices } from './stores/services'
 	import ItemGroup from './components/ItemGroup.svelte'
 	import Button from './components/Button.svelte'
 	import Icon from './components/Icon.svelte'
@@ -47,7 +47,7 @@
 		const url = URL.createObjectURL(blob)
 		const a = document.createElement('a')
 		a.href = url
-		a.download = `settings-${new Date()}.json`
+		a.download = `settings-${Date.now()}.json`
 		a.click()
 		URL.revokeObjectURL(url)
 	}
@@ -59,7 +59,11 @@
 			const file = e.target.files[0]
 			const data = await file.text()
 			const config = JSON.parse(data)
-			console.log('TODO: import configuration', config)
+			setSettings(config.settings)
+			setOverlays(config.overlays)
+			setCollections(config.collections)
+			setServices(config.services)
+			setActions(config.actions)
 		}
 		input.click()
 	}

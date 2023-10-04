@@ -45,6 +45,10 @@ function deserializeActions() {
 	actions.set(aa)
 }
 
+export function setActions(aa: ActionI[]) {
+	actions.set(aa)
+}
+
 export const actions = localStore<ActionI[]>('actions', [])
 
 deserializeActions()

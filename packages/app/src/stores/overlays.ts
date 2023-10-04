@@ -44,6 +44,10 @@ export function duplicateOverlay(u: string) {
 
 export function deserializeOverlays() {
 	let os = get(overlays) as Record<string, OverlayInterface>
+	setOverlays(os)
+}
+
+export function setOverlays(os: Record<string, OverlayInterface>) {
 	for (let [uuid, overlay] of Object.entries(os)) {
 		for (let m of overlay.modules) {
 			m.liveChannel = createModuleChannel(uuid, m.uuid)
