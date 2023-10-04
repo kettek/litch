@@ -1,0 +1,26 @@
+{
+	"bouncerSpeed": "Bouncer speed (px/s)",
+	"maxBouncerWidth": "Max bouncer width (px)",
+	"maxBouncerHeight": "Max bouncer height (px)",
+	"minBouncerWidth": "Min bouncer width (px)",
+	"minBouncerHeight": "Min bouncer height (px)",
+	"selectABouncer": "Select or create a bouncer",
+	"unsupportedAsset": "Unsupported asset",
+	"openAsset": "Open asset",
+	"addBouncer": "Add bouncer",
+	"deleteBouncer": "Delete bouncer",
+	"duplicateBouncer": "Duplicate bouncer",
+	"clearTemporaries": "Clear temporary bouncers",
+	"title": "Title",
+	"id": "ID",
+	"temporary": "Temporary",
+	"addAction": {
+		"title": "Bouncer Title",
+		"titleInfo": "The title to add to the bouncer. If empty, no title will be added.",
+		"uniqueID": "Unique ID",
+		"uniqueIDInfo": "The unique ID to add to the bouncer. If not empty, subsequent triggers will only replace the given bouncer.",
+		"collection": "Collection",
+		"asset": "Asset Name",
+		"assetInfo": "The asset name to use for the bouncer. If empty, a random asset will be used."
+	}
+}
