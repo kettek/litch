@@ -46,6 +46,33 @@
 					publisher.publish(`actions.${action.uuid}.trigger`, message)
 				}
 			}
+		} else if (topic === 'chat.message') {
+			for (let action of actions) {
+				if (action.id === 'chat') {
+					let userMatches = []
+					let messageMatches = []
+					if (action.condition.messageRegex) {
+						// Get matches for messageRegex against message.msg
+						messageMatches = message.msg.match(new RegExp(action.condition.messageRegex))
+						// If there are no matches, continue
+						if (!messageMatches) continue
+						messageMatches = messageMatches.slice(1)
+					}
+					if (action.condition.userRegex) {
+						// Get matches for userRegex against message.user
+						userMatches = message.user.match(new RegExp(action.condition.userRegex))
+						// If there are no matches, continue
+						if (!userMatches) continue
+						userMatches = userMatches.slice(1)
+					}
+					publisher.publish(`actions.${action.uuid}.trigger`, {
+						userMatches,
+						messageMatches,
+						userName: message.user,
+						message: message.msg,
+					})
+				}
+			}
 		} else {
 			console.log('UNHANDLED: ', topic, message)
 		}

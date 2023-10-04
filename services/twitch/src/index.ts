@@ -3,6 +3,7 @@ import InstanceComponent from './instance.svelte'
 import RedeemCondition from './RedeemCondition.svelte'
 import RedeemTitle from './RedeemTitle.svelte'
 import RaidCondition from './RaidCondition.svelte'
+import ChatCondition from './ChatCondition.svelte'
 import en from '../locales/en.json'
 
 export default {
@@ -51,6 +52,17 @@ export default {
 					"viewerCount": "",
 					"message": "",
 				},
+			},
+			{
+				title: "Chat",
+				id: "chat",
+				ConditionComponent: ChatCondition,
+				payload: {
+					"userMatches": "userMatches",
+					"messageMatches": "messageMatches",
+					"userName": "userName",
+					"message": "message",
+				}
 			}
 		],
 	},

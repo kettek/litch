@@ -16,6 +16,8 @@
 	"raidCancel": "Raid Cancel",
 	"redeem": "Redeem",
 	"noRedeems": "No redeems",
+	"userRegex": "Username Match",
+	"messageRegex": "Message Match",
 	"conditions": {
 		"redeem": {
 			"rewardID": "Unique ID of the reward.",
@@ -32,6 +34,10 @@
 			"userDisplayName": "The display user name of the raider.",
 			"viewerCount": "The viewer count of the raider.",
 			"message": "The raider's message."
+		},
+		"chat": {
+			"userRegex": "Username Match",
+			"messageRegex": "Message Match"
 		}
 	}
 }
