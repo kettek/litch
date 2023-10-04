@@ -113,7 +113,7 @@
 		</article>
 		<hr/>
 		<article class='module__wrapper'>
-			<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} channel={module.settingsChannel} services={module.servicesChannel}  assets={assets} format={localeFormat} />
+			<ModuleWrapper this={realModule.settingsComponent} bind:settings={pendingSettings} bind:live={module.live} bind:box={module.box} bind:updateBox={updateBox} bind:update={update} channel={module.settingsChannel} services={module.servicesChannel}  assets={assets} format={localeFormat} />
 		</article>
 	</section>
 	<svelte:fragment slot="footer">
