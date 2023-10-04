@@ -104,7 +104,9 @@
 	},
 	"settings": {
 		"title": "Settings",
-		"port": "Port"
+		"port": "Port",
+		"exportConfiguration": "Export Configuration",
+		"importConfiguration": "Import Configuration"
 	},
 	"filter": "Filter"
 }
