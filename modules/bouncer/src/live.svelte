@@ -17,8 +17,42 @@
 		xvel: number
 		yvel: number
 		hits: number
+		sinceLastHit: number
+		class: string
 		others: number[]
 		element: HTMLDivElement
+	}
+	
+	interface Collision {
+		a: Item
+		b: Item
+	}
+
+	function hasCollision(collisions: Collision[], item: Item, item2: Item): boolean {
+		for (let collision of collisions) {
+			if ((collision.a === item || collision.b === item) && (collision.a === item2 || collision.b === item2)) return true
+		}
+		return false
+	}
+
+	function doesCollide(a: Item, b: Item): boolean {
+		if (!a.element || !b.element) return false
+		let rect = a.element.getBoundingClientRect()
+		let otherRect = b.element.getBoundingClientRect()
+		// Return true if rect intersects with otherRect or if otherRect intersects with rect.
+		if (rect.x < otherRect.x + otherRect.width &&
+			rect.x + rect.width > otherRect.x &&
+			rect.y < otherRect.y + otherRect.height &&
+			rect.y + rect.height > otherRect.y) {
+			return true
+		}
+		if (otherRect.x < rect.x + rect.width &&
+			otherRect.x + otherRect.width > rect.x &&
+			otherRect.y < rect.y + rect.height &&
+			otherRect.y + otherRect.height > rect.y) {
+			return true
+		}
+		return false
 	}
 
 	let items: Item[] = []
@@ -28,6 +62,8 @@
 			x: Math.random() * box.width,
 			y: Math.random() * box.height,
 			hits: 0,
+			class: '',
+			sinceLastHit: 0,
 			others: [],
 			xvel: Math.random() < 0.5 ? -1 : 1,
 			yvel: Math.random() < 0.5 ? -1 : 1,
@@ -41,6 +77,7 @@
 		let frame: number
 
 		function loop() {
+			let collisions: Collision[] = []
 			items = items.map(v=>({...v, others: []}))
 			for (let index = 0; index < items.length; index++) {
 				let item = items[index]
@@ -50,44 +87,72 @@
 				item.x += item.xvel * settings.bouncerSpeed
 				item.y += item.yvel * settings.bouncerSpeed
 				
-				if (item.hits > 0) {
-					item.hits--
-					
-					// Bounce off of any other items.
-					for (let i = 0; i < items.length; i++) {
-						if (i === index) continue
-						if (item.others.includes(i)) continue
-						let other = items[i]
-						if (!other.element) continue
-						let otherRect = other.element.getBoundingClientRect()
-						if (rect.left < otherRect.right && rect.right > otherRect.left && rect.top < otherRect.bottom && rect.bottom > otherRect.top) {
-							item.others.push(i)
-							other.others.push(index)
-							item.xvel = -item.xvel
-							item.yvel = -item.yvel
-							break
-						}
-					}
+				// Bounce off walls.
+				if (item.x < 0) {
+					item.x = 0
+					item.xvel *= -1
+					item.sinceLastHit = 0
+				}
+				if (item.y < 0) {
+					item.y = 0
+					item.yvel *= -1
+					item.sinceLastHit = 0
+				}
+				if (item.x + rect.width > box.width) {
+					item.x = box.width - rect.width
+					item.xvel *= -1
+					item.sinceLastHit = 0
+				}
+				if (item.y + rect.height > box.height) {
+					item.y = box.height - rect.height
+					item.yvel *= -1
+					item.sinceLastHit = 0
 				}
 
-				if (rect.left < 0) {
-					item.x = 0
-					item.xvel = -item.xvel
-					item.hits++
-				} else if (rect.right > box.width) {
-					item.x = box.width-rect.width
-					item.xvel = -item.xvel
-					item.hits++
+				if (item.sinceLastHit > 60) {
+					item.class = ''
+				} else {
+					item.class = 'hit'
 				}
-				if (rect.top < 0) {
-					item.y = 0
-					item.yvel = -item.yvel
-					item.hits++
-				} else if (rect.bottom > box.height) {
-					item.y = box.height-rect.height
-					item.yvel = -item.yvel
-					item.hits++
+
+				item.sinceLastHit++
+				
+				// Collect collisions.
+				for (let i = 0; i < items.length; i++) {
+					if (i === index) continue
+					if (hasCollision(collisions, item, items[i])) continue
+					if (!doesCollide(item, items[i])) continue
+					collisions.push({a: item, b: items[i]})
 				}
+			}
+
+			// Iterate through our collisions.
+			for (let collision of collisions) {
+				let {a, b} = collision
+				let cd = Math.abs(a.x - b.x)
+				let rd = Math.abs(a.y - b.y)
+				
+				let moreVertical = cd < rd
+
+				if (!moreVertical) {
+					a.xvel *= -1
+					b.xvel *= -1
+					if (a.x < b.x) {
+						a.x = b.x - a.element.getBoundingClientRect().width - 1
+					} else {
+						a.x = b.x + b.element.getBoundingClientRect().width + 1
+					}
+				} else {
+					a.yvel *= -1
+					b.yvel *= -1
+					if (a.y < b.y) {
+						a.y = b.y - a.element.getBoundingClientRect().height - 1
+					} else {
+						a.y = b.y + b.element.getBoundingClientRect().height + 1
+					}
+				}
+				a.sinceLastHit = 0
+				b.sinceLastHit = 0
 			}
 
 			items = items
@@ -108,7 +173,7 @@
 <section>
 	{#each items as item, index}
 		{#if settings.bouncers[index]}
-			<div bind:this={item.element} style="left: {item.x}px; top: {item.y}px;" class='item'>
+			<div bind:this={item.element} style="left: {item.x}px; top: {item.y}px;" class='item {item.class}'>
 				{#if settings.bouncers[index].reference?.mimetype?.startsWith('image')}
 					<img style="min-width: {settings.minBouncerWidth}px; max-width: {settings.maxBouncerWidth}px; min-height: {settings.minBouncerHeight}px; max-height: {settings.maxBouncerHeight}px" alt="" src={assets.source(settings.bouncers[index].reference)}/>
 				{:else if settings.bouncers[index].reference?.mimetype?.startsWith('video')}
@@ -137,5 +202,14 @@
 		max-width: 100%;
 		max-height: 100%;
 		object-fit: contain;
+	}
+	.item.hit {
+		animation: bounce 0.5s infinite;
+	}
+	@keyframes bounce {
+		from, to { transform: scale(1, 1); }
+		10% { transform: scale(0.8, 1.2); }
+		50% { transform: scale(1.2, 0.8); }
+		75% { transform: scale(0.95, 1.05); }
 	}
 </style>
