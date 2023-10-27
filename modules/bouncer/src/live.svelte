@@ -125,7 +125,7 @@
 					item.sinceLastHit = 0
 				}
 
-				if (item.sinceLastHit > 60) {
+				if (item.sinceLastHit > settings.jiggleTime ?? 60) {
 					item.class = ''
 				} else {
 					item.class = 'hit'

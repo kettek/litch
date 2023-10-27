@@ -4,6 +4,7 @@ export interface SettingsInterface {
 	bouncerSpeed: number
 	bouncerCircular?: boolean
 	bouncerUseHeight?: boolean
+	jiggleTime: number
 	minBouncerWidth?: number
 	minBouncerHeight?: number
 	maxBouncerWidth?: number

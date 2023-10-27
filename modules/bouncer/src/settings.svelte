@@ -75,6 +75,12 @@
 			</svelte:fragment>
 		</ItemGroup>
 		<ItemGroup label>
+			<input type='number' bind:value={settings.jiggleTime}/>
+			<svelte:fragment slot='label'>
+				{format('jiggleTime')}
+			</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
 			<input type='checkbox' bind:checked={settings.bouncerCircular}/>
 			<svelte:fragment slot='label'>
 				{format('bouncerCircular')}

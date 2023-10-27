@@ -1,5 +1,6 @@
 {
 	"bouncerSpeed": "Bouncer speed (px/s)",
+	"jiggleTime": "Ticks to jiggle",
 	"bouncerCircular": "Circular collision detection",
 	"bouncerUseHeight": "Use height for radius",
 	"maxBouncerWidth": "Max bouncer width (px)",

@@ -16,6 +16,7 @@ export default {
 		settings: {
 			bouncers: [],
 			bouncerSpeed: 10,
+			jiggleTime: 60,
 		},
 	},
 	triggerEvents: {
