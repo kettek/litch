@@ -75,6 +75,18 @@
 			</svelte:fragment>
 		</ItemGroup>
 		<ItemGroup label>
+			<input type='checkbox' bind:checked={settings.bouncerCircular}/>
+			<svelte:fragment slot='label'>
+				{format('bouncerCircular')}
+			</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
+			<input disabled={!settings.bouncerCircular} type='checkbox' bind:checked={settings.bouncerUseHeight}/>
+			<svelte:fragment slot='label'>
+				{format('bouncerUseHeight')}
+			</svelte:fragment>
+		</ItemGroup>
+		<ItemGroup label>
 			<input type='number' bind:value={settings.minBouncerWidth}/>
 			<svelte:fragment slot='label'>
 				{format('minBouncerWidth')}

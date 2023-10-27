@@ -1,5 +1,7 @@
 {
 	"bouncerSpeed": "Bouncer speed (px/s)",
+	"bouncerCircular": "Circular collision detection",
+	"bouncerUseHeight": "Use height for radius",
 	"maxBouncerWidth": "Max bouncer width (px)",
 	"maxBouncerHeight": "Max bouncer height (px)",
 	"minBouncerWidth": "Min bouncer width (px)",

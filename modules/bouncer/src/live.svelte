@@ -39,18 +39,35 @@
 		if (!a.element || !b.element) return false
 		let rect = a.element.getBoundingClientRect()
 		let otherRect = b.element.getBoundingClientRect()
-		// Return true if rect intersects with otherRect or if otherRect intersects with rect.
-		if (rect.x < otherRect.x + otherRect.width &&
-			rect.x + rect.width > otherRect.x &&
-			rect.y < otherRect.y + otherRect.height &&
-			rect.y + rect.height > otherRect.y) {
-			return true
-		}
-		if (otherRect.x < rect.x + rect.width &&
-			otherRect.x + otherRect.width > rect.x &&
-			otherRect.y < rect.y + rect.height &&
-			otherRect.y + otherRect.height > rect.y) {
-			return true
+		
+		if (settings.bouncerCircular) {
+			// Check for circular collision using rect width as diameter.
+			let radius = (settings.bouncerUseHeight ? rect.height : rect.width) / 2
+			let otherRadius = (settings.bouncerUseHeight ? otherRect.height : otherRect.width) / 2
+			let center = {
+				x: rect.x + radius,
+				y: rect.y + radius,
+			}
+			let otherCenter = {
+				x: otherRect.x + otherRadius,
+				y: otherRect.y + otherRadius,
+			}
+			let distance = Math.sqrt(Math.pow(center.x - otherCenter.x, 2) + Math.pow(center.y - otherCenter.y, 2))
+			return distance < radius + otherRadius
+		} else {
+			// Return true if rect intersects with otherRect or if otherRect intersects with rect.
+			if (rect.x < otherRect.x + otherRect.width &&
+				rect.x + rect.width > otherRect.x &&
+				rect.y < otherRect.y + otherRect.height &&
+				rect.y + rect.height > otherRect.y) {
+				return true
+			}
+			if (otherRect.x < rect.x + rect.width &&
+				otherRect.x + otherRect.width > rect.x &&
+				otherRect.y < rect.y + rect.height &&
+				otherRect.y + otherRect.height > rect.y) {
+				return true
+			}
 		}
 		return false
 	}
@@ -137,17 +154,37 @@
 					a.xvel *= -1
 					b.xvel *= -1
 					if (a.x < b.x) {
-						a.x = b.x - a.element.getBoundingClientRect().width - 1
+						if (settings.bouncerCircular) {
+							let rect = a.element.getBoundingClientRect()
+							a.x = b.x - (settings.bouncerUseHeight ? rect.height : rect.width)
+						} else {
+							a.x = b.x - a.element.getBoundingClientRect().width - 1
+						}
 					} else {
-						a.x = b.x + b.element.getBoundingClientRect().width + 1
+						if (settings.bouncerCircular) {
+							let rect = a.element.getBoundingClientRect()
+							a.x = b.x + (settings.bouncerUseHeight ? rect.height : rect.width)
+						} else {
+							a.x = b.x + b.element.getBoundingClientRect().width + 1
+						}
 					}
 				} else {
 					a.yvel *= -1
 					b.yvel *= -1
 					if (a.y < b.y) {
-						a.y = b.y - a.element.getBoundingClientRect().height - 1
+						if (settings.bouncerCircular) {
+							let rect = a.element.getBoundingClientRect()
+							a.y = b.y - (settings.bouncerUseHeight ? rect.height : rect.width)
+						} else {
+							a.y = b.y - a.element.getBoundingClientRect().height - 1
+						}
 					} else {
-						a.y = b.y + b.element.getBoundingClientRect().height + 1
+						if (settings.bouncerCircular) {
+							let rect = a.element.getBoundingClientRect()
+							a.y = b.y + (settings.bouncerUseHeight ? rect.height : rect.width)
+						} else {
+							a.y = b.y + b.element.getBoundingClientRect().height + 1
+						}
 					}
 				}
 				a.sinceLastHit = 0
