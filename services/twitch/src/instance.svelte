@@ -52,8 +52,8 @@
 					let userMatches = []
 					let messageMatches = []
 					if (action.condition.messageRegex) {
-						// Get matches for messageRegex against message.msg
-						messageMatches = message.msg.match(new RegExp(action.condition.messageRegex))
+						// Get matches for messageRegex against message.text
+						messageMatches = message.text.match(new RegExp(action.condition.messageRegex))
 						// If there are no matches, continue
 						if (!messageMatches) continue
 						messageMatches = messageMatches.slice(1)
@@ -69,7 +69,8 @@
 						userMatches,
 						messageMatches,
 						userName: message.user,
-						message: message.msg,
+						userColor: message.userColor,
+						message: message.text,
 					})
 				}
 			}

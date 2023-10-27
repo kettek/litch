@@ -112,14 +112,16 @@ async function startChatbot() {
 		console.log('connected')
 		context.publish('chat.connected', {})
 	})
-	chatClient.onMessage((channel, user, msg) => {
+	chatClient.onMessage((channel, user, text, msg) => {
 		if (settings.dumpAllMessages) {
-			console.log('onMessage', channel, user, msg)
+			console.log('onMessage', channel, user, text, msg)
 		}
 		// TODO: what should we actually use as the topic...?
 		context.publish('chat.message', {
 			channel,
 			user,
+			userColor: msg.userInfo.color,
+			text,
 			msg,
 		})
 		/*if (msg.startsWith('@'+chatClient.currentNick)) {

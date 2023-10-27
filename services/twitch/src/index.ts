@@ -61,6 +61,7 @@ export default {
 					"userMatches": "userMatches",
 					"messageMatches": "messageMatches",
 					"userName": "userName",
+					"userColor": "userColor",
 					"message": "message",
 				}
 			}

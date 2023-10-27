@@ -18,6 +18,7 @@
 	"noRedeems": "No redeems",
 	"userRegex": "Username Match",
 	"messageRegex": "Message Match",
+	"userColor": "User's Chat Color",
 	"conditions": {
 		"redeem": {
 			"rewardID": "Unique ID of the reward.",
