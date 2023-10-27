@@ -28,6 +28,7 @@
 				if (!collection) return
 
 				let title: string
+				let color: string
 				let id: string
 				let assetName: string
 
@@ -36,6 +37,11 @@
 					title = message.trigger.targetTitle.replace(/\{([^\}]+)\}/g, (match, key) => {
 						return dot[key]
 					})
+					if (message.trigger.targetTitleColor) {
+						color = message.trigger.targetTitleColor.replace(/\{([^\}]+)\}/g, (match, key) => {
+							return dot[key]
+						})
+					}
 				}
 				if (message.trigger.uniqueID) {
 					id = message.trigger.uniqueID.replace(/\{([^\}]+)\}/g, (match, key) => {
@@ -66,6 +72,12 @@
 				}
 				if (title) {
 					bouncer.title = title
+					if (color) {
+						bouncer.titleColor = color
+					} else {
+						bouncer.titleColor = '#'+Math.floor(Math.random()*16777215).toString(16)
+					}
+					console.log('set bouncer', bouncer.titleColor)
 				}
 				if (id) {
 					bouncer.id = id

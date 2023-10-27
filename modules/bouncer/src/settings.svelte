@@ -138,6 +138,12 @@
 				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>
+				<input type='color' bind:value={currentBouncer.titleColor}/>
+				<svelte:fragment slot='label'>
+					{format('titleColor')}
+				</svelte:fragment>
+			</ItemGroup>
+			<ItemGroup label>
 				<input type='text' bind:value={currentBouncer.id}/>
 				<svelte:fragment slot='label'>
 					{format('id')}

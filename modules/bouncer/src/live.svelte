@@ -16,11 +16,11 @@
 		y: number
 		xvel: number
 		yvel: number
-		hits: number
 		sinceLastHit: number
 		class: string
-		others: number[]
 		element: HTMLDivElement
+		title?: string
+		titleColor?: string
 	}
 	
 	interface Collision {
@@ -58,15 +58,15 @@
 	let items: Item[] = []
 
 	function reload() {
-		items = settings.bouncers.map(v=>({
-			x: Math.random() * box.width,
-			y: Math.random() * box.height,
-			hits: 0,
+		items = settings.bouncers.map((v, i)=>({
+			x: items[i]?.x ?? Math.random() * box.width,
+			y: items[i]?.y ?? Math.random() * box.height,
 			class: '',
-			sinceLastHit: 0,
-			others: [],
-			xvel: Math.random() < 0.5 ? -1 : 1,
-			yvel: Math.random() < 0.5 ? -1 : 1,
+			sinceLastHit: items[i]?.sinceLastHit ?? 0,
+			title: v.title,
+			titleColor: v.titleColor,
+			xvel: items[i]?.xvel ?? (Math.random() < 0.5 ? -1 : 1),
+			yvel: items[i]?.yvel ?? (Math.random() < 0.5 ? -1 : 1),
 			element: null,
 		}))
 	}
@@ -78,7 +78,6 @@
 
 		function loop() {
 			let collisions: Collision[] = []
-			items = items.map(v=>({...v, others: []}))
 			for (let index = 0; index < items.length; index++) {
 				let item = items[index]
 				if (!item.element) continue
@@ -161,7 +160,7 @@
 		requestAnimationFrame(loop)
 
 		channel.receive = async ({topic, message}) => {
-			if (topic === 'reload') {
+			if (topic === 'reload' || topic === 'refresh') {
 				reload()
 			}
 		}
@@ -181,6 +180,9 @@
 						<track kind="captions"/>
 						<source src="{assets.source(settings.bouncers[index].reference)}" type="{settings.bouncers[index].reference.mimetype}">
 					</video>
+				{/if}
+				{#if item.title}
+					<span class='title' style="color:{item.titleColor}">{item.title}</span>
 				{/if}
 			</div>
 		{/if}
@@ -205,6 +207,14 @@
 	}
 	.item.hit {
 		animation: bounce 0.5s infinite;
+	}
+	.title {
+		position: absolute;
+		bottom: -2ch;
+		left: 0;
+		right: 0;
+		text-align: center;
+		font-weight: 800;
 	}
 	@keyframes bounce {
 		from, to { transform: scale(1, 1); }

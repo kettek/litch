@@ -10,6 +10,7 @@
 	interface Data {
 		targetCollection: string
 		targetTitle: string
+		targetTitleColor: string
 		uniqueID: string
 		targetAsset: string
 	}
@@ -38,6 +39,13 @@
 	</ItemGroup>
 	<Info tertiary>
 		{format('addAction.titleInfo')}
+	</Info>
+	<ItemGroup count={2} label>
+		<input type='text' bind:value={data.targetTitleColor} on:change={refresh}/>
+		<svelte:fragment slot='label'>{format('addAction.titleColor')}</svelte:fragment>
+	</ItemGroup>
+	<Info tertiary>
+		{format('addAction.titleColorInfo')}
 	</Info>
 	<ItemGroup count={2} label>
 		<input type='text' bind:value={data.uniqueID} on:change={refresh}/>

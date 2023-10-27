@@ -10,6 +10,7 @@ export interface SettingsInterface {
 
 export interface Bouncer {
 	title?: string
+	titleColor?: string
 	id?: string
 	temporary?: boolean
 	reference: {
