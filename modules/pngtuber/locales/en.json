@@ -4,6 +4,7 @@
 	"sampleLimit": "Sample Limit",
 	"triggerdB": "Trigger dB",
 	"muted": "Muted",
+	"mute": "Mute",
 	"framerate": "Framerate (ms)",
 	"configureSensitivity": "Configure Sensitivity",
 	"addMask": "Add Mask",
