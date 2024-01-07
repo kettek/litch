@@ -91,6 +91,9 @@
 					settings.bouncers.push(bouncer)
 				}
 				update(settings)
+			} else if (triggerID === 'clearTemp') {
+				settings.bouncers = settings.bouncers.filter(b => !b.temporary)
+				update(settings)
 			}
 		}
 	}

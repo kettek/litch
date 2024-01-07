@@ -28,5 +28,8 @@
 		"collection": "Collection",
 		"asset": "Asset Name",
 		"assetInfo": "The asset name to use for the bouncer. If empty, a random asset will be used."
+	},
+	"clearTempAction": {
+		"info": "Clears all temporary bouncers."
 	}
 }

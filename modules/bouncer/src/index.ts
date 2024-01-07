@@ -4,6 +4,7 @@ import InstanceComponent from './instance.svelte'
 import PreviewComponent from './preview.svelte'
 import en from '../locales/en.json'
 import AddAction from './AddAction.svelte'
+import ClearTempAction from './ClearTempAction.svelte'
 
 export default {
 	title: "Bouncer",
@@ -25,6 +26,11 @@ export default {
 				title: "Add Bouncer",
 				id: "add",
 				ActionComponent: AddAction,
+			},
+			{
+				title: "Clear Temporaries",
+				id: "clearTemp",
+				ActionComponent: ClearTempAction,
 			}
 		]
 	},
