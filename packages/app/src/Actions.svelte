@@ -77,28 +77,51 @@
 		})
 	}
 	
-	let previousHotKeys: string[] = []
+	let previousHotKeys: ActionCoreHotkeyI[] = []
 	let hotkeyActions: ActionCoreHotkeyI[]
 	$: hotkeyActions = $actions.filter(v=>isActionCoreHotkey(v)&&v.keys!=='') as ActionCoreHotkeyI[]
 	$: {
 		for (let action of hotkeyActions) {
-			if (!previousHotKeys.includes(action.keys)) {
-				publisher.publish(`hotkeys.${action.keys}.register`, {})
+			if (!previousHotKeys.find(v=>action.keys===v.keys&&action.local===v.local)) {
+				publisher.publish(`hotkeys.${action.local?'local':'global'}.${action.keys}.register`, {})
 			}
 		}
 		for (let hotkey of previousHotKeys) {
-			let has = false
-			for (let action of hotkeyActions) {
-				if (action.keys === hotkey) {
-					has = true
-					break
-				}
-			}
-			if (!has) {
-				publisher.publish(`hotkeys.${hotkey}.unregister`, {})
+			if (!hotkeyActions.find(v=>v.keys===hotkey.keys&&v.local===hotkey.local)) {
+				publisher.publish(`hotkeys.${hotkey.local}.${hotkey.keys}.unregister`, {})
 			}
 		}
-		previousHotKeys = hotkeyActions.map(v=>v.keys)
+		previousHotKeys = [...hotkeyActions]
+	}
+
+	const mods = ['control', 'command', 'option', 'shift', 'alt', 'altgr', 'super', 'meta']
+	let pressedKeys: string[] = []
+	let keys: string[] = []
+	function handleKeyDown(e: KeyboardEvent) {
+		if (pressedKeys.find(v=>v===e.key||v===e.key.toLocaleLowerCase()||v===e.key.toLocaleUpperCase())) return
+		keys = [...keys, e.key.toLocaleLowerCase()]
+		pressedKeys = [...pressedKeys, e.key.toLocaleLowerCase()].sort((a,b) => {
+			let isModA = mods.includes(a)
+			let isModB = mods.includes(b)
+			if (isModA && !isModB) {
+				return -1
+			} else if (!isModA && isModB) {
+				return 1
+			} else if (isModA && isModB) {
+				return mods.indexOf(a) - mods.indexOf(b)
+			}
+			return 0
+		})
+		let hotkey = hotkeyActions.find(v=>v.keys===pressedKeys.join('+'))
+		if (hotkey) {
+			publisher.publish(`hotkeys.${hotkey.local?'local':'global'}.${hotkey.keys}.trigger`, {})
+		}
+	}
+	function handleKeyUp(e: KeyboardEvent) {
+		keys = keys.filter(v=>v!==e.key.toLocaleLowerCase())
+		if (keys.length === 0) {
+			pressedKeys = []
+		}
 	}
 
 	onMount(() => {
@@ -107,24 +130,35 @@
 				let uuid = msg.sourceTopic?.split('.')[1]
 				triggerAction(uuid as string, msg.message)
 			}),
-			publisher.subscribe('hotkeys.*.trigger', async (msg) => {
-				let hotkey = msg.sourceTopic?.split('.')[1]
+			publisher.subscribe('hotkeys.*.*.trigger', async (msg) => {
+				let hotkey = msg.sourceTopic?.split('.')[2]
 				for (let action of hotkeyActions) {
 					if (action.keys === hotkey) {
 						triggerAction(action.uuid, msg.message)
 					}
 				}
+			}),
+			publisher.subscribe('hotkeys.local.*.register', async (msg) => {
+				let keys = msg.sourceTopic?.split('.')[2]
+			}),
+			publisher.subscribe('hotkeys.local.*.unregister', async (msg) => {
+				let keys = msg.sourceTopic?.split('.')[2]
 			})
 		]
 
 		// Register hotkeys
 		for (let action of $actions) {
 			if (isActionCoreHotkey(action)) {
-				publisher.publish(`hotkeys.${action.keys}.register`, {})
+				publisher.publish(`hotkeys.${action.local?'local':'global'}.${action.keys}.register`, {})
 			}
 		}
 
+		window.addEventListener('keydown', handleKeyDown)
+		window.addEventListener('keyup', handleKeyUp)
+
 		return () => {
+			window.removeEventListener('keydown', handleKeyDown)
+			window.removeEventListener('keyup', handleKeyUp)
 			for (let sub of subs) {
 				publisher.unsubscribe(sub)
 			}

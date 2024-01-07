@@ -19,6 +19,7 @@ export function isActionService(o: any): o is ActionServiceI {
 export interface ActionCoreHotkeyI extends ActionInterface {
 	type: 'core'
 	id: 'hotkey'
+	local: boolean
 	keys: string
 }
 export function isActionCoreHotkey(o: any): o is ActionCoreHotkeyI {

@@ -59,6 +59,7 @@
 					type: 'core',
 					id: 'hotkey',
 					keys: '',
+					local: false,
 				})
 			}
 		}
@@ -345,7 +346,7 @@
 								{/key}
 							{/if}
 						{:else if isActionCoreHotkey(selectedAction)}
-							<ActionHotkey bind:value={selectedAction.keys}></ActionHotkey>
+							<ActionHotkey bind:value={selectedAction.keys} bind:local={selectedAction.local}></ActionHotkey>
 						{/if}
 					</svelte:fragment>
 				</DropList>

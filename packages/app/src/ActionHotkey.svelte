@@ -2,10 +2,11 @@
   import Button from "./components/Button.svelte"
 	
 	export let value: string
+	export let local: boolean
 	let valueKeys: string[]
 	$: valueKeys = value.split('+')
 	
-	const mods = ['Control', 'Command', 'Option', 'Shift', 'Alt', 'AltGr', 'Super', 'Meta']
+	const mods = ['control', 'command', 'option', 'shift', 'alt', 'altgr', 'super', 'meta']
 
 	let keyup: (e: KeyboardEvent) => void
 	let keydown: (e: KeyboardEvent) => void
@@ -33,13 +34,15 @@
 			e.preventDefault()
 			if (pressedKeys.find(v=>v===e.key||v===e.key.toLocaleLowerCase()||v===e.key.toLocaleUpperCase())) return
 			keys = [...keys, e.key.toLocaleLowerCase()]
-			pressedKeys = [...pressedKeys, e.key].sort((a,b) => {
+			pressedKeys = [...pressedKeys, e.key.toLocaleLowerCase()].sort((a,b) => {
 				let isModA = mods.includes(a)
 				let isModB = mods.includes(b)
 				if (isModA && !isModB) {
 					return -1
 				} else if (!isModA && isModB) {
 					return 1
+				} else if (isModA && isModB) {
+					return mods.indexOf(a) - mods.indexOf(b)
 				}
 				return 0
 			})
@@ -55,7 +58,7 @@
 
 		recording = false
 		if (pressedKeys.length > 0) {
-			value = pressedKeys.map(v=>mods.includes(v)?v:v.toLocaleUpperCase()).join('+')
+			value = pressedKeys.map(v=>mods.includes(v)?v:v.toLocaleLowerCase()).join('+')
 		}
 	}
 	function clear() {
@@ -69,6 +72,10 @@
 </script>
 
 <main>
+	<label>
+		<input type='checkbox' bind:checked={local}/>
+		Local
+	</label>
 	<input disabled value={recording?pressedKeys.join('+'):valueKeys.join('+')}/>
 	<Button on:click={record}>Record</Button>
 	<Button on:click={clear}>Clear</Button>
