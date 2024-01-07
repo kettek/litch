@@ -133,30 +133,24 @@ app.on("ready", async () => {
   ipcMain.handle('publish', async (event, msg) => {
     publisher.publish(end, msg)
   })
-  ipcMain.handle('registerShortcut', async (event, msg) => {
-    globalShortcut.register(msg.hotkey, () => {
-      publisher.publish('shortcuts.'+msg.hotkey+'.register')
-      publisher.publish('shortcuts.'+msg.hotkey+'.trigger')
-    })
-  })
 })
 
 // Create a hotkeys pubsub system
 {
   let keys = {}
-  const register = publisher.subscribe(`hotkeys.*.register`, async({topic, sourceTopic, message}) => {
+  const register = publisher.subscribe(`hotkeys.global.*.register`, async({topic, sourceTopic, message}) => {
     let shortcut = sourceTopic.split('.')[1]
 
-    publisher.publish(`hotkeys.${shortcut}.registered`)
+    publisher.publish(`hotkeys.global.${shortcut}.registered`)
     
     if (!keys[shortcut]) {
       keys[shortcut] = 1
       globalShortcut.register(shortcut, () => {
-        publisher.publish(`hotkeys.${shortcut}.trigger`)
+        publisher.publish(`hotkeys.global.${shortcut}.trigger`)
       })
     } else keys[shortcut]++
   })
-  const unregister = publisher.subscribe(`hotkeys.*.unregister`, async({topic, sourceTopic, message}) => {
+  const unregister = publisher.subscribe(`hotkeys.global.*.unregister`, async({topic, sourceTopic, message}) => {
     let shortcut = sourceTopic.split('.')[1]
     if (!keys[shortcut]) return
     else keys[shortcut]--
