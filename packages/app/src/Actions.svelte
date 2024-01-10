@@ -155,10 +155,11 @@
 
 		window.addEventListener('keydown', handleKeyDown)
 		window.addEventListener('keyup', handleKeyUp)
-		let blurHandler = window.addEventListener('blur', (e) => {
+		let blurHandler = () => {
 			keys = []
 			pressedKeys = []
-		})
+		}
+		window.addEventListener('blur', blurHandler)
 
 		return () => {
 			window.removeEventListener('blur', blurHandler)
