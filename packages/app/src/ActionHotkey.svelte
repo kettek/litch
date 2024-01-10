@@ -17,7 +17,12 @@
 		keyup = (e: KeyboardEvent) => {
 			e.stopPropagation()
 			e.preventDefault()
-			keys = keys.filter(v=>v!==e.key.toLocaleLowerCase())
+			// Bypassing an ancient bug in Chrome where alt+shift generates meta. See https://bugs.chromium.org/p/chromium/issues/detail?id=1020141
+			let key = e.key
+			if (e.key === 'Meta' && e.code.startsWith('Alt')) {
+				key = 'Alt'
+			}
+			keys = keys.filter(v=>v!==key.toLocaleLowerCase())
 			
 			if (keys.length === 0) {
 				done(pressedKeys)
@@ -32,9 +37,16 @@
 			}
 			e.stopPropagation()
 			e.preventDefault()
-			if (pressedKeys.find(v=>v===e.key||v===e.key.toLocaleLowerCase()||v===e.key.toLocaleUpperCase())) return
-			keys = [...keys, e.key.toLocaleLowerCase()]
-			pressedKeys = [...pressedKeys, e.key.toLocaleLowerCase()].sort((a,b) => {
+
+			// Bypassing an ancient bug in Chrome where alt+shift generates meta. See https://bugs.chromium.org/p/chromium/issues/detail?id=1020141
+			let key = e.key
+			if (e.key === 'Meta' && e.code.startsWith('Alt')) {
+				key = 'Alt'
+			}
+
+			if (pressedKeys.find(v=>v===key||v===key.toLocaleLowerCase()||v===key.toLocaleUpperCase())) return
+			keys = [...keys, key.toLocaleLowerCase()]
+			pressedKeys = [...pressedKeys, key.toLocaleLowerCase()].sort((a,b) => {
 				let isModA = mods.includes(a)
 				let isModB = mods.includes(b)
 				if (isModA && !isModB) {
