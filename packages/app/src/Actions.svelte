@@ -9,8 +9,18 @@
   import { modules } from "./stores/modules"
   import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 	
-	const overlayStates: Record<string, Record<string, any>[]> = {}
-	const moduleStates: Record<string, any[]> = {}
+	type ModuleStates = Record<string, {
+		settings: any
+		active: boolean
+	}>
+	
+	type ModuleState = {
+		settings: any
+		active: boolean
+	}
+
+	const overlayStates: Record<string, ModuleStates[]> = {}
+	const moduleStates: Record<string, ModuleState[]> = {}
 	
 	function storeModule(overlayUUID: string, moduleUUID: string): boolean {
 		let overlay = $overlays[overlayUUID]
@@ -20,7 +30,10 @@
 		if (!moduleStates[overlayUUID+moduleUUID]) {
 			moduleStates[overlayUUID+moduleUUID] = []
 		}
-		moduleStates[overlayUUID+moduleUUID].push(JSON.parse(JSON.stringify(module.settings)) || {})
+		moduleStates[overlayUUID+moduleUUID].push({
+			settings: JSON.parse(JSON.stringify(module.settings)) || {},
+			active: module.active,
+		})
 		return true
 	}
 	function restoreModule(overlayUUID: string, moduleUUID: string) {
@@ -31,7 +44,11 @@
 		if (!moduleStates[overlayUUID+moduleUUID]) {
 			return false
 		}
-		module.settings = JSON.parse(JSON.stringify(moduleStates[overlayUUID+moduleUUID].pop()))
+		const m = moduleStates[overlayUUID+moduleUUID].pop()
+		if (m) {
+			module.settings = JSON.parse(JSON.stringify(m))
+			module.active = m.active
+		}
 		if (moduleStates[overlayUUID+moduleUUID].length === 0) {
 			delete moduleStates[overlayUUID+moduleUUID]
 		}
@@ -44,9 +61,12 @@
 		if (!overlayStates[overlayUUID]) {
 			overlayStates[overlayUUID] = []
 		}
-		let modules: Record<string, any> = {}
+		let modules: ModuleStates = {}
 		for (let module of overlay.modules) {
-			modules[module.uuid] = JSON.parse(JSON.stringify(module.settings))
+			modules[module.uuid] = {
+				settings: JSON.parse(JSON.stringify(module.settings)),
+				active: module.active,
+			}
 		}
 		overlayStates[overlayUUID].push(modules)
 		return true
@@ -62,10 +82,11 @@
 		if (!modules) {
 			return false
 		}
-		for (let [moduleUUID, settings] of Object.entries(modules)) {
+		for (let [moduleUUID, state] of Object.entries(modules)) {
 			let module = overlay.modules.find(v=>v.uuid===moduleUUID)
 			if (!module) continue
-			module.settings = settings
+			module.settings = JSON.parse(JSON.stringify(state.settings))
+			module.active = state.active
 		}
 		if (overlayStates[overlayUUID].length === 0) {
 			delete overlayStates[overlayUUID]
