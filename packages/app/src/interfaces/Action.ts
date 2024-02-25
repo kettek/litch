@@ -39,7 +39,7 @@ export function isTriggerCore(o: any): o is ActionTriggerCoreI {
 	return o.type === 'core'
 }
 
-export type ActionTriggerCoreTypes = ActionTriggerCoreSoundI | ActionTriggerCoreWaitI | ActionTriggerCoreToggleModuleI
+export type ActionTriggerCoreTypes = ActionTriggerCoreSoundI | ActionTriggerCoreWaitI | ActionTriggerCoreToggleModuleI | ActionTriggerCoreStoreModuleI | ActionTriggerCoreStoreOverlayI
 
 export interface ActionTriggerCoreToggleModuleI {
 	type: 'toggleModule'
@@ -49,6 +49,25 @@ export interface ActionTriggerCoreToggleModuleI {
 }
 export function isTriggerCoreToggleModule(o: any): o is ActionTriggerCoreToggleModuleI {
 	return o.type === 'toggleModule'
+}
+
+export interface ActionTriggerCoreStoreModuleI {
+	type: 'storeModule'
+	act: 'store' | 'restore'
+	overlay: string
+	module: string
+}
+export function isTriggerCoreStoreModule(o: any): o is ActionTriggerCoreStoreModuleI {
+	return o.type === 'storeModule'
+}
+
+export interface ActionTriggerCoreStoreOverlayI {
+	type: 'storeOverlay'
+	act: 'store' | 'restore'
+	overlay: string
+}
+export function isTriggerCoreStoreOverlay(o: any): o is ActionTriggerCoreStoreOverlayI {
+	return o.type === 'storeOverlay'
 }
 
 export interface ActionTriggerCoreSoundI {
@@ -74,6 +93,8 @@ export const TriggerCoreTypes = [
 	'playSound',
 	'wait',
 	'toggleModule',
+	'storeModule',
+	'storeOverlay',
 ]
 
 export interface ActionTriggerModuleI {

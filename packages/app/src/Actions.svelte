@@ -4,11 +4,15 @@
 
 	import { actions } from "./stores/actions"
   import { getAsset } from "./assets";
-  import { ActionCoreHotkeyI, ActionTriggerModuleI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreWait, isTriggerModule } from "./interfaces/Action";
+  import { ActionCoreHotkeyI, ActionTriggerModuleI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreStoreModule, isTriggerCoreStoreOverlay, isTriggerCoreToggleModule, isTriggerCoreWait, isTriggerModule } from "./interfaces/Action";
   import { overlays, refreshOverlays } from "./stores/overlays"
   import { modules } from "./stores/modules"
   import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
+	
+	const overlayStates: Record<string, any[]> = {}
+	const moduleStates: Record<string, any[]> = {}
 
+	// Triggers an action based upon its UUID.
 	async function triggerAction(uuid: string, msg: PublishedMessage) {
 		let action = $actions.find(v=>v.uuid===uuid)
 		if (!action) return
@@ -24,19 +28,88 @@
 					let overlay = $overlays[trigger.data.overlay]
 					if (!overlay) continue
 					let module = overlay.modules.find(v=>v.uuid===moduleUUID)
-					if (!module) return
+					if (!module) continue
 					if (trigger.data.act === 'enable') {
 						module.active = true
 					} else if (trigger.data.act === 'disable') {
 						module.active = false
 					}
 					refreshOverlays()
+				} else if (isTriggerCoreStoreModule(trigger.data)) {
+					await wait(0) // This is a hack to make sure the overlay is updated before we store the module state.
+					let moduleUUID = trigger.data.module
+					let overlay = $overlays[trigger.data.overlay]
+					if (!overlay) continue
+					let module = overlay.modules.find(v=>v.uuid===moduleUUID)
+					if (!module) continue
+					
+					if (trigger.data.act === 'store') {
+						if (!moduleStates[trigger.data.overlay+moduleUUID]) {
+							moduleStates[trigger.data.overlay+moduleUUID] = []
+						}
+						moduleStates[trigger.data.overlay+moduleUUID].push(JSON.parse(JSON.stringify(module.settings)) || {})
+						continue
+					} else {
+						if (!moduleStates[trigger.data.overlay+moduleUUID]) {
+							continue
+						}
+						module.settings = JSON.parse(JSON.stringify(moduleStates[trigger.data.overlay+moduleUUID].pop()))
+						if (moduleStates[trigger.data.overlay+moduleUUID].length === 0) {
+							delete moduleStates[trigger.data.overlay+moduleUUID]
+						}
+					}
+					// TODO: Add a global "refreshModule(overlay, module) function"
+					refreshOverlays()
+					try {
+						await module.channels.publish('update', module.settings)
+					} catch(e: any) {
+						if (e.errors) {
+							for (let err of e.errors) {
+								console.error(err)
+							}
+						} else {
+							console.error(e)
+						}
+					}
+				} else if (isTriggerCoreStoreOverlay(trigger.data)) {
+					await wait(0) // This is a hack to make sure the overlay is updated before we store the module state.
+					let overlay = $overlays[trigger.data.overlay]
+					if (!overlay) continue
+					if (trigger.data.act === 'store') {
+						if (!overlayStates[trigger.data.overlay]) {
+							overlayStates[trigger.data.overlay] = []
+						}
+						overlayStates[trigger.data.overlay].push(JSON.parse(JSON.stringify(overlay.modules)) || {})
+						continue
+					} else {
+						if (!overlayStates[trigger.data.overlay]) {
+							continue
+						}
+						overlay.modules = JSON.parse(JSON.stringify(overlayStates[trigger.data.overlay].pop()))
+						if (overlayStates[trigger.data.overlay].length === 0) {
+							delete overlayStates[trigger.data.overlay]
+						}
+					}
+					refreshOverlays()
+					for (let module of overlay.modules) {
+						try {
+							await module.channels.publish('update', module.settings)
+						} catch(e: any) {
+							if (e.errors) {
+								for (let err of e.errors) {
+									console.error(err)
+								}
+							} else {
+								console.error(e)
+							}
+						}
+					}
 				}
 			} else if (isTriggerModule(trigger)) {
 				let overlay = $overlays[trigger.overlayUUID]
 				if (!overlay) continue
 				let module = overlay.modules.find(v=>v.uuid===(trigger as ActionTriggerModuleI).moduleInstanceUUID)
-				if (!module) return
+				if (!module) continue
 				module.instanceChannel.publish('trigger.'+trigger.triggerID, {
 					trigger: trigger.data,
 					action: msg,
@@ -45,6 +118,7 @@
 		}
 	}
 
+	// Waits for an amount of time before resolving. This is used to chain actions.
 	function wait(duration: number) {
 		return new Promise((resolve: (value: void) => void, reject: (reason: any) => void) => {
 			setTimeout(() => {
@@ -53,6 +127,7 @@
 		})
 	}
 
+	// Plays an asset sound and optionally waits for it to finish before resolving.
 	function playSound(collection: string, asset: string, volume: number, wait: boolean = false) {
 		return new Promise((resolve: (value: void) => void, reject: (reason: any) => void) => {
 			let soundAsset = getAsset(collection, asset)

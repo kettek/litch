@@ -11,7 +11,7 @@
 	import { actions, addAction, refreshActions, removeAction, duplicateAction } from './stores/actions'
 	import { services } from './stores/services'
 	import ActionCondition from './ActionCondition.svelte'
-  import { ActionI, ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreToggleModule, isTriggerCoreWait, isTriggerModule } from './interfaces/Action'
+  import { ActionI, ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreStoreModule, isTriggerCoreStoreOverlay, isTriggerCoreToggleModule, isTriggerCoreWait, isTriggerModule } from './interfaces/Action'
   import AssetViewer from './components/AssetViewer.svelte'
   import AssetsCard from './AssetsCard.svelte'
   import { getAsset } from './assets'
@@ -125,6 +125,27 @@
 						act: 'enable',
 						overlay: '',
 						module: '',
+					}
+				}
+			} else if (id === 'storeModule') {
+				trigger = {
+					type: 'core',
+					fulltype: triggerType,
+					data: {
+						type: 'storeModule',
+						act: 'store',
+						overlay: '',
+						module: '',
+					}
+				}
+			} else if (id === 'storeOverlay') {
+				trigger = {
+					type: 'core',
+					fulltype: triggerType,
+					data: {
+						type: 'storeOverlay',
+						act: 'store',
+						overlay: '',
 					}
 				}
 			}
@@ -424,6 +445,33 @@
 																<option value={module.uuid}>{module.title}</option>
 															{/each}
 														{/if}
+													</select>
+												{:else if isTriggerCoreStoreModule(trigger.data)}
+													<select bind:value={trigger.data.act} on:change={refreshActions}>
+														<option value='store'>{$_('store')}</option>
+														<option value='restore'>{$_('restore')}</option>
+													</select>
+													<select bind:value={trigger.data.overlay} on:change={refreshActions}>
+														{#each Object.entries($overlays) as [name, overlay]}
+															<option value={overlay.uuid}>{overlay.title}</option>
+														{/each}
+													</select>
+													<select bind:value={trigger.data.module}>
+														{#if $overlays[trigger.data.overlay]}
+															{#each $overlays[trigger.data.overlay].modules as module}
+																<option value={module.uuid}>{module.title}</option>
+															{/each}
+														{/if}
+													</select>
+												{:else if isTriggerCoreStoreOverlay(trigger.data)}
+														<select bind:value={trigger.data.act} on:change={refreshActions}>
+														<option value='store'>{$_('store')}</option>
+														<option value='restore'>{$_('restore')}</option>
+													</select>
+													<select bind:value={trigger.data.overlay} on:change={refreshActions}>
+														{#each Object.entries($overlays) as [name, overlay]}
+															<option value={overlay.uuid}>{overlay.title}</option>
+														{/each}
 													</select>
 												{/if}
 											</div>

@@ -95,6 +95,8 @@
 		"playSound": "Play a sound",
 		"wait": "Wait",
 		"toggleModule": "Toggle a module",
+		"storeModule": "Store or restore a module",
+		"storeOverlay": "Store or restore an overlay",
 		"triggerModule": "Module Trigger",
 		"triggerTarget": "Target",
 		"triggerVariables": "Trigger Variables",
