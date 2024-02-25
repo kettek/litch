@@ -9,8 +9,69 @@
   import { modules } from "./stores/modules"
   import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
 	
-	const overlayStates: Record<string, any[]> = {}
+	const overlayStates: Record<string, Record<string, any>[]> = {}
 	const moduleStates: Record<string, any[]> = {}
+	
+	function storeModule(overlayUUID: string, moduleUUID: string): boolean {
+		let overlay = $overlays[overlayUUID]
+		if (!overlay) return false
+		let module = overlay.modules.find(v=>v.uuid===moduleUUID)
+		if (!module) return false
+		if (!moduleStates[overlayUUID+moduleUUID]) {
+			moduleStates[overlayUUID+moduleUUID] = []
+		}
+		moduleStates[overlayUUID+moduleUUID].push(JSON.parse(JSON.stringify(module.settings)) || {})
+		return true
+	}
+	function restoreModule(overlayUUID: string, moduleUUID: string) {
+		let overlay = $overlays[overlayUUID]
+		if (!overlay) return false
+		let module = overlay.modules.find(v=>v.uuid===moduleUUID)
+		if (!module) return false
+		if (!moduleStates[overlayUUID+moduleUUID]) {
+			return false
+		}
+		module.settings = JSON.parse(JSON.stringify(moduleStates[overlayUUID+moduleUUID].pop()))
+		if (moduleStates[overlayUUID+moduleUUID].length === 0) {
+			delete moduleStates[overlayUUID+moduleUUID]
+		}
+		return true
+	}
+	
+	function storeOverlay(overlayUUID: string): boolean {
+		let overlay = $overlays[overlayUUID]
+		if (!overlay) return false
+		if (!overlayStates[overlayUUID]) {
+			overlayStates[overlayUUID] = []
+		}
+		let modules: Record<string, any> = {}
+		for (let module of overlay.modules) {
+			modules[module.uuid] = JSON.parse(JSON.stringify(module.settings))
+		}
+		overlayStates[overlayUUID].push(modules)
+		return true
+	}
+	
+	function restoreOverlay(overlayUUID: string): boolean {
+		let overlay = $overlays[overlayUUID]
+		if (!overlay) return false
+		if (!overlayStates[overlayUUID]) {
+			return false
+		}
+		let modules = overlayStates[overlayUUID].pop()
+		if (!modules) {
+			return false
+		}
+		for (let [moduleUUID, settings] of Object.entries(modules)) {
+			let module = overlay.modules.find(v=>v.uuid===moduleUUID)
+			if (!module) continue
+			module.settings = settings
+		}
+		if (overlayStates[overlayUUID].length === 0) {
+			delete overlayStates[overlayUUID]
+		}
+		return true
+	}
 
 	// Triggers an action based upon its UUID.
 	async function triggerAction(uuid: string, msg: PublishedMessage) {
@@ -44,18 +105,11 @@
 					if (!module) continue
 					
 					if (trigger.data.act === 'store') {
-						if (!moduleStates[trigger.data.overlay+moduleUUID]) {
-							moduleStates[trigger.data.overlay+moduleUUID] = []
-						}
-						moduleStates[trigger.data.overlay+moduleUUID].push(JSON.parse(JSON.stringify(module.settings)) || {})
+						storeModule(trigger.data.overlay, moduleUUID)
 						continue
 					} else {
-						if (!moduleStates[trigger.data.overlay+moduleUUID]) {
+						if (!restoreModule(trigger.data.overlay, moduleUUID)) {
 							continue
-						}
-						module.settings = JSON.parse(JSON.stringify(moduleStates[trigger.data.overlay+moduleUUID].pop()))
-						if (moduleStates[trigger.data.overlay+moduleUUID].length === 0) {
-							delete moduleStates[trigger.data.overlay+moduleUUID]
 						}
 					}
 					// TODO: Add a global "refreshModule(overlay, module) function"
@@ -76,18 +130,11 @@
 					let overlay = $overlays[trigger.data.overlay]
 					if (!overlay) continue
 					if (trigger.data.act === 'store') {
-						if (!overlayStates[trigger.data.overlay]) {
-							overlayStates[trigger.data.overlay] = []
-						}
-						overlayStates[trigger.data.overlay].push(JSON.parse(JSON.stringify(overlay.modules)) || {})
+						storeOverlay(trigger.data.overlay)
 						continue
 					} else {
-						if (!overlayStates[trigger.data.overlay]) {
+						if (!restoreOverlay(trigger.data.overlay)) {
 							continue
-						}
-						overlay.modules = JSON.parse(JSON.stringify(overlayStates[trigger.data.overlay].pop()))
-						if (overlayStates[trigger.data.overlay].length === 0) {
-							delete overlayStates[trigger.data.overlay]
 						}
 					}
 					refreshOverlays()
