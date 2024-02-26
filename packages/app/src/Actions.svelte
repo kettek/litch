@@ -4,10 +4,11 @@
 
 	import { actions } from "./stores/actions"
   import { getAsset } from "./assets";
-  import { ActionCoreHotkeyI, ActionTriggerModuleI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreStoreModule, isTriggerCoreStoreOverlay, isTriggerCoreToggleModule, isTriggerCoreWait, isTriggerModule } from "./interfaces/Action";
+  import { ActionCoreHotkeyI, ActionTriggerModuleI, ActionTriggerServiceI, isActionCoreHotkey, isTriggerCore, isTriggerCoreSound, isTriggerCoreStoreModule, isTriggerCoreStoreOverlay, isTriggerCoreToggleModule, isTriggerCoreWait, isTriggerModule, isTriggerService } from "./interfaces/Action";
   import { overlays, refreshOverlays } from "./stores/overlays"
   import { modules } from "./stores/modules"
   import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
+  import { services } from "./stores/services";
 	
 	type ModuleStates = Record<string, {
 		settings: any
@@ -179,6 +180,13 @@
 				let module = overlay.modules.find(v=>v.uuid===(trigger as ActionTriggerModuleI).moduleInstanceUUID)
 				if (!module) continue
 				module.instanceChannel.publish('trigger.'+trigger.triggerID, {
+					trigger: trigger.data,
+					action: msg,
+				})
+			} else if (isTriggerService(trigger)) {
+				let service = $services.find(v=>v.uuid===(trigger as ActionTriggerServiceI).serviceUUID)
+				if (!service) continue
+				service.channel.publish('trigger.'+trigger.triggerID, {
 					trigger: trigger.data,
 					action: msg,
 				})

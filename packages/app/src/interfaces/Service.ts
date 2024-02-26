@@ -2,6 +2,7 @@ import type { SvelteComponent } from "svelte"
 import type { Subscriber, SubscriberHandler } from '@kettek/pubsub/dist/Subscriber'
 import type { Publisher } from "@kettek/pubsub/dist/Publisher"
 import type { ActionEventsI } from "./Action"
+import type { ModuleTriggerEventsInterface } from "./Module"
 
 export interface ServiceSourceInterface {
 	uuid: string
@@ -35,6 +36,8 @@ export interface ServiceInterface {
 	locales: Record<string, any>
 	//
 	actionEvents: ActionEventsI
+	// FIXME: Make the type here a universal one.
+	triggerEvents?: ModuleTriggerEventsInterface
 	// data is the "live" data used by the service. It is shared between the instance and any actionEvent components.
 	data: any
 	//

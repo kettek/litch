@@ -13,4 +13,4 @@
 
 </script>
 
-<ModuleWrapper bind:data={service.data} updateData={(data)=>{service.data=data;refreshServices()}} this={service.InstanceComponent} channel={service.channel} publisher={publisher} actions={serviceActions}/>
+<ModuleWrapper bind:data={service.data} updateData={(data)=>{service.data=data;refreshServices()}} this={service.InstanceComponent} channel={service.channel} publisher={publisher} actions={serviceActions} settings={service.settings} />

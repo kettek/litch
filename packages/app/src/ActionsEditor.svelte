@@ -11,7 +11,7 @@
 	import { actions, addAction, refreshActions, removeAction, duplicateAction } from './stores/actions'
 	import { services } from './stores/services'
 	import ActionCondition from './ActionCondition.svelte'
-  import { ActionI, ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreStoreModule, isTriggerCoreStoreOverlay, isTriggerCoreToggleModule, isTriggerCoreWait, isTriggerModule } from './interfaces/Action'
+  import { ActionI, ActionInterface, ActionTriggerI, TriggerCoreTypes, isActionCoreHotkey, isActionService, isTriggerCore, isTriggerCoreSound, isTriggerCoreStoreModule, isTriggerCoreStoreOverlay, isTriggerCoreToggleModule, isTriggerCoreWait, isTriggerModule, isTriggerService } from './interfaces/Action'
   import AssetViewer from './components/AssetViewer.svelte'
   import AssetsCard from './AssetsCard.svelte'
   import { getAsset } from './assets'
@@ -27,6 +27,7 @@
   import ActionModuleTrigger from './ActionModuleTrigger.svelte';
   import ActionPayload from './ActionPayload.svelte';
   import { publisher } from './modules'
+  import ActionServiceTrigger from './ActionServiceTrigger.svelte';
 	
 	let actionSelect: HTMLSelectElement
 	let triggerSelects: HTMLSelectElement[] = []
@@ -160,6 +161,17 @@
 				fulltype: triggerType,
 				overlayUUID: '',
 				moduleInstanceUUID: '',
+				data: {},
+			}
+		} else if (type.startsWith('service')) {
+			let parts = type.split('.')
+			let uuid = parts[1]
+			let id = types[1]
+			trigger = {
+				type: 'service',
+				serviceUUID: uuid,
+				triggerID: id,
+				fulltype: triggerType,
 				data: {},
 			}
 		}
@@ -379,6 +391,13 @@
 								{#each TriggerCoreTypes as coreType}
 									<option value={'core:'+coreType}>{$_('actions.'+coreType)}</option>
 								{/each}
+								{#each Object.entries($services) as [uuid, service]}
+									{#if service.triggerEvents?.actions}
+										{#each service.triggerEvents.actions as triggerAction}
+											<option value={`service.${service.uuid}:${triggerAction.id}`}>{service.title}: {triggerAction.title}</option>
+										{/each}
+									{/if}
+								{/each}
 								{#each Object.entries($modules) as [uuid, module]}
 									{#if module.triggerEvents?.actions}
 										{#each module.triggerEvents.actions as triggerAction}
@@ -406,6 +425,8 @@
 									<ItemGroup label>
 										{#if isTriggerCore(trigger)}
 											{$_('actions.'+trigger.data.type)}
+										{:else if isTriggerService(trigger)}
+											{$services.find(v=>v.uuid===trigger.serviceUUID)?.title}: {$services.find(v=>v.uuid===trigger.serviceUUID)?.triggerEvents?.actions.find(v=>v.id===trigger.triggerID)?.title}
 										{:else if isTriggerModule(trigger)}
 											{$modules[trigger.moduleUUID]?.title}: {$modules[trigger.moduleUUID]?.triggerEvents?.actions.find(v=>v.id===trigger.triggerID)?.title}
 										{/if}
@@ -496,6 +517,8 @@
 											{#if $overlays[trigger.overlayUUID]?.modules.find(v=>v.uuid===trigger.moduleInstanceUUID)}
 												<ActionModuleTrigger trigger={trigger}></ActionModuleTrigger>
 											{/if}
+										{:else if isTriggerService(trigger)}
+											<ActionServiceTrigger trigger={trigger}></ActionServiceTrigger>
 										{/if}
 									</Section>
 									<Button tertiary invert on:click={(e)=>enableTriggerMenu(e, index)}>
