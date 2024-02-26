@@ -19,6 +19,12 @@
 	"userRegex": "Username Match",
 	"messageRegex": "Message Match",
 	"userColor": "User's Chat Color",
+	"triggers": {
+		"chat": {
+			"message": "message",
+			"messageInfo": "The text that is sent to the chat."
+		}
+	},
 	"conditions": {
 		"redeem": {
 			"rewardID": "Unique ID of the reward.",

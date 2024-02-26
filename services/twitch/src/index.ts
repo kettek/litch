@@ -5,6 +5,7 @@ import RedeemTitle from './RedeemTitle.svelte'
 import RaidCondition from './RaidCondition.svelte'
 import ChatCondition from './ChatCondition.svelte'
 import en from '../locales/en.json'
+import ChatAction from './ChatAction.svelte'
 
 export default {
 	title: "Twitch Integration",
@@ -24,6 +25,15 @@ export default {
 	},
 	SettingsComponent: SettingsComponent,
 	InstanceComponent: InstanceComponent,
+	triggerEvents: {
+		actions: [
+			{
+				title: "Chat",
+				id: "chat",
+				ActionComponent: ChatAction,
+			}
+		]
+	},
 	actionEvents: {
 		conditions: [
 			{

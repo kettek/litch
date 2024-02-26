@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
 
 	import type { ServiceChannel } from '@kettek/litch-app/src/interfaces/Service'
-	import type { ServiceData } from './interfaces'
+	import type { ServiceData, SettingsInterface } from './interfaces'
   import type { ActionServiceI } from '@kettek/litch-app/src/interfaces/Action'
 	import type { Publisher } from "@kettek/pubsub/dist/Publisher"
 	
@@ -10,6 +10,7 @@
 	export let publisher: Publisher
 	export let channel: ServiceChannel
 	export let actions: ActionServiceI[]
+	export let settings: SettingsInterface
 	export let updateData: (data: any) => void
 
 	// TODO: Add interfaces for all these messaage types and use whatever typescript's type coercion code is.
@@ -73,6 +74,20 @@
 						message: message.text,
 					})
 				}
+			}
+		} else if (topic.startsWith('trigger.')) {
+			// FIXME: This should be handled by an additional field in the triggerEvents->actions->... object.
+			let triggerID = topic.split('.')[1]
+			if (triggerID === 'chat') {
+				let msg = message.trigger.message
+				for (const prop in message.action) {
+					msg = msg.replace(new RegExp('{'+prop+'}', 'g'), message.action[prop])
+				}
+				// Send it over to main.
+				channel.publish('say', {
+					channel: settings.channel,
+					message: msg,
+				})
 			}
 		} else {
 			console.log('UNHANDLED: ', topic, message)
