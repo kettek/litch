@@ -388,21 +388,27 @@
 					<svelte:fragment slot='content'>
 						<ItemGroup label tertiary>
 							<select bind:value={triggerType}>
-								{#each TriggerCoreTypes as coreType}
-									<option value={'core:'+coreType}>{$_('actions.'+coreType)}</option>
-								{/each}
+								<optgroup label={$_('actions.coreType')}>
+									{#each TriggerCoreTypes as coreType}
+										<option value={'core:'+coreType}>{$_('actions.'+coreType)}</option>
+									{/each}
+								</optgroup>
 								{#each Object.entries($services) as [uuid, service]}
 									{#if service.triggerEvents?.actions}
-										{#each service.triggerEvents.actions as triggerAction}
-											<option value={`service.${service.uuid}:${triggerAction.id}`}>{service.title}: {triggerAction.title}</option>
-										{/each}
+										<optgroup label={$_('actions.serviceType')+": "+service.title}>
+											{#each service.triggerEvents.actions as triggerAction}
+												<option value={`service.${service.uuid}:${triggerAction.id}`}>{triggerAction.title}</option>
+											{/each}
+										</optgroup>
 									{/if}
 								{/each}
 								{#each Object.entries($modules) as [uuid, module]}
 									{#if module.triggerEvents?.actions}
-										{#each module.triggerEvents.actions as triggerAction}
-											<option value={`module.${module.uuid}:${triggerAction.id}`}>{module.title}: {triggerAction.title}</option>
-										{/each}
+										<optgroup label={$_('actions.moduleType')+": "+module.title}>
+											{#each module.triggerEvents.actions as triggerAction}
+												<option value={`module.${module.uuid}:${triggerAction.id}`}>{triggerAction.title}</option>
+											{/each}
+										</optgroup>
 									{/if}
 								{/each}
 							</select>

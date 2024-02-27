@@ -102,7 +102,10 @@
 		"triggerVariables": "Trigger Variables",
 		"variablesInfo": "These values can be used for variable substitution in triggers that can define messages.",
 		"variablesInfoExample": "So long and thanks for all the redeems, {userDisplayName}!",
-		"variableExample": "Example"
+		"variableExample": "Example",
+		"coreType": "Core",
+		"serviceType": "Service",
+		"moduleType": "Module"
 	},
 	"settings": {
 		"title": "Settings",
