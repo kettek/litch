@@ -5,6 +5,7 @@
 	import type { ServiceData, SettingsInterface } from './interfaces'
   import type { ActionServiceI } from '@kettek/litch-app/src/interfaces/Action'
 	import type { Publisher } from "@kettek/pubsub/dist/Publisher"
+	import DD from 'dot-dotty'
 	
 	export let data: ServiceData
 	export let publisher: Publisher
@@ -79,10 +80,11 @@
 			// FIXME: This should be handled by an additional field in the triggerEvents->actions->... object.
 			let triggerID = topic.split('.')[1]
 			if (triggerID === 'chat') {
-				let msg = message.trigger.message
-				for (const prop in message.action) {
-					msg = msg.replace(new RegExp('{'+prop+'}', 'g'), message.action[prop])
-				}
+				// FIXME: Replace with a common action message transform function.
+				let dot = DD(message.action, {throwErrors: false})
+				let msg = message.trigger.message.replace(/\{([^\}]+)\}/g, (match, key) => {
+					return dot[key]
+				})
 				// Send it over to main.
 				channel.publish('say', {
 					channel: settings.channel,
