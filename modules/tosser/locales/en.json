@@ -1,0 +1,29 @@
+{
+	"updateRate": "Update rate (ms)",
+	"maxAccumulator": "Max accumulator (ms)",
+	"gravity": "Gravity",
+	"spawnRangeX": "Spawn X min/max",
+	"spawnRangeY": "Spawn Y min/max",
+	"spawnVelocity": "Spawn velocity min/max",
+	"spawnAngle": "Spawn angle min/max",
+	"lifetime": "Lifetime min/max (ticks)",
+	"selectAnItem": "Select or create a tossable",
+	"unsupportedAsset": "Unsupported asset",
+	"openAsset": "Open asset",
+	"addItem": "Add item",
+	"deleteItem": "Delete tossable",
+	"duplicateItem": "Duplicate tossable",
+	"positionDimensionInformation": "Position properties are percentages of the overlay view.",
+	"item": {
+		"emojiType": "Emoji",
+		"assetType": "Asset",
+		"type": "Type",
+		"baseSize": "Base Size",
+		"count": "Count",
+		"reloadRequired": "Changing the following options require a reload.",
+		"scale": "Scale"
+	},
+	"tossAction": {
+		"itemIndex": "Tossable Index"
+	}
+}
