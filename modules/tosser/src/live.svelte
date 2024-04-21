@@ -27,8 +27,8 @@
 
 	reload()
 	
-	function makeItem(): Item {
-		let itemIndex = Math.floor(Math.random()*settings.items.length)
+	function makeItem(o: {itemIndex: number, randomizeItemIndex: boolean}): Item {
+		let itemIndex = o.randomizeItemIndex ? Math.floor(Math.random()*settings.items.length) : o.itemIndex
 
 		let velocity = settings.spawnVelocity[0] + Math.random() * (settings.spawnVelocity[1] - settings.spawnVelocity[0])
 		let rads = (settings.spawnAngle[0] + Math.random() * (settings.spawnAngle[1] - settings.spawnAngle[0])) * Math.PI / 180
@@ -103,8 +103,7 @@
 			} else if (topic.startsWith('trigger.')) {
 				let triggerID = topic.split('.')[1]
 				if (triggerID === 'toss') {
-					let item = makeItem()
-					console.log('tossing', item)
+					let item = makeItem(message.trigger)
 					items.push(item)
 				}
 			}

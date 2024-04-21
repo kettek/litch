@@ -24,6 +24,7 @@
 		"scale": "Scale"
 	},
 	"tossAction": {
-		"itemIndex": "Tossable Index"
+		"itemIndex": "Tossable Index",
+		"randomizeItemIndex": "Randomize Tossable Index"
 	}
 }
