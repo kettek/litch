@@ -151,7 +151,7 @@
 
 <section>
 	{#each rockets as rocket}
-		<div style="left: {rocket.x}%; top: {rocket.y}%; transform: scale({settings.groups[rocket.rocketIndex].rocket.size});" class='item'>
+		<div style="left: calc({rocket.x}% + {settings.groups[rocket.rocketIndex].rocket.offsetX??0}px); top: calc({rocket.y}% + {settings.groups[rocket.rocketIndex].rocket.offsetY??0}px); transform: scale({settings.groups[rocket.rocketIndex].rocket.size});" class='item'>
 			{#if rocket.group.rocket.sourceType === 'emoji'}
 				{rocket.group.rocket.emoji}️
 			{:else if rocket.group.rocket.sourceType === 'particle'}
@@ -169,7 +169,7 @@
 		</div>
 	{/each}
 	{#each particles as particle}
-		<div style="left: {particle.x}%; top: {particle.y}%; opacity: {particle.opacity}; transform: scale({particle.payload.size}); color: {particle.payload.color};" class='item'>
+		<div style="left: calc({particle.x}% + {particle.payload.offsetX??0}px); top: calc({particle.y}% + {particle.payload.offsetY??0}px); opacity: {particle.opacity}; transform: scale({particle.payload.size}); color: {particle.payload.color};" class='item'>
 			{#if particle.payload.sourceType === 'emoji'}
 				{particle.payload.emoji}️
 			{:else if particle.payload.sourceType === 'particle'}

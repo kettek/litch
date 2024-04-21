@@ -145,6 +145,13 @@
 					{format('group.baseSize')}
 				</svelte:fragment>
 			</ItemGroup>
+			<ItemGroup count={3} maxedCount={2} label>
+				<input type='number' bind:value={currentGroup.rocket.offsetX}/>
+				<input type='number' bind:value={currentGroup.rocket.offsetY}/>
+				<svelte:fragment slot='label'>
+					offset x/y
+				</svelte:fragment>
+			</ItemGroup>
 			<ItemGroup label>
 				<input type='number' bind:value={currentGroup.rocket.force}/>
 				<svelte:fragment slot='label'>
@@ -230,6 +237,13 @@
 						<input type='number' bind:value={currentPayload.size}/>
 						<svelte:fragment slot='label'>
 							{format('group.baseSize')}
+						</svelte:fragment>
+					</ItemGroup>
+					<ItemGroup count={3} maxedCount={2} label>
+						<input type='number' bind:value={currentPayload.offsetX}/>
+						<input type='number' bind:value={currentPayload.offsetY}/>
+						<svelte:fragment slot='label'>
+							offset x/y
 						</svelte:fragment>
 					</ItemGroup>
 					<ItemGroup label>

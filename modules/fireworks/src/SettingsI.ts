@@ -33,6 +33,8 @@ export interface SpawnItem {
 	lifetimeMax?: number
 	weightMin?: number
 	weightMax?: number
+	offsetX?: number
+	offsetY?: number
 }
 
 export const defaultRocket: SpawnItem = {
@@ -47,6 +49,8 @@ export const defaultRocket: SpawnItem = {
 	},
 	size: 2,
 	force: 1,
+	offsetX: 0,
+	offsetY: 0,
 }
 
 export const defaultPayload: SpawnItem = {
@@ -67,6 +71,8 @@ export const defaultPayload: SpawnItem = {
 	lifetimeMax: 1100,
 	weightMin: 1,
 	weightMax: 2,
+	offsetX: 0,
+	offsetY: 0,
 }
 
 export const defaultGroup: SpawnGroup = {
