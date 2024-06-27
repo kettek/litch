@@ -11,12 +11,15 @@
 
 <main class:tertiary={true}>
 	{#each Object.entries(modules) as [uuid, module]}
-		<li title={uuid}>
-			<span>{module.title}</span>
-			<Button tertiary on:click={()=>dispatch('add', uuid)} title={$_('overlays.addModule', {values: {title: module.title}})}>
-				<Icon icon='add'></Icon>
-			</Button>
-		</li>
+		<!-- if the settings component is missing, presume it to be an actions only component -->
+		{#if module.settingsComponent}
+			<li title={uuid}>
+				<span>{module.title}</span>
+				<Button tertiary on:click={()=>dispatch('add', uuid)} title={$_('overlays.addModule', {values: {title: module.title}})}>
+					<Icon icon='add'></Icon>
+				</Button>
+			</li>
+		{/if}
 	{/each}
 </main>
 
