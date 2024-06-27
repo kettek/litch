@@ -18,10 +18,10 @@ export interface ModuleInterface {
 	defaults: ModuleDefaultsInterface
 	locales: Record<string, any>
 	//
-	eventTriggers?: ModuleEventTriggersInterface
+	triggerEvents?: ModuleTriggerEventsInterface
 }
 
-export interface ModuleEventTriggersInterface {
+export interface ModuleTriggerEventsInterface {
 	actions: ModuleTriggerActionInterface[]
 }
 

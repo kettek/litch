@@ -51,8 +51,8 @@
 	}
 </script>
 
-{#if module && realModule?.eventTriggers}
-	<ModuleWrapper this={realModule?.eventTriggers?.actions.find(v=>v.id===trigger.triggerID)?.ActionComponent} bind:data={trigger.data} assets={assets} settings={module.settings} refresh={refreshActions} format={localeFormat}/>
+{#if module && realModule?.triggerEvents}
+	<ModuleWrapper this={realModule?.triggerEvents?.actions.find(v=>v.id===trigger.triggerID)?.ActionComponent} bind:data={trigger.data} assets={assets} settings={module.settings} refresh={refreshActions} format={localeFormat}/>
 {/if}
 {#if showAssets}
 	<AssetsCard multiple={showOptions.multiple} collectionsOnly={showOptions.collectionsOnly} on:close={closeAssets}/>

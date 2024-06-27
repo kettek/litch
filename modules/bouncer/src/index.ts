@@ -7,8 +7,8 @@ import AddAction from './AddAction.svelte'
 import ClearTempAction from './ClearTempAction.svelte'
 
 export default {
-	title: "VLC",
-	uuid: '00000000-0000-0000-0000-000000000013',
+	title: "Bouncer",
+	uuid: '00000000-0000-0000-0000-000000000011',
 	defaults: {
 		title: "Bouncer",
 		box: {
@@ -20,7 +20,7 @@ export default {
 			jiggleTime: 60,
 		},
 	},
-	eventTriggers: {
+	triggerEvents: {
 		actions: [
 			{
 				title: "Add Bouncer",

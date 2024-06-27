@@ -24,7 +24,7 @@ export default {
 			}
 		},
 	},
-	eventTriggers: {
+	triggerEvents: {
 		actions: [
 			{
 				title: "Randomize",
