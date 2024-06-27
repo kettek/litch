@@ -1,3 +1,5 @@
+import type { ModuleInterface } from '@kettek/litch-app/src/interfaces/Module'
+import type { SettingsInterface } from './Settings'
 import SettingsComponent from './settings.svelte'
 import LiveComponent from './live.svelte'
 import PreviewComponent from './preview.svelte'
@@ -35,4 +37,4 @@ export default {
 	locales: {
 		"en": en,
 	}
-}
+} satisfies ModuleInterface | {defaults: {settings: SettingsInterface}};

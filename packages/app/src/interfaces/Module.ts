@@ -1,24 +1,26 @@
-import type { SvelteComponent } from "svelte"
 import type { BoxInterface } from "./Box"
+import type { ActionEventsI } from "./Action"
+import type { SvelteComponent } from "svelte/internal"
 
 export interface ModuleDefaultsInterface {
-	title: string
-	box: BoxInterface
+	title?: string
+	box?: BoxInterface
 	settings: any
-	live: any
+	live?: any
 }
 
 export interface ModuleInterface {
 	uuid: string
 	title: string
-	instanceComponent?: SvelteComponent
-	settingsComponent?: SvelteComponent
-	previewComponent?: SvelteComponent
-	liveComponent?: SvelteComponent
+	instanceComponent?:  new (...args: any[]) => SvelteComponent
+	settingsComponent?: new (...args: any[]) => SvelteComponent
+	previewComponent?: new (...args: any[]) => SvelteComponent
+	liveComponent?:  new (...args: any[]) => SvelteComponent
 	defaults: ModuleDefaultsInterface
 	locales: Record<string, any>
 	//
 	triggerEvents?: ModuleTriggerEventsInterface
+	actionEvents?: ActionEventsI
 }
 
 export interface ModuleTriggerEventsInterface {
@@ -28,5 +30,5 @@ export interface ModuleTriggerEventsInterface {
 export interface ModuleTriggerActionInterface {
 	title: string
 	id: string
-	ActionComponent: SvelteComponent
+	ActionComponent: new (...args: any[]) => SvelteComponent
 }

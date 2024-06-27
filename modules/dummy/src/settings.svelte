@@ -1,11 +1,11 @@
 <script type="ts">
 	import type { Format } from '@kettek/litch-app/src/interfaces/Format'
-	import type { SettingsI } from './SettingsI'
+	import type { SettingsInterface } from './SettingsI'
 
 	import Section from '@kettek/litch-app/src/components/Section.svelte'
 	import ItemGroup from '@kettek/litch-app/src/components/ItemGroup.svelte'
 
-	export let settings: SettingsI
+	export let settings: SettingsInterface
 	export let format: Format
 </script>
 

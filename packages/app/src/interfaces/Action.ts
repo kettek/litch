@@ -130,7 +130,7 @@ export interface ActionEventsI {
 export interface ActionEventI {
 	title: string
 	id: any
-	ConditionComponent: SvelteComponent
-	TitleComponent?: SvelteComponent
+	ConditionComponent: new (...args: any[]) => SvelteComponent
+	TitleComponent?: new (...args: any[]) => SvelteComponent
 	payload?: Object
 }

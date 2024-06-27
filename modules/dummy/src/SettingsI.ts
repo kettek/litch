@@ -1,3 +1,3 @@
-export interface SettingsI {
+export interface SettingsInterface {
 	message: string
 }
