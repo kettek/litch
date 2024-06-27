@@ -1,4 +1,4 @@
-type CursorRequester {
+type CursorRequester = {
 	id: number
 	priority: number
 	cursor: string
