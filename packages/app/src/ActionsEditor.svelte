@@ -403,9 +403,9 @@
 									{/if}
 								{/each}
 								{#each Object.entries($modules) as [uuid, module]}
-									{#if module.triggerEvents?.actions}
+									{#if module.eventTriggers?.actions}
 										<optgroup label={$_('actions.moduleType')+": "+module.title}>
-											{#each module.triggerEvents.actions as triggerAction}
+											{#each module.eventTriggers.actions as triggerAction}
 												<option value={`module.${module.uuid}:${triggerAction.id}`}>{triggerAction.title}</option>
 											{/each}
 										</optgroup>
@@ -434,7 +434,7 @@
 										{:else if isTriggerService(trigger)}
 											{$services.find(v=>v.uuid===trigger.serviceUUID)?.title}: {$services.find(v=>v.uuid===trigger.serviceUUID)?.triggerEvents?.actions.find(v=>v.id===trigger.triggerID)?.title}
 										{:else if isTriggerModule(trigger)}
-											{$modules[trigger.moduleUUID]?.title}: {$modules[trigger.moduleUUID]?.triggerEvents?.actions.find(v=>v.id===trigger.triggerID)?.title}
+											{$modules[trigger.moduleUUID]?.title}: {$modules[trigger.moduleUUID]?.eventTriggers?.actions.find(v=>v.id===trigger.triggerID)?.title}
 										{/if}
 									</ItemGroup>
 									<Section rounded padded>

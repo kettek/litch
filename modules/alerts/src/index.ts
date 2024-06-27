@@ -19,7 +19,7 @@ export default {
 			style: defaultStyle,
 		},
 	},
-	triggerEvents: {
+	eventTriggers: {
 		actions: [
 			{
 				title: "Popup",

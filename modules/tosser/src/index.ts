@@ -26,7 +26,7 @@ export default {
 			lifetime: [200, 200],
 		},
 	},
-	triggerEvents: {
+	eventTriggers: {
 		actions: [
 			{
 				title: "Toss",

@@ -49,7 +49,7 @@ export default {
 			},
 		},
 	},
-	triggerEvents: {
+	eventTriggers: {
 		actions: [
 			{
 				title: "Mute",
