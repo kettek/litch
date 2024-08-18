@@ -157,7 +157,7 @@
 
 	async function start() {
 		try {
-			let stream = await navigator.mediaDevices.getUserMedia({audio: true})
+			let stream = await navigator.mediaDevices.getUserMedia({audio: {advanced: [{deviceId: settings.audioDevice}]}})
 			permissionFailed = false
 			hasPermission = true
 

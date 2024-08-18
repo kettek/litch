@@ -39,6 +39,7 @@ export default {
 				],
 				framerate: 100,
 			},
+			audioDevice: '',
 			sampleRate: 10,
 			sampleLimit: 2,
 			trigger: 32,

@@ -1,5 +1,7 @@
 {
 	"tuberType": "PNGTuber Type",
+	"audioDevice": "Audio Device (Disable+enable module to actually update audio)",
+	"refreshDevices": "Refresh Devices",
 	"sampleRate": "Sample Rate (ms)",
 	"sampleLimit": "Sample Limit",
 	"triggerdB": "Trigger dB",

@@ -175,7 +175,7 @@
 	let frequencyData: number[]
 	let visualizer = {
 		start: async () => {
-			let stream = await navigator.mediaDevices.getUserMedia({audio: true})
+			let stream = await navigator.mediaDevices.getUserMedia({audio: {advanced: [{ deviceId: settings.audioDevice }]}})
 
 			audioContext = new AudioContext()
 
@@ -212,6 +212,18 @@
 		await visualizer.start()
 		showVisualizer = true
 	}
+
+
+	let audioDevices: MediaDeviceInfo[] = []
+	async function getAudio() {
+		const devices = (await navigator.mediaDevices.enumerateDevices()).filter(device => device.kind === 'audioinput')
+		audioDevices = devices
+	}
+	function changeAudioDevice(e: any) {
+		settings.audioDevice = e.target.value
+	}
+
+	getAudio()
 </script>
 
 <div>
@@ -224,6 +236,18 @@
 				</select>
 				<svelte:fragment slot='label'>
 					{format('tuberType')}
+				</svelte:fragment>
+			</ItemGroup>
+			<ItemGroup label title={format('audioDevice')}>
+				<select value={settings.audioDevice} on:change={changeAudioDevice}>
+					{#each audioDevices as device}
+						<option selected={settings.audioDevice===device.deviceId} value={device.deviceId}>{device.label}</option>
+					{/each}
+				</select>
+				<svelte:fragment slot='label'>
+					<Button on:click={getAudio}>
+						<Icon icon='reload'></Icon>
+					</Button>
 				</svelte:fragment>
 			</ItemGroup>
 			<ItemGroup label>

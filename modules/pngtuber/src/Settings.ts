@@ -5,6 +5,7 @@ export interface SettingsInterface {
 	//
 	tuber: LitchTuber|PuppeteerTuber
 	//
+	audioDevice: string
 	sampleRate: number
 	sampleLimit: number
 	trigger: number
