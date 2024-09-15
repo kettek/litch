@@ -1,5 +1,5 @@
 import electron from 'electron'
-import type { PublishedMessage } from "@kettek/pubsub/dist/Subscriber"
+import type { PublishedMessage } from '@kettek/pubsub/dist/Subscriber'
 import { ElectronAuthProvider } from '@twurple/auth-electron'
 import { ApiClient } from '@twurple/api'
 import { ChatClient, ChatRaidInfo, ChatSubInfo, UserNotice } from '@twurple/chat'
@@ -10,7 +10,7 @@ import type { PubSubRedemptionMessage } from '@twurple/pubsub/lib/messages/PubSu
 import type { SettingsInterface } from '../interfaces'
 import type { ServiceContext } from '@kettek/litch-app/src/interfaces/Service'
 
-let settings : SettingsInterface
+let settings: SettingsInterface
 
 let redirectUri = `http://localhost/nowherefast`
 let shouldLogout: boolean
@@ -25,24 +25,27 @@ export let context: ServiceContext = {}
 
 export async function enable() {
 	try {
-		authProvider = new ElectronAuthProvider({
-			clientId: settings.clientID,
-			redirectUri: redirectUri,
-		}, {
-			windowOptions: {
-				width: 400,
-				height: 600,
-				center: true,
-				parent: electron.BrowserWindow.getAllWindows()[0], // Is this a safe assumption...?
-				show: false,
-				modal: true,
-				autoHideMenuBar: true,
-				webPreferences: {
-					devTools: false,
-					nodeIntegration: false,
-				}
-			}
-		})
+		authProvider = new ElectronAuthProvider(
+			{
+				clientId: settings.clientID,
+				redirectUri: redirectUri,
+			},
+			{
+				windowOptions: {
+					width: 400,
+					height: 600,
+					center: true,
+					parent: electron.BrowserWindow.getAllWindows()[0], // Is this a safe assumption...?
+					show: false,
+					modal: true,
+					autoHideMenuBar: true,
+					webPreferences: {
+						devTools: false,
+						nodeIntegration: false,
+					},
+				},
+			},
+		)
 
 		if (shouldLogout) {
 			authProvider.allowUserChange()
@@ -57,7 +60,7 @@ export async function enable() {
 
 		context.publish('enabled')
 		running = true
-	} catch(err) {
+	} catch (err) {
 		console.log(err)
 		context.publish('failed', err)
 		running = false
@@ -68,7 +71,7 @@ export async function disable() {
 	try {
 		await stopChatbot()
 		await stopPubsub()
-	} catch(err) {
+	} catch (err) {
 		context.publish('failed', err)
 	}
 	running = false
@@ -88,10 +91,14 @@ export async function receive(msg: PublishedMessage) {
 		if (chatClient) {
 			say(msg.message.channel, `${msg.message.message}`)
 		}
+	} else if (msg.topic === 'refreshRewards') {
+		if (pubSubClient) {
+			await refreshRewards()
+		}
 	}
 }
 
-async function syncSettings(s : SettingsInterface) {
+async function syncSettings(s: SettingsInterface) {
 	let old = settings
 	settings = s
 
@@ -104,7 +111,7 @@ async function syncSettings(s : SettingsInterface) {
 	}
 }
 
-let chatClient : ChatClient
+let chatClient: ChatClient
 async function startChatbot() {
 	if (chatClient) return
 	chatClient = new ChatClient({ authProvider, channels: [settings.channel] })
@@ -191,7 +198,7 @@ async function startChatbot() {
 			console.log('onRewardGift', e, user, gift, msg)
 		}
 	})
-	chatClient.onMessage(e => {
+	chatClient.onMessage((e) => {
 		if (settings.dumpAllMessages) {
 			console.log('dumpAll:', JSON.stringify(e))
 		}
@@ -207,14 +214,14 @@ async function startChatbot() {
 		}
 	})
 	chatClient.onJoinFailure((channel, reason) => {
-		console.log("join failure", channel, reason)
+		console.log('join failure', channel, reason)
 	})
 	chatClient.onPart((channel, user) => {
 		context.publish('chat.part', {
 			channel,
 			user,
 		})
-		console.log("parted", channel, user)
+		console.log('parted', channel, user)
 	})
 	await chatClient.connect()
 	console.log(chatClient)
@@ -244,17 +251,8 @@ async function startPubsub() {
 	} else {
 		userID = await pubSubClient.registerUserListener(authProvider)
 	}
-	
-	let rewards = await apiClient.channelPoints.getCustomRewards(userID)
-	context.publish('channelPoints.clearRewards')
-	for (let reward of rewards) {
-		context.publish('channelPoints.addReward', {
-			id: reward.id,
-			cost: reward.cost,
-			image: reward.getImageUrl(1),
-			title: reward.title,
-		})
-	}
+
+	await refreshRewards()
 
 	pubSubUser = pubSubClient.getUserListener(userID)
 
@@ -283,11 +281,24 @@ async function startPubsub() {
 
 async function stopPubsub() {
 	if (!pubSubClient && !pubSubUser) return
-		
+
 	await pubSubUser.removeAllListeners()
-		
+
 	pubSubClient = null
 	pubSubUser = null
+}
+
+async function refreshRewards() {
+	let rewards = await apiClient.channelPoints.getCustomRewards(userID)
+	context.publish('channelPoints.clearRewards')
+	for (let reward of rewards) {
+		context.publish('channelPoints.addReward', {
+			id: reward.id,
+			cost: reward.cost,
+			image: reward.getImageUrl(1),
+			title: reward.title,
+		})
+	}
 }
 
 function say(channel: string, message: string) {
