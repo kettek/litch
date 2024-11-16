@@ -2,13 +2,13 @@
 	import { _ } from 'svelte-i18n'
 	import type { OverlayInterface } from './interfaces/Overlay'
 	import type { ModuleInterface } from './interfaces/Module'
-	import ModuleWrapper from "./ModuleWrapper.svelte"
+	import ModuleWrapper from './ModuleWrapper.svelte'
 	import { onMount } from 'svelte'
 	import type { AssetManager } from './interfaces/Asset'
 	import { createAssetManager } from './assets'
 	import { refreshOverlays } from './stores/overlays'
-  import type { ModuleInstanceInterface } from './interfaces/ModuleInstance'
-  import { cursorHover, cursorHold } from './cursor'
+	import type { ModuleInstanceInterface } from './interfaces/ModuleInstance'
+	import { cursorHover, cursorHold } from './cursor'
 
 	export let modules: Record<string, ModuleInterface> = {}
 
@@ -38,7 +38,7 @@
 	let containerWidth: number
 	let containerHeight: number
 
-	$: (width??height??zoom) ? renderCanvas() : null
+	$: (width ?? height ?? zoom) ? renderCanvas() : null
 
 	let assets: AssetManager = createAssetManager()
 
@@ -75,7 +75,7 @@
 		return {
 			destroy() {
 				node.removeEventListener('mousedown', mousedown, false)
-			}
+			},
 		}
 	}
 	function setCanvasPos() {
@@ -85,12 +85,12 @@
 		} else if (x > containerWidth - overlay.canvas.width / 4) {
 			x = containerWidth - overlay.canvas.width / 4
 		}
-		if ( y < -overlay.canvas.height / 2) {
+		if (y < -overlay.canvas.height / 2) {
 			y = -overlay.canvas.height / 2
 		} else if (y > containerHeight - overlay.canvas.height / 4) {
 			y = containerHeight - overlay.canvas.height / 4
 		}
-		[overlay.canvas.x, overlay.canvas.y] = getCoordinates(x, y)
+		;[overlay.canvas.x, overlay.canvas.y] = getCoordinates(x, y)
 		refreshOverlays()
 	}
 
@@ -134,17 +134,17 @@
 		return {
 			destroy() {
 				node.removeEventListener('mousedown', mousedown, false)
-			}
+			},
 		}
 	}
 	function setModulePos(uuid: string) {
-		let m = overlay.modules.find(v=>v.uuid===uuid)
+		let m = overlay.modules.find((v) => v.uuid === uuid)
 		if (!m) return
-		[m.box.x, m.box.y] = getCoordinates(m.box.x + movingX, m.box.y + movingY)
+		;[m.box.x, m.box.y] = getCoordinates(m.box.x + movingX, m.box.y + movingY)
 		refreshOverlays()
 	}
 	// Module resize
-	function resizeModule(node: HTMLElement, params: {uuid: string, act: string}) {
+	function resizeModule(node: HTMLElement, params: { uuid: string; act: string }) {
 		const mousedown = (e: MouseEvent) => {
 			if (e.button !== 0) return
 			e.preventDefault()
@@ -185,11 +185,11 @@
 			const mouseup = () => {
 				addResize(e)
 
-				let m = overlay.modules.find(v=>v.uuid===resizingModule)
+				let m = overlay.modules.find((v) => v.uuid === resizingModule)
 				if (m) {
-					[m.box.x, m.box.y, m.box.width, m.box.height] = [
+					;[m.box.x, m.box.y, m.box.width, m.box.height] = [
 						...getCoordinates(m.box.x + movingX, m.box.y + movingY),
-						...getCoordinates(m.box.width + resizingX, m.box.height + resizingY)
+						...getCoordinates(m.box.width + resizingX, m.box.height + resizingY),
 					]
 					refreshOverlays()
 				}
@@ -209,7 +209,7 @@
 		return {
 			destroy() {
 				node.removeEventListener('mousedown', mousedown, false)
-			}
+			},
 		}
 	}
 
@@ -218,7 +218,7 @@
 		refreshOverlays()
 		try {
 			await module.channels.publish('update', module.settings)
-		} catch(e: any) {
+		} catch (e: any) {
 			if (e.errors) {
 				for (let err of e.errors) {
 					console.error(err)
@@ -230,7 +230,7 @@
 	}
 
 	// Module rotate
-	function rotateModule(node: HTMLElement, params: {uuid: string, act: string}) {
+	function rotateModule(node: HTMLElement, params: { uuid: string; act: string }) {
 		const mousedown = (e: MouseEvent) => {
 			if (e.button !== 0) return
 			e.preventDefault()
@@ -261,9 +261,9 @@
 			const mouseup = () => {
 				addRotate(e)
 
-				let m = overlay.modules.find(v=>v.uuid===rotatingModule)
+				let m = overlay.modules.find((v) => v.uuid === rotatingModule)
 				if (m) {
-					m.box.rotate = (m.box.rotate??0) + rotate
+					m.box.rotate = (m.box.rotate ?? 0) + rotate
 					refreshOverlays()
 				}
 
@@ -281,7 +281,7 @@
 		return {
 			destroy() {
 				node.removeEventListener('mousedown', mousedown, false)
-			}
+			},
 		}
 	}
 
@@ -296,9 +296,9 @@
 		ctx.fillStyle = '#ffffff44'
 		let cw: number = Math.round(gridWidth * zoom)
 		let ch: number = Math.round(gridHeight * zoom)
-		for (let i = 0; i < Math.round(width/cw); i++) {
-			for (let j = 0; j < Math.round(height/ch); j++) {
-				ctx.fillRect(Math.round(i*cw), Math.round(j*ch), 1, 1)
+		for (let i = 0; i < Math.round(width / cw); i++) {
+			for (let j = 0; j < Math.round(height / ch); j++) {
+				ctx.fillRect(Math.round(i * cw), Math.round(j * ch), 1, 1)
 			}
 		}
 	}
@@ -345,44 +345,113 @@
 	}
 </script>
 
-<svelte:window on:keydown={keydown} on:keyup={keyup} on:blur={blur}/>
+<svelte:window on:keydown={keydown} on:keyup={keyup} on:blur={blur} />
 <main bind:clientWidth={containerWidth} bind:clientHeight={containerHeight} on:wheel={handleWheel} use:move>
-	<section style="--x: {movingCanvas?getX(overlay.canvas.x+movingX):overlay.canvas.x}px; --y: {movingCanvas?getY(overlay.canvas.y+movingY):overlay.canvas.y}px; --width: {width}px; --height: {height}px; --zoom: {zoom}" on:click={_=>overlay.activeModuleUUID=''}>
+	<section
+		style="--x: {movingCanvas ? getX(overlay.canvas.x + movingX) : overlay.canvas.x}px; --y: {movingCanvas
+			? getY(overlay.canvas.y + movingY)
+			: overlay.canvas.y}px; --width: {width}px; --height: {height}px; --zoom: {zoom}"
+		on:click={(_) => (overlay.activeModuleUUID = '')}
+	>
 		<canvas use:cursorHold={'grab'} use:cursorHover={'move'} bind:this={canvas}></canvas>
-		{#each overlay.modules.filter(v=>v.active).sort((a,b)=>a.uuid===overlay.activeModuleUUID?1:b.uuid===overlay.activeModuleUUID?-1:0) as module (module.uuid)}
-			<article use:cursorHold={'grab'} use:cursorHover={'move'} style="--x: {(movingModule===module.uuid?getX(module.box.x+movingX):module.box.x)*zoom}px; --y: {(movingModule===module.uuid?getY(module.box.y+movingY):module.box.y)*zoom}px; --width: {(resizingModule===module.uuid?getX(module.box.width+resizingX):module.box.width)*zoom}px; --height: {(resizingModule===module.uuid?getY(module.box.height+resizingY):module.box.height)*zoom}px; --rad: {(rotatingModule===module.uuid?(rotate+(module.box?.rotate??0)):module.box?.rotate)}rad" class:active={overlay.activeModuleUUID===module.uuid} use:moveModule={module.uuid}>
-				<ModuleWrapper this={modules[module.moduleUUID].previewComponent} settings={module.settings} bind:box={module.box} zoom={zoom} update={(v)=>updateModule(module, v)} channel={module.previewChannel} services={module.servicesChannel} live={module.live} assets={assets} />
-				<footer>
-					<span>
-						{module.box.width}x{module.box.height}
-					</span>
-				</footer>
-				{#if overlay.activeModuleUUID === module.uuid}
-					<nav use:cursorHold={'rotateTL'} use:cursorHover={'rotateTL'} use:rotateModule={{uuid: module.uuid, act: 'nw-resize'}} class='rotate-top-left'></nav>
-					<nav use:cursorHold={'rotateTR'} use:cursorHover={'rotateTR'} use:rotateModule={{uuid: module.uuid, act: 'ne-resize'}} class='rotate-top-right'></nav>
-					<nav use:cursorHold={'rotateBL'} use:cursorHover={'rotateBL'} use:rotateModule={{uuid: module.uuid, act: 'sw-resize'}} class='rotate-bottom-left'></nav>
-					<nav use:cursorHold={'rotateBR'} use:cursorHover={'rotateBR'} use:rotateModule={{uuid: module.uuid, act: 'se-resize'}} class='rotate-bottom-right'></nav>
-					<nav use:cursorHold={'scaleNW'} use:cursorHover={'scaleNW'} use:resizeModule={{uuid: module.uuid, act: 'nw-resize'}} class='top-left'></nav>
-					<nav use:cursorHold={'scaleNE'} use:cursorHover={'scaleNE'} use:resizeModule={{uuid: module.uuid, act: 'ne-resize'}} class='top-right'></nav>
-					<nav use:cursorHold={'scaleSW'} use:cursorHover={'scaleSW'} use:resizeModule={{uuid: module.uuid, act: 'sw-resize'}} class='bottom-left'></nav>
-					<nav use:cursorHold={'scaleSE'} use:cursorHover={'scaleSE'} use:resizeModule={{uuid: module.uuid, act: 'se-resize'}} class='bottom-right'></nav>
-				{/if}
-			</article>
+		{#each overlay.modules
+			.filter((v) => v.active)
+			.sort((a, b) => (a.uuid === overlay.activeModuleUUID ? 1 : b.uuid === overlay.activeModuleUUID ? -1 : 0)) as module (module.uuid)}
+			{#if modules[module.moduleUUID].previewComponent}
+				<article
+					use:cursorHold={'grab'}
+					use:cursorHover={'move'}
+					style="--x: {(movingModule === module.uuid ? getX(module.box.x + movingX) : module.box.x) * zoom}px; --y: {(movingModule === module.uuid
+						? getY(module.box.y + movingY)
+						: module.box.y) * zoom}px; --width: {(resizingModule === module.uuid ? getX(module.box.width + resizingX) : module.box.width) *
+						zoom}px; --height: {(resizingModule === module.uuid ? getY(module.box.height + resizingY) : module.box.height) *
+						zoom}px; --rad: {rotatingModule === module.uuid ? rotate + (module.box?.rotate ?? 0) : module.box?.rotate}rad"
+					class:active={overlay.activeModuleUUID === module.uuid}
+					use:moveModule={module.uuid}
+				>
+					<ModuleWrapper
+						this={modules[module.moduleUUID].previewComponent}
+						settings={module.settings}
+						bind:box={module.box}
+						{zoom}
+						update={(v) => updateModule(module, v)}
+						channel={module.previewChannel}
+						services={module.servicesChannel}
+						live={module.live}
+						{assets}
+					/>
+					<footer>
+						<span>
+							{module.box.width}x{module.box.height}
+						</span>
+					</footer>
+					{#if overlay.activeModuleUUID === module.uuid}
+						<nav
+							use:cursorHold={'rotateTL'}
+							use:cursorHover={'rotateTL'}
+							use:rotateModule={{ uuid: module.uuid, act: 'nw-resize' }}
+							class="rotate-top-left"
+						></nav>
+						<nav
+							use:cursorHold={'rotateTR'}
+							use:cursorHover={'rotateTR'}
+							use:rotateModule={{ uuid: module.uuid, act: 'ne-resize' }}
+							class="rotate-top-right"
+						></nav>
+						<nav
+							use:cursorHold={'rotateBL'}
+							use:cursorHover={'rotateBL'}
+							use:rotateModule={{ uuid: module.uuid, act: 'sw-resize' }}
+							class="rotate-bottom-left"
+						></nav>
+						<nav
+							use:cursorHold={'rotateBR'}
+							use:cursorHover={'rotateBR'}
+							use:rotateModule={{ uuid: module.uuid, act: 'se-resize' }}
+							class="rotate-bottom-right"
+						></nav>
+						<nav
+							use:cursorHold={'scaleNW'}
+							use:cursorHover={'scaleNW'}
+							use:resizeModule={{ uuid: module.uuid, act: 'nw-resize' }}
+							class="top-left"
+						></nav>
+						<nav
+							use:cursorHold={'scaleNE'}
+							use:cursorHover={'scaleNE'}
+							use:resizeModule={{ uuid: module.uuid, act: 'ne-resize' }}
+							class="top-right"
+						></nav>
+						<nav
+							use:cursorHold={'scaleSW'}
+							use:cursorHover={'scaleSW'}
+							use:resizeModule={{ uuid: module.uuid, act: 'sw-resize' }}
+							class="bottom-left"
+						></nav>
+						<nav
+							use:cursorHold={'scaleSE'}
+							use:cursorHover={'scaleSE'}
+							use:resizeModule={{ uuid: module.uuid, act: 'se-resize' }}
+							class="bottom-right"
+						></nav>
+					{/if}
+				</article>
+			{/if}
 		{/each}
 		<footer>
 			{#if active}
-				<span class='active'>{$_('overlay.state.active')}</span>
+				<span class="active">{$_('overlay.state.active')}</span>
 			{:else}
 				<span>{$_('overlay.state.inactive')}</span>
 			{/if}
 			<span>
-				{overlay.canvas.width}x{overlay.canvas.height} @ {Math.round(zoom*100)}% ({width}x{height})
+				{overlay.canvas.width}x{overlay.canvas.height} @ {Math.round(zoom * 100)}% ({width}x{height})
 			</span>
 		</footer>
 	</section>
 </main>
 
-{#if movingModule||movingCanvas}
+{#if movingModule || movingCanvas}
 	<div style="--cursor: 'move'" class="catcher"></div>
 {/if}
 
@@ -479,5 +548,4 @@
 		/*background: rgba(255,255,255,.01);*/
 		cursor: var(--cursor);
 	}
-
 </style>
