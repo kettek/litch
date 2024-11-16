@@ -1,0 +1,1 @@
+SAM provides a text-to-speech using the classic Software Automatic Mouth.

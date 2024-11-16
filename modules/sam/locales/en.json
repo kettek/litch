@@ -1,0 +1,13 @@
+{
+	"say": {
+		"message": "Message"
+	},
+	"example": "Example",
+	"volume": "Volume",
+	"phonetic": "Phonetic",
+	"singmode": "Sing Mode",
+	"pitch": "Pitch",
+	"speed": "Speed",
+	"mouth": "Mouth",
+	"throat": "Throat"
+}
