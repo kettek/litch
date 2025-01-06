@@ -3,6 +3,7 @@
 	import type { ModuleChannel } from '@kettek/litch-app/src/interfaces/ModuleInstance'
 	import type { SayTriggerDataI } from './interfaces'
 	import SamJs from 'sam-js'
+	import DD from 'dot-dotty'
 	import { Options, SettingsInterface } from './Settings'
 
 	export let channel: ModuleChannel
@@ -40,9 +41,13 @@
 
 	function triggerSay(trigger: SayTriggerDataI, action: Object) {
 		let msg = trigger.message
+		let dot = DD(action)
 		for (const prop in action) {
 			msg = msg.replace(new RegExp('{' + prop + '}', 'g'), '{' + action[prop] + '}')
 		}
+		msg = msg.replace(/\{([^\}]+)\}/g, (match, key) => {
+			return dot[key]
+		})
 		refreshSam(trigger.options)
 		playByteArray(sam.wav(msg))
 	}

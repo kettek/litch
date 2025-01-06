@@ -1,4 +1,4 @@
-import { Options } from "./Settings"
+import type { Options } from './Settings'
 
 export interface SayTriggerDataI {
 	message: string
