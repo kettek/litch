@@ -1,0 +1,14 @@
+{
+	"conditions": {
+		"vlc-status": {
+			"filename": "Filename",
+			"date": "Date",
+			"title": "Title",
+			"artist": "Artist",
+			"album": "Album",
+			"genre": "Genre",
+			"artworkURL": "Artwork URL",
+			"status": "Status"
+		}
+	}
+}
