@@ -1,67 +1,53 @@
 import electron from 'electron'
 import type { PublishedMessage } from '@kettek/pubsub/dist/Subscriber'
-import { ElectronAuthProvider } from '@twurple/auth-electron'
-import { ApiClient } from '@twurple/api'
+import { ApiClient, UserIdResolvable } from '@twurple/api'
 import { ChatClient, ChatRaidInfo, ChatSubInfo, UserNotice } from '@twurple/chat'
 import { PubSubBitsMessage, PubSubClient } from '@twurple/pubsub'
-import type { SingleUserPubSubClient } from '@twurple/pubsub/lib/SingleUserPubSubClient'
+//import type { SingleUserPubSubClient } from '@twurple/pubsub/lib/SingleUserPubSubClient'
 import type { PubSubSubscriptionMessage } from '@twurple/pubsub/lib/messages/PubSubSubscriptionMessage'
 import type { PubSubRedemptionMessage } from '@twurple/pubsub/lib/messages/PubSubRedemptionMessage'
 import type { SettingsInterface } from '../interfaces'
 import type { ServiceContext } from '@kettek/litch-app/src/interfaces/Service'
-import { AwaitAuth } from './authtest'
+import { EventSubWsListener } from '@twurple/eventsub-ws'
+//import { type EventSubChannelChatMessageEvent } from '@twurple/eventsub-base/lib/events/EventSubChannelChatMessageEvent'
+import { getToken } from './gettoken'
+import { StaticAuthProvider } from '@twurple/auth'
 
 let settings: SettingsInterface
 
-let redirectUri = `http://localhost/nowherefast`
+let redirectUri = `http://localhost:8984/auth`
 let shouldLogout: boolean
-let authProvider: ElectronAuthProvider
-let pubSubClient: PubSubClient
-let pubSubUser: SingleUserPubSubClient
+let authProvider: StaticAuthProvider
+//let pubSubClient: PubSubClient
+//let pubSubUser: SingleUserPubSubClient
+let eventSubListener: EventSubWsListener
 let apiClient: ApiClient
 let userID: string
+let user: UserIdResolvable
 let running: boolean
 
 export let context: ServiceContext = {}
 
 export async function enable() {
+	// Get our OAuth token.
+	// TODO: Store the full token information, including expiry, scopes, etc., then if they don't match or are expired, make the getToken request.
+	const scopes = ['channel:read:redemptions', 'channel:read:subscriptions', 'user:read:chat', 'user:write:chat', 'chat:read', 'chat:edit']
+	console.log('getting access token')
+	const accessToken = await getToken(settings.clientID, redirectUri, scopes)
+	console.log('got', accessToken)
 	try {
-		await AwaitAuth(settings.clientID)
-	} catch (err: any) {
-		console.log('whoops', err)
-	}
-	try {
-		authProvider = new ElectronAuthProvider(
-			{
-				clientId: settings.clientID,
-				redirectUri: redirectUri,
-			},
-			{
-				windowOptions: {
-					width: 400,
-					height: 600,
-					center: true,
-					parent: electron.BrowserWindow.getAllWindows()[0], // Is this a safe assumption...?
-					show: false,
-					modal: true,
-					autoHideMenuBar: true,
-					webPreferences: {
-						devTools: false,
-						nodeIntegration: false,
-					},
-				},
-			},
-		)
-
+		authProvider = new StaticAuthProvider(settings.clientID, accessToken, scopes)
 		if (shouldLogout) {
-			authProvider.allowUserChange()
-			authProvider.getAccessToken(authProvider.currentScopes)
+			// TODO: Uh... this needs to be handled differently.
+			//authProvider.allowUserChange()
+			//authProvider.getAccessToken(authProvider.currentScopes)
 			shouldLogout = false
 		}
 
 		apiClient = new ApiClient({ authProvider })
 
 		await startPubsub()
+		await startEventSub()
 		await startChatbot()
 
 		context.publish('enabled')
@@ -76,6 +62,7 @@ export async function enable() {
 export async function disable() {
 	try {
 		await stopChatbot()
+		await stopEventSub()
 		await stopPubsub()
 	} catch (err) {
 		context.publish('failed', err)
@@ -98,9 +85,9 @@ export async function receive(msg: PublishedMessage) {
 			say(msg.message.channel, `${msg.message.message}`)
 		}
 	} else if (msg.topic === 'refreshRewards') {
-		if (pubSubClient) {
-			await refreshRewards()
-		}
+		//if (pubSubClient) {
+		await refreshRewards()
+		//}
 	}
 }
 
@@ -112,8 +99,11 @@ async function syncSettings(s: SettingsInterface) {
 		await stopPubsub()
 		await startPubsub()
 
-		await startChatbot()
 		await stopChatbot()
+		await startChatbot()
+
+		await stopEventSub()
+		await startEventSub()
 	}
 }
 
@@ -180,7 +170,7 @@ async function startChatbot() {
 			userDisplayName: raidInfo.displayName,
 			viewerCount: raidInfo.viewerCount,
 			date: msg.date,
-			message: msg.message,
+			message: msg.text,
 		})
 	})
 	chatClient.onRaidCancel((channel: string, msg: UserNotice) => {
@@ -191,9 +181,10 @@ async function startChatbot() {
 			userName: msg.userInfo.userName,
 			userDisplayName: msg.userInfo.displayName,
 			date: msg.date,
-			message: msg.message,
+			message: msg.text,
 		})
 	})
+	// NOTE: I don't think any of these are handled by chatClient anymore... they should be eventsub?
 	chatClient.onSub((channel: string, user: string, subInfo: ChatSubInfo, msg: UserNotice) => {
 		if (settings.dumpAllMessages) {
 			console.log('onSub', channel, user, subInfo, msg)
@@ -246,23 +237,44 @@ async function stopChatbot() {
 	console.log('chatbot quit')
 }
 
+async function startEventSub() {
+	if (eventSubListener) return
+	console.log('our user is', user)
+	eventSubListener = new EventSubWsListener({ apiClient })
+	eventSubListener.start()
+	eventSubListener.onChannelChatMessage(user, user, (data: any /*EventSubChannelChatMessageEvent*/) => {
+		console.log('chat message', data.chatterDisplayName, data.messageText, data.broadcasterName, data.color)
+		console.log(data)
+	})
+}
+
+async function stopEventSub() {
+	eventSubListener.stop()
+	eventSubListener = undefined
+}
+
 async function startPubsub() {
-	if (pubSubClient) return
-	pubSubClient = new PubSubClient()
+	//if (pubSubClient) return
+	//pubSubClient = new PubSubClient()
 
 	if (settings.channel !== '') {
-		const user = await apiClient.users.getUserByName(settings.channel)
-		userID = await pubSubClient.registerUserListener(authProvider, user.id)
-		console.log('pubsub registered with', settings.channel, userID)
+		user = await apiClient.users.getUserByName(settings.channel)
+		console.log('uh... got user', user.id, user)
+		//userID = await pubSubClient.registerUserListener(authProvider, user.id)
+		//console.log('pubsub registered with', settings.channel, userID)
 	} else {
-		userID = await pubSubClient.registerUserListener(authProvider)
+		//userID = await pubSubClient.registerUserListener(authProvider)
 	}
 
-	await refreshRewards()
+	try {
+		await refreshRewards()
+	} catch (e: any) {
+		console.log('refreshRewards failed', e)
+	}
 
-	pubSubUser = pubSubClient.getUserListener(userID)
+	//pubSubUser = pubSubClient.getUserListener(userID)
 
-	pubSubUser.onBits((message: PubSubBitsMessage) => {
+	/*pubSubUser.onBits((message: PubSubBitsMessage) => {
 		console.log('bits', message)
 		context.publish('bits', message)
 	})
@@ -282,20 +294,20 @@ async function startPubsub() {
 			userDisplayName: message.userDisplayName,
 		})
 		console.log('got redemption', message)
-	})
+	})*/
 }
 
 async function stopPubsub() {
-	if (!pubSubClient && !pubSubUser) return
+	/*if (!pubSubClient && !pubSubUser) return
 
 	await pubSubUser.removeAllListeners()
 
 	pubSubClient = null
-	pubSubUser = null
+	pubSubUser = null*/
 }
 
 async function refreshRewards() {
-	let rewards = await apiClient.channelPoints.getCustomRewards(userID)
+	let rewards = await apiClient.channelPoints.getCustomRewards(user)
 	context.publish('channelPoints.clearRewards')
 	for (let reward of rewards) {
 		context.publish('channelPoints.addReward', {
