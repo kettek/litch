@@ -9,6 +9,7 @@ import type { PubSubSubscriptionMessage } from '@twurple/pubsub/lib/messages/Pub
 import type { PubSubRedemptionMessage } from '@twurple/pubsub/lib/messages/PubSubRedemptionMessage'
 import type { SettingsInterface } from '../interfaces'
 import type { ServiceContext } from '@kettek/litch-app/src/interfaces/Service'
+import { AwaitAuth } from './authtest'
 
 let settings: SettingsInterface
 
@@ -24,6 +25,11 @@ let running: boolean
 export let context: ServiceContext = {}
 
 export async function enable() {
+	try {
+		await AwaitAuth(settings.clientID)
+	} catch (err: any) {
+		console.log('whoops', err)
+	}
 	try {
 		authProvider = new ElectronAuthProvider(
 			{
