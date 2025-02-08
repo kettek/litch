@@ -9,7 +9,7 @@ import type { PubSubRedemptionMessage } from '@twurple/pubsub/lib/messages/PubSu
 import type { SettingsInterface } from '../interfaces'
 import type { ServiceContext } from '@kettek/litch-app/src/interfaces/Service'
 import { EventSubWsListener } from '@twurple/eventsub-ws'
-//import { type EventSubChannelChatMessageEvent } from '@twurple/eventsub-base/lib/events/EventSubChannelChatMessageEvent'
+import type { EventSubChannelChatMessageEvent } from '@twurple/eventsub-base'
 import { getToken } from './gettoken'
 import { StaticAuthProvider } from '@twurple/auth'
 
@@ -242,7 +242,7 @@ async function startEventSub() {
 	console.log('our user is', user)
 	eventSubListener = new EventSubWsListener({ apiClient })
 	eventSubListener.start()
-	eventSubListener.onChannelChatMessage(user, user, (data: any /*EventSubChannelChatMessageEvent*/) => {
+	eventSubListener.onChannelChatMessage(user, user, (data: EventSubChannelChatMessageEvent) => {
 		console.log('chat message', data.chatterDisplayName, data.messageText, data.broadcasterName, data.color)
 		console.log(data)
 	})
